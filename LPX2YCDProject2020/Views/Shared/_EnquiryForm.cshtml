@@ -1,0 +1,39 @@
+﻿@model ContactUsModel
+<div class="col">
+    <form asp-controller="Home" asp-action="ContactUs">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EmailAddress"></label>
+            <input asp-for="EmailAddress" class="form-control" />
+            <span asp-validation-for="EmailAddress" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PatronType"></label>
+            <select asp-for="PatronType" class="form-control">
+                <option>Future sponsor</option>
+                <option>Learner</option>
+                <option>Other</option>
+            </select>
+            <span asp-validation-for="PatronType" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Message"></label>
+            <textarea asp-for="Message " rows="4" cols="1" class="form-control"></textarea>
+        </div>
+        <input type="submit" value="Submit" class="btn btn-primary" />
+    </form>
+
+</div>

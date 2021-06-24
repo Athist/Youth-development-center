@@ -1,0 +1,35 @@
+﻿@model ContactUsModel
+
+@{
+    ViewData["Title"] = "Contact Us";
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+
+}
+
+
+
+<div class="container">
+    <h2 class="text-center h1">Contact Us</h2>
+
+    <div class="row justify-content-center">
+
+        @if (ViewBag.EnquirySent != null)
+        {
+            <div class="alert alert-success" role="alert">
+                <p>
+                    Your Query has been sent. We will be in touch soon.
+                </p>
+            </div>
+        }
+
+        <div class="col col-md-4">
+            <partial name="_ContactUsDetailsList" model="Model" />
+        </div>
+
+        <div class="col col-md-4">
+            <partial name="_EnquiryForm" , model="Model" />
+        </div>
+        <br /><br />
+    </div>
+
+</div>

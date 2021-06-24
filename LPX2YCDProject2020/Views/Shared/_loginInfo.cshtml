@@ -1,0 +1,47 @@
+﻿
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
+
+@if (_signInManager.IsSignedIn(User))
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+            <h6 class="h6">Hello @(User.FindFirst("UserFirstName").Value) </h6>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Dashboard</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item" asp-action="Logout" asp-controller="Account">
+                    Logout
+                </a>
+            </li>
+          
+        </ul>
+    </li>
+
+    @*<li class="dropdown">
+            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Hello
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" asp-action="MyProfile" asp-controller="Account">Profile</a>
+                <a class="dropdown-item" asp-action="ChangePassword" asp-controller="Account">Change password</a>
+                <a class="dropdown-item" asp-action="Dashboard" asp-controller="Account">Dashboard</a>
+                <a class="dropdown-item" asp-action="Logout" asp-controller="Account">Logout</a>
+            </div>
+        </li>*@
+
+}
+else
+{
+    <li class="nav-item">
+        <a class="btn btn-outline-primary" asp-action="Login" asp-controller="Account" asp-route-returnUrl="@Context.Request.Path">
+            Login
+            <span><i class="bi bi-box-arrow-in-right"></i></span>
+        </a>
+        <a class="btn btn-primary" asp-action="SignUp" asp-controller="Account">Register</a>
+    </li>
+}
+
+
+
