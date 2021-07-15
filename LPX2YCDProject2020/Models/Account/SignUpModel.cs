@@ -13,11 +13,7 @@ namespace LPX2YCDProject2020.Models
         
         public int Id  { get; set; }
 
-        [StringLength(13)]
-        [RegularExpression(@"(((\d{2}((0[13578]|1[02])(0[1-9]|[12]\d|3[01])|(0[13456789]|1[012])(0[1-9]|[12]\d|30)|02(0[1-9]|1\d|2[0-8])))|([02468][048]|[13579][26])0229))(( |-)(\d{4})( |-)(\d{3})|(\d{7}))", ErrorMessage = "Invalid ID number")]
-        [Display(Name = "Identity number")]
-        [Required(ErrorMessage = "Identity number is required")]
-        public string IDNumber { get; set; }
+      
 
         [Required(ErrorMessage = "Name is required")]
         [Display(Name = "Name")]
@@ -44,18 +40,9 @@ namespace LPX2YCDProject2020.Models
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = "Cellphone number is requred")]
-        [Display(Name = "Cellphone number")]
-        [DataType(DataType.PhoneNumber)]
-        public string ContactNumber { get; set; }
-
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyy-MM-dd}", ApplyFormatInEditMode = true)]
         public string DateJoined { get; set; }
-
-        [Required(ErrorMessage = "Date of birth is requred")]
-        [Display(Name = "Date of birth")]
-        public DateTime? DateOfBirth { get; set; }
 
       
     }

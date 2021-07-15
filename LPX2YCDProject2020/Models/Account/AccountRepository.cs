@@ -42,21 +42,19 @@ namespace LPX2YCDProject2020.Models.Account
             return await _userManager.ConfirmEmailAsync(await _userManager.FindByIdAsync(uid), token);
         }
 
+       
+
         public async Task<IdentityResult> CreateUserAsync(SignUpModel signUp)
         {
             var user = new ApplicationUser()
             {
                 Email = signUp.Email,
                 UserName = signUp.Email,
-                PhoneNumber = signUp.ContactNumber,
                 DateJoined = signUp.DateJoined,
                 FirstName = signUp.FirstName,
                 LastName = signUp.LastName,
-                DateOfBirth = signUp.DateOfBirth,
-                IDNumber = signUp.IDNumber
-                
             };
-
+           
             var result = await _userManager.CreateAsync(user, signUp.Password);
 
             if (result.Succeeded)

@@ -22,9 +22,6 @@ namespace LPX2YCDProject2020.Helpers
             var identity= await base.GenerateClaimsAsync(user);
             identity.AddClaim(new Claim("UserFirstName", user.FirstName ?? ""));
             identity.AddClaim(new Claim("UserLastName", user.LastName ?? ""));
-            identity.AddClaim(new Claim("IDNo", user.IDNumber ?? ""));
-            identity.AddClaim(new Claim("UserDoB", user.DateOfBirth.ToString() ?? ""));
-            identity.AddClaim(new Claim("CellNo", user.PhoneNumber ?? ""));
             identity.AddClaim(new Claim("EmailAddr", user.Email ?? ""));
             identity.AddClaim(new Claim("studGroup", user.Id ?? ""));
 

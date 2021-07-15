@@ -28,14 +28,30 @@ namespace LPX2YCDProject2020.Models
         public DbSet<StudentSubjects> StudentSubjects { get; set; }
 
 
-        //protected override void OnModelCreating(ModelBuilder builder)
-        //{
-        //    builder.Entity<StudentSubjects>()
-        //         .HasKey(c => new { c.UserId, c.SubjectId });
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
 
-        //    builder.Entity<IdentityUserLogin>()
-        //        .HasNoKey();
-        //}
+            builder.Entity<StudentSubjects>()
+                .HasOne<SubjectDetails>(sc => sc.Subjects)
+                .WithMany(s => s.Enrolments)
+                .HasForeignKey(sc => sc.SubjectId);
+
+
+            builder.Entity<StudentSubjects>()
+                .HasOne<StudentProfileModel>(sc => sc.Student)
+                .WithMany(s => s.Enrolments)
+                .HasForeignKey(sc => sc.UserId);
+
+            //builder.Entity<StudentSubjects>()
+            //     .HasKey(c => new { c.UserId, c.SubjectId });
+
+            //builder.Entity<IdentityUserLogin>()
+            //    .HasNoKey();
+
+            //builder.Entity<StudentProfileModel>()
+            //    .HasMany<StudentSubjects>(v=>v.)
+        }
 
     }
 }

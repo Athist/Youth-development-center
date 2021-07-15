@@ -1,0 +1,290 @@
+﻿
+@{
+    Layout = "_GeneralLayout";
+    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+}
+
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
+@model StudentProfileViewModel
+
+<div id="MyPopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="dvPartial"></div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnClosePopup" value="Close" data-dismiss="modal" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="EditStudentSubjects">
+
+                    <div asp-validation-summary="ModelOnly"></div>
+
+                    <input value="@DateTime.Now.Year.ToString()" asp-for="@Model.Subjects.Year" id="Year" class="form-control" hidden="hidden" />
+                    <input hidden="hidden" asp-for="@Model.Subjects.UserId" value="@User.FindFirst("studGroup").Value">
+                    <input asp-for="@Model.Subjects.Id" hidden="hidden" />
+
+                    <div class="row">
+                        <div class="col-sm-2">
+                            @if (ViewBag.SubjectList != null)
+                            {
+                                <select id="SubjectId" asp-for="@Model.Subjects.SubjectId" class="form-control" asp-items="@ViewBag.SubjectList">
+                                    <option>--Select subject--</option>
+                                </select>
+                            }
+                        </div>
+
+                        <div class="col-sm-1">
+                        </div>
+
+                        <div class="col-sm-1">
+                            <input asp-for="@Model.Subjects.FirstTermMark" id="FirstTermMark" class="form-control" />
+                        </div>
+
+                        <div class="col-sm-1">
+                            <input asp-for="@Model.Subjects.SecondTermMark" id="SecondTermMark" class="form-control" />
+                        </div>
+
+                        <div class="col-sm-1">
+                            <input asp-for="@Model.Subjects.ThirdTermMark" id="ThirdTermMark" class="form-control" />
+                        </div>
+
+                        <div class="col-sm-1">
+                            <input asp-for="@Model.Subjects.Target" id="Target" class="form-control" />
+                        </div>
+
+                        <div class="col-sm-5">
+                            <textarea asp-for="@Model.Subjects.Comments" cols="2" rows="2" class="form-control" id="Comments" placeholder="We want to hear from you"></textarea>
+                        </div>
+                    </div>
+                    <input type="submit" id="SendToDb" value="Add" class="btn btn-primary" />
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class=" container">
+    <a asp-controller="Account" asp-action="ViewProfile" class="btn btn-primary"> < Profile</a>
+    <h1>SchoolReport</h1>
+    <form asp-action="AddStudentSubjects">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        <input hidden="hidden" asp-for="@Model.Subjects.UserId" value="@User.FindFirst("studGroup").Value">
+        <div class="table table-bordered table-active">
+            <div class="row">
+
+                <div class="col-sm-2">
+                    Subject
+                </div>
+
+                <div class="col-sm-1">
+                    Year
+                </div>
+
+                <div class="col-sm-1">
+                    Term 1
+                </div>
+
+                <div class="col-sm-1">
+                    Term 2
+                </div>
+
+                <div class="col-sm-1">
+                    Term 3
+                </div>
+
+                <div class="col-sm-1">
+                    Term 4 target
+                </div>
+                <div class="col-sm-5">
+                    Tell us more
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    @if (ViewBag.SubjectList != null)
+                    {
+                        <select id="SubjectId" asp-for="@Model.Subjects.SubjectId" class="form-control" asp-items="@ViewBag.SubjectList">
+                            <option>--Select subject--</option>
+                        </select>
+                    }
+                </div>
+
+                <div class="col-sm-1">
+                    <input value="@DateTime.Now.Year.ToString()" asp-for="@Model.Subjects.Year" id="Year" class="form-control" disabled="disabled" />
+                </div>
+
+                <div class="col-sm-1">
+                    <input asp-for="@Model.Subjects.FirstTermMark" id="FirstTermMark" class="form-control" />
+                </div>
+
+                <div class="col-sm-1">
+                    <input asp-for="@Model.Subjects.SecondTermMark" id="SecondTermMark" class="form-control" />
+                </div>
+
+                <div class="col-sm-1">
+                    <input asp-for="@Model.Subjects.ThirdTermMark" id="ThirdTermMark" class="form-control" />
+                </div>
+
+                <div class="col-sm-1">
+                    <input asp-for="@Model.Subjects.Target" id="Target" class="form-control" />
+                </div>
+
+                <div class="col-sm-5">
+                    <textarea asp-for="@Model.Subjects.Comments" cols="2" rows="2" class="form-control" id="Comments" placeholder="We want to hear from you"></textarea>
+                </div>
+            </div>
+        </div>
+        <input type="submit" id="SendToDb" value="Add" class="btn btn-primary" />
+    </form>
+
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>Subject name</th>
+                <th>Year</th>
+                <th>Term 1 mark</th>
+                <th>Term 2 mark</th>
+                <th>Term 3 mark</th>
+                <th>Term 4 goal</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.EnrolledSubjects != null)
+            {
+                @foreach (var c in Model?.EnrolledSubjects)
+                {
+                    <tr>
+                        <td class="col">
+                            @*@c?.Subjects.SubjectName*@
+
+                            @Html.DisplayFor(v => c.Subjects.SubjectName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(v => c.Year)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(v => c.FirstTermMark)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(v => c.SecondTermMark)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(v => c.ThirdTermMark)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(v => c.Target)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(z => c.Comments)
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-primary" id="btnEdit"  data-id="@c.Id">Edit</a>
+                            <partial name="_tableButtonPartialView" model="new ButtonPartialModel {ServiceID = c.SubjectId}" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/bootstrap/dist/js/bootstrap.min.js"></script>
+
+@section scripts{
+
+
+    <script type="text/javascript">
+       
+            $("#btnEdit").click(function () {
+                $("#MyPopup").modal("hide");
+                var obj = {};
+                obj.Id = $(this).attr('data-id');
+
+                $.ajax({
+                    url: 'Account/EditStudentSubjects',
+                    data: JSON.stringify(obj),
+                    type: 'POST',
+                    dataType: 'html',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        $("#dvPartial").html(response);
+                        $("#MyPopup").modal("show");
+                    }
+                });
+            });
+ 
+
+        @*$('#SendToDb').click(function () {
+            var Year = $('#Year').val();
+            var subjectId = $('#SubjectId').val();
+            var term1Mark = $('#FirstTermMark').val();
+            var term2Mark = $('#SecondTermMark').val();
+            var term3Mark = $('#ThirdTermMark').val();
+            var term4Mark = $('#Target').val();
+            var comments = $('#Comments').val();
+            var dataString = "subjectId=" + subjectId + "&term1Mark=" + term1Mark + "&term2Mark=" + term2Mark + "&term3Mark=" + term3Mark + "&term3Mark=" + term3Mark + "&term4Mark=" + term4Mark + "&comments=" + comments + "&year=" + Year;
+
+            if ((term1Mark < 0 || term1Mark > 100) || (term2Mark < 0 || term2Mark > 100) || (term3Mark < 0 || term3Mark > 100) || (term4Mark < 0 || term4Mark > 100)) {
+                alert('Error!' + "/n" + 'Marks cannot be less than 0 or greater than 100!');
+                $('#FirstTermMark').empty();
+                $('#SecondTermMark').empty();
+                $('#ThirdTermMark').empty();
+                $('#Target').empty();
+                $('#Comments').empty();
+            }
+            else {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("AddStudentSubjects")',
+                    dataType: 'json',
+                    data: dataString,
+
+                    success: function (response) {
+                        alert("Successfully added.");
+                        $('#FirstTermMark').empty();
+                        $('#SecondTermMark').empty();
+                        $('#ThirdTermMark').empty();
+                        $('#Target').empty();
+                        $('#Comments').empty();
+                    },
+                    error: function (response) {
+                        alert('an error has occured');
+                        $('#FirstTermMark').empty();
+                        $('#SecondTermMark').empty();
+                        $('#ThirdTermMark').empty();
+                        $('#Target').empty();
+                        $('#Comments').empty();
+                    }
+                });
+            }
+        });*@
+    </script>
+} 

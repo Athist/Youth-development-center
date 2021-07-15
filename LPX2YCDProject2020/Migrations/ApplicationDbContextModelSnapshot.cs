@@ -34,10 +34,6 @@ namespace LPX2YCDProject2020.Migrations
                     b.Property<string>("DateJoined")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -48,11 +44,6 @@ namespace LPX2YCDProject2020.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IDNumber")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -118,7 +109,26 @@ namespace LPX2YCDProject2020.Migrations
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ContactNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Grade")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IDNumber")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NameOfSchool")
@@ -150,36 +160,33 @@ namespace LPX2YCDProject2020.Migrations
                     b.Property<string>("Comments")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstTermMark")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("FirstTermMark")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SecondTermMark")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StudentProfileModelUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("SubjectDetailsId")
+                    b.Property<int>("SecondTermMark")
                         .HasColumnType("int");
 
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Target")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Target")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ThirdTermMark")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ThirdTermMark")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Year")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentProfileModelUserId");
+                    b.HasIndex("SubjectId");
 
-                    b.HasIndex("SubjectDetailsId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("StudentSubjects");
                 });
@@ -382,16 +389,8 @@ namespace LPX2YCDProject2020.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("DateJoined")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -400,11 +399,6 @@ namespace LPX2YCDProject2020.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IDNumber")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -601,13 +595,21 @@ namespace LPX2YCDProject2020.Migrations
 
             modelBuilder.Entity("LPX2YCDProject2020.Models.Account.StudentSubjects", b =>
                 {
-                    b.HasOne("LPX2YCDProject2020.Models.Account.StudentProfileModel", null)
+                    b.HasOne("LPX2YCDProject2020.Models.Account.SubjectDetails", "Subjects")
                         .WithMany("Enrolments")
-                        .HasForeignKey("StudentProfileModelUserId");
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("LPX2YCDProject2020.Models.Account.SubjectDetails", null)
+                    b.HasOne("LPX2YCDProject2020.Models.Account.StudentProfileModel", "Student")
                         .WithMany("Enrolments")
-                        .HasForeignKey("SubjectDetailsId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Subjects");
                 });
 
             modelBuilder.Entity("LPX2YCDProject2020.Models.AddressModels.City", b =>

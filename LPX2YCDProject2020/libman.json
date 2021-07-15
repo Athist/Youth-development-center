@@ -12,13 +12,9 @@
       "destination": "wwwroot/lib/jquery-validate/"
     },
     {
+      "provider": "unpkg",
       "library": "jquery@3.6.0",
       "destination": "wwwroot/lib/jquery/"
-    },
-    {
-      
-      "library": "twitter-bootstrap@4.6.0",
-      "destination": "wwwroot/lib/twitter-bootstrap/"
     },
     {
       "library": "font-awesome@5.15.3",
@@ -26,8 +22,13 @@
     },
     {
       "provider": "unpkg",
-      "library": "jquery@3.6.0",
-      "destination": "wwwroot/lib/jquery/"
+      "library": "jquery-validation-unobtrusive@3.2.12",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "bootstrap@5.0.2",
+      "destination": "wwwroot/bootstrap/"
     }
   ]
 }
