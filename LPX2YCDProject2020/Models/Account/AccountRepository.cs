@@ -114,15 +114,15 @@ namespace LPX2YCDProject2020.Models.Account
         private async Task SendForgotPasswordEmail(ApplicationUser user, string token)
         {
             string appDomain = _config.GetSection("Application:AppDomain").Value;
-            string confirmationLink = _config.GetSection("Application:Forgot-password").Value;
+            string confirmationLink = _config.GetSection("Application:ForgotPassword").Value;
 
             UserEmailOptions options = new UserEmailOptions
             {
                 ToEmails = new List<string> { user.Email },
                 PlaceHolders = new List<KeyValuePair<string, string>>()
                 {
-                    new KeyValuePair<string, string>("{{userName}}", user.FirstName),
-                    new KeyValuePair<string, string>("{{link}}", string.Format(appDomain + confirmationLink,user.Id, token))
+                    new KeyValuePair<string, string>("{{UserName}}", user.FirstName),
+                    new KeyValuePair<string, string>("{{Link}}", string.Format(appDomain + confirmationLink,user.Id, token))
                 }
             };
 
@@ -136,6 +136,7 @@ namespace LPX2YCDProject2020.Models.Account
             {
                 await SendForgotPasswordEmail(user, token);
             }
+          
         }
 
         //Mathod gets user details from the database by Email

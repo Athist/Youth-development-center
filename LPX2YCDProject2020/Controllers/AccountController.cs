@@ -84,9 +84,6 @@ namespace LPX2YCDProject2020.Controllers
                 .ToListAsync();
 
             ViewBag.SubjectList = new SelectList(_addressRepository.GetSubjectListAsync(), "Id", "SubjectName");
-
-            // ViewBag.SubjectList = new SelectList(_context.Subject.ToList(), "Id", "SubjectName");
-
             return View(ViewModel);
         }
 
@@ -123,11 +120,10 @@ namespace LPX2YCDProject2020.Controllers
         [HttpPost]
         public async Task<ActionResult> AddStudentSubjects(StudentProfileViewModel model)
         {
-            
             var newStudentSubject = new StudentSubjects
             {
                 Comments = model.Subjects.Comments,
-                Year = model.Subjects.Year,
+                Year = DateTime.Now.Year.ToString(),
                 FirstTermMark = model.Subjects.FirstTermMark,
                 SecondTermMark = model.Subjects.SecondTermMark,
                 ThirdTermMark = model.Subjects.ThirdTermMark,
@@ -136,97 +132,56 @@ namespace LPX2YCDProject2020.Controllers
                 UserId = model.Subjects.UserId
             };
 
-            _context.Add(newStudentSubject);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(SchoolReport));
+            if (ModelState.IsValid)
+            {
+                var found = await _context.StudentSubjects.SingleAsync(v => v.SubjectId == newStudentSubject.SubjectId && v.UserId == newStudentSubject.UserId);
+
+                if (found == null)
+                {
+                    _context.Add(newStudentSubject);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(SchoolReport));
+
+                }
+                else
+                {
+                    found.Comments = model.Subjects.Comments;
+                    found.Year = DateTime.Now.Year.ToString();
+                    found.FirstTermMark = model.Subjects.FirstTermMark;
+                    found.SecondTermMark = model.Subjects.SecondTermMark;
+                    found.ThirdTermMark = model.Subjects.ThirdTermMark;
+                    found.Target = model.Subjects.Target;
+                    found.SubjectId = model.Subjects.SubjectId;
+                    found.UserId = model.Subjects.UserId;
+
+                    _context.Update(found);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(SchoolReport));
+                }
+            }
+            return RedirectToAction(nameof(SchoolReport), new { ModelState });
         }
 
-        public IActionResult EditStudentSubjects(int id)
+        [HttpGet]
+        public ActionResult EditStudentSubjects(int id)
         {
-
             //We here working on loading the edit view/modal
-            var enrolment = _context.StudentSubjects.Where(c => c.Id == id);
+            var enrolment = _context.StudentSubjects.Where(c => c.Id == id).FirstOrDefault();
 
             ViewBag.SubjectList = new SelectList(_addressRepository.GetSubjectListAsync(), "Id", "SubjectName");
-            return PartialView("_EditStudentSubjectsPartialView", enrolment);
+            return View("EditSubjectModal", enrolment);
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<ActionResult> EditStudentSubjects(StudentSubjects model)
         {
-            //var newStudentSubject = new StudentSubjects
-            //{
-            //    Comments = model.Subjects.Comments,
-            //    Year = model.Subjects.Year,
-            //    FirstTermMark = model.Subjects.FirstTermMark,
-            //    SecondTermMark = model.Subjects.SecondTermMark,
-            //    ThirdTermMark = model.Subjects.ThirdTermMark,
-            //    Target = model.Subjects.Target,
-            //    SubjectId = model.Subjects.SubjectId,
-            //    UserId = model.Subjects.UserId
-            //};
-
+          
+            model.Year = DateTime.Now.Year.ToString();
             _context.Update(model);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(SchoolReport));
         }
-
-        //[HttpPost]
-        //public async Task<ActionResult> AddStudentSubjects(int subjectId, string year, int term1Mark, int term2Mark, int term3Mark, int term4Mark, string comments)
-        //{
-        //    string UserId = _userService.GetUserId();
-        //    //var subjects = new SubjectDetails { Id = subjectId };
-
-        //    var studentSubjects = new StudentSubjects
-        //    {
-        //        UserId = UserId,
-        //        SubjectId = subjectId,
-        //        Target = term4Mark,
-        //        ThirdTermMark = term3Mark,
-        //        SecondTermMark = term2Mark,
-        //        FirstTermMark = term1Mark,
-        //        Year = year,
-        //        Comments = comments
-        //    };
-
-
-        //    _context.Add(studentSubjects);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(SchoolReport));
-        //}
-
-        //[HttpPost]
-        //public async Task<ActionResult> AddStudentSubjects(int subjectId, string year, int term1Mark, int term2Mark, int term3Mark,int term4Mark, string comments)
-        //{
-        //    var userID = _userService.GetUserId();
-        //    year = DateTime.Now.Year.ToString();
-
-
-
-        //    StudentSubjects studentSubjects = new StudentSubjects()
-        //    {
-        //        Year = year,
-        //        FirstTermMark = term1Mark,
-        //        SecondTermMark = term2Mark,
-        //        ThirdTermMark = term3Mark,
-        //        Target = term4Mark,
-        //        SubjectId = subjectId,
-        //        Comments = comments,
-        //        UserId = userID,
-
-        //    };
-
-        //    studentSubjects.SubjectId = subjectId;
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(studentSubjects);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(SchoolReport));
-        //    }
-        //    return RedirectToAction(nameof(SchoolReport));
-        //}
 
         [HttpGet]
         public IActionResult UpdateProfileDetails(bool IsSuccess = false)
@@ -288,11 +243,11 @@ namespace LPX2YCDProject2020.Controllers
                 var result = await _accountRepository.PasswordSignInAsync(signIn);
                 if (result.Succeeded)
                 {
-                    if (!string.IsNullOrEmpty(returnUrl))
-                    {
-                        return LocalRedirect(returnUrl); 
-                    }
-                    return RedirectToAction("Index", "Home");
+                    //if (!string.IsNullOrEmpty(returnUrl))
+                    //{
+                    //    return LocalRedirect(returnUrl);
+                    //}
+                    return RedirectToAction("ViewProfile", "Account");
                 }
                 if (result.IsNotAllowed)
                     ModelState.AddModelError("", "Please verify your accout before attempting to login");
@@ -310,6 +265,12 @@ namespace LPX2YCDProject2020.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
         {
             if(ModelState.IsValid)
@@ -325,7 +286,7 @@ namespace LPX2YCDProject2020.Controllers
                 foreach (var error in result.Errors)
                     ModelState.AddModelError("", error.Description);
             }
-            return RedirectToAction("Index", "Home");
+            return View(model);
         }
 
         [HttpGet("confirm-email")]
@@ -391,13 +352,14 @@ namespace LPX2YCDProject2020.Controllers
             return View(model);
         }
 
+
         [AllowAnonymous, HttpGet("reset-password")]
         public IActionResult ResetPassword(string uid, string token)
         {
             ResetPasswordModel resetPasswordModel = new ResetPasswordModel
             {
                 Token = token,
-                UserId = uid
+                UserId = uid,
             };
             return View(resetPasswordModel);
         }
@@ -407,14 +369,15 @@ namespace LPX2YCDProject2020.Controllers
         {
             if (ModelState.IsValid)
             {
-                model.Token.Replace(' ', '+');
+                model.Token = model.Token.Replace(' ', '+');
                 var result =  await _accountRepository.ResetPasswordAsync(model);
 
                 if(result.Succeeded)
                 {
                     ModelState.Clear();
+                    ViewBag.Successful = "Password updated successfully";
                     model.IsSucess = true;
-                    return View(model);
+                    return RedirectToAction("Login");
                 }
 
                 foreach (var error in result.Errors)
@@ -442,17 +405,6 @@ namespace LPX2YCDProject2020.Controllers
             return Json(new SelectList(code, "SuburbId", "PostalCode"));
         }
 
-        public JsonResult CheckIfIdExixts(string ID)
-        {
-
-            var results = _context.StudentProfiles.FirstOrDefaultAsync(p => p.IDNumber == ID);
-
-            if (results != null)
-                return Json("Not allowed");
-            else
-                return Json("verified.");
-        }
-
         public JsonResult GetSubjectDetails()
         {
             //var userId = _userService.GetUserId();
@@ -478,6 +430,21 @@ namespace LPX2YCDProject2020.Controllers
             
             //This is where I left OFF
             return Json(results);
+        }
+
+        public  IActionResult deleteEnrolment(int id)
+        {
+            StudentSubjects c = _context.StudentSubjects.Where(c => c.Id == id).FirstOrDefault<StudentSubjects>();
+            _context.StudentSubjects.Remove(c);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(SchoolReport));
+        }
+
+        public IActionResult Find(int id)
+        {
+            var enrolment = _context.StudentSubjects.Find(id);
+            return new JsonResult(enrolment);
         }
     }
 }

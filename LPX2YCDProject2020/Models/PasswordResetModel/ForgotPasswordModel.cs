@@ -8,7 +8,7 @@ namespace LPX2YCDProject2020.Models.PasswordResetModel
 {
     public class ForgotPasswordModel
     {
-        [Required, Display(Name = "Registered email address")]
+        [Required(ErrorMessage ="Email address required"),EmailAddress ,Display(Name = "Registered email address")]
         public string Email { get; set; }
 
         public bool EmailSent { get; set; }

@@ -1,17 +1,14 @@
-﻿@model LPX2YCDProject2020.Models.Account.SignInModel
-
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>
-        Login
-    </title>
+    <title>@ViewBag.Title</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="~/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/bootstrap/dist/js/bootstrap.min.js"></script>
+
+
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/jquery-validate/jquery.validate.js"></script>
@@ -19,6 +16,7 @@
         <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
         <link href="~/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/private.css" rel="stylesheet" />
     </environment>
     <environment exclude="Development">
         <script src="~/lib/jquery/jquery.min.js"></script>
@@ -32,72 +30,48 @@
               asp-fallback-test-value="absolute" />
         <link href="~/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     </environment>
+
 </head>
 <body>
 
-    <div class="container justify-content-center align-middle">
+    <partial name="_header" />
+    <div class="vertical-nav bg-white justify-content-center">
+        <partial name="_SidePanel" />
+    </div>
 
-
-        <div class="row">
-            <div class="col-md-5 offset-4" style="border:1px solid blue;">
-
-                <h4>Log in</h4>
-                <hr />
-
-                <form method="post">
-
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                    <div class="form-group">
-                        <label asp-for="Email" class="control-label"></label>
-                        <input asp-for="Email" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Password" class="control-label"></label>
-                        <input asp-for="Password" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="rememberMe" /> @Html.DisplayNameFor(model => model.rememberMe)
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Login" class="btn btn-primary" />
-                    </div>
-                </form>
-
-                <p> Click <a asp-action="ForgotPassword" asp-controller="Account">Forgot password?</a></p>
-                <p> Click <a asp-action="SignUp" asp-controller="Account">here</a> to signup</p>
-            </div>
-        </div>
+    @*<button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4">
+            <i class=" fa fa-bars mr-2"></i>
+            <small class=" text-uppercase font-weight-bold">Toggle</small>
+        </button>*@
+    <div class="page-content p-5" id="content">
+        <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4">
+            <i class=" fa fa-bars mr-2"></i>
+            <small class=" text-uppercase font-weight-bold">Toggle</small>
+        </button>
+        @RenderBody()
 
     </div>
 
+    @*<main role="main">
 
 
+        </main>*@
 
+    <partial name="_footer" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <environment include="Development">
-        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
         <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
-
     </environment>
     <environment exclude="Development">
-
-        <script src="~/lib/jquery/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
         <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
     </environment>
-
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-            if (ViewBag.Successful != null) {
-            alert("Your password has been sucessfully reset.");
-            }
-        });
-    </script>
+    @RenderSection("scripts", required: false);
 </body>
-</html>
+</html> 

@@ -14,11 +14,11 @@ namespace LPX2YCDProject2020.Models.PasswordResetModel
         [Required]
         public string Token { get; set; }
 
-        [Required, DataType(DataType.Password), Display(Name = "New password")]
+        [Required(ErrorMessage = "Enter a new password"), DataType(DataType.Password), Display(Name = "New password")]
         public string NewPassword { get; set; }
 
-        [Required, DataType(DataType.Password), Display(Name = "Confirm new password")]
-        [Compare("New password")]
+        [Required(ErrorMessage = "Passwords do not match"), DataType(DataType.Password), Display(Name = "Confirm new password")]
+        [Compare("NewPassword")]
         public string ConfirmNewPassword { get; set; }
 
         public bool IsSucess { get; set; }

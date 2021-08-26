@@ -42,6 +42,21 @@ namespace LPX2YCDProject2020.Controllers
             
         }
 
+        [HttpGet]
+        public IActionResult Gallery()
+        {
+
+            return View(_context.Cities.ToList());
+        }
+
+        [HttpPost]
+
+
+
+
+
+
+
         //Get Method for contact us form
         public IActionResult ContactUs() => View(_homeRepository.GetSystemDetailsAsync());
 
@@ -54,6 +69,7 @@ namespace LPX2YCDProject2020.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(model);
+         
                 var result = await _context.SaveChangesAsync();
                 ViewBag.EnquirySent = "Thank you. We will be in touch soon.";
 

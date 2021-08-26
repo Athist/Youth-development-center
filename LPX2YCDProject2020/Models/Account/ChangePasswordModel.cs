@@ -8,10 +8,10 @@ namespace LPX2YCDProject2020.Models.Account
 {
     public class ChangePasswordModel
     {
-        [Required, DataType(DataType.Password), Display(Name = "Current password")]
+        [Required(ErrorMessage = "Current password required"), DataType(DataType.Password), Display(Name = "Current password")]
         public string CurrentPassword { get; set; }
 
-        [Required, DataType(DataType.Password), Display(Name = "New password")]
+        [Required(ErrorMessage = "Enter new password"), DataType(DataType.Password), Display(Name = "New password")]
         public string NewPassword { get; set; }
 
         [Required, DataType(DataType.Password), Display(Name = "Confirm password")]
