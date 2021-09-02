@@ -67,6 +67,7 @@ namespace LPX2YCDProject2020.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewProfile()
         {
+            try { 
             var userId = _userService.GetUserId();
 
             var ViewModel = new StudentProfileViewModel(); 
@@ -85,6 +86,11 @@ namespace LPX2YCDProject2020.Controllers
 
             ViewBag.SubjectList = new SelectList(_addressRepository.GetSubjectListAsync(), "Id", "SubjectName");
             return View(ViewModel);
+                    }
+            catch(Exception c)
+            {
+                return RedirectToAction("ErrorPage", "Account", new { message = c }) ;
+            }
         }
 
         public async Task<IActionResult> SchoolReport(string Id)
@@ -407,16 +413,7 @@ namespace LPX2YCDProject2020.Controllers
 
         public JsonResult GetSubjectDetails()
         {
-            //var userId = _userService.GetUserId();
-            //var result = _context.StudentSubjects.Where(p => p.UserId == userId);
-             
-            //var newData = _context.StudentSubjects.Include(m => m.)
-            //var learner = _context.StudentProfiles.
-
-            //int[] ids = null ;
-            //int i = 0;
-            //List<SubjectDetails> studentSubjects = new List<SubjectDetails>();
-
+          
             //This is where we left off.
             var UserId = _userService.GetUserId();
 

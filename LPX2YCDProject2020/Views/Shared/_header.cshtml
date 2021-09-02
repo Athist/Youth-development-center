@@ -1,4 +1,6 @@
-﻿@using Microsoft.Extensions.Configuration
+﻿@*@model LPX2YCDProject2020.Models.HomeModels.CenterDetails*@
+
+@using Microsoft.Extensions.Configuration
 @inject IConfiguration _config
 
 <header>
@@ -6,8 +8,8 @@
         <div class="container-fluid">
            
             <a class="navbar-brand" href="#">
-                <img src="" width="50" height="50" asp-append-version="true" />
-                @_config["AppName"]
+                <img src="@*@Model?.ImageUrl*@" alt="Profile photo" class="image" height="100" width="100" />
+                @*@Model?.BusinessName*@ COH
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">

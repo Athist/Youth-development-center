@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Update profile";
     Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
-    //Layout = "~/Views/Shared/_GeneralLayout.cshtml";
 }
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
 @model StudentProfileViewModel
@@ -68,7 +67,9 @@
                             <div>
                                 @foreach (var r in Model?.LearnerProfiles)
                                 {
-
+                                    <div class="cont-left text-center mr-3">
+                                        <span class="fa fa-globe"></span>
+                                    </div>
                                     @Html.DisplayFor(item => r.AddressLine1)
                                     <br />
 
@@ -89,6 +90,8 @@
 
                                     @Html.DisplayFor(item => r.suburb.City.Province.Country)
                                     <hr />
+
+                                    
                                 }
                             </div>
 
@@ -108,19 +111,20 @@
                             {
 
                                 <div class=" form-group">
-                                    <label asp-for="@v.NameOfSchool " class="control-label"></label>
-                                    &nbsp;
-                                    <h3>
+                                    <p>
+                                        <label asp-for="@v.NameOfSchool " class="control-label"></label>
+                                        &nbsp;
+
                                         @Html.DisplayFor(i => v.NameOfSchool)
-                                    </h3>
+                                    </p>
+                                   
                                 </div>
                                 <div class="form-group">
-                                    <h3>
+                                    <p>
                                         <label asp-for="@v.Grade" class="control-label"></label>
-                                    </h3>
-
-                                    &nbsp;
-                                    @Html.DisplayFor(i => v.Grade)
+                                        &nbsp;
+                                        @Html.DisplayFor(i => v.Grade)
+                                    </p>
                                 </div>
                             }
 

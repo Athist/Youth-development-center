@@ -1,14 +1,15 @@
-﻿@{ Layout = "_GeneralLayout";}
+﻿@model LPX2YCDProject2020.Models.HomeModels.CenterDetails
 @{
+    Layout = "_GeneralLayout";
     ViewData["Title"] = "Home";
 }
 
 <section class="jumbotron text-center">
     <div class="container">
-        <h1>Youth development center</h1>
+        <h1>@Model.BusinessName</h1>
         <p class="lead text-muted">
             Some more content will go here
-        </p> 
+        </p>
     </div>
 </section>
 
@@ -115,4 +116,3 @@
     </div>
 </div>
 
- 

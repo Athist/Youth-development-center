@@ -1,0 +1,79 @@
+﻿@model LPX2YCDProject2020.Models.Appointments.UserAppointments
+
+@{
+    ViewData["Title"] = "UpdateAppointment";
+    Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
+}
+
+<div class="container">
+    <h4 class="text-decoration-underline">Update appointment</h4>
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="UpdateAppointment" method="post" data-ajax-failure="failed" data-ajax-complete="myComplete" data-ajax="true">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <input asp-for="assignedEmployee" hidden class="form-control" />
+                <input asp-for="userId" hidden class="form-control" />
+
+                <div class="form-group">
+                    <label asp-for="Time" class="control-label"></label>
+                    <input asp-for="Time" class="form-control" />
+                    <span asp-validation-for="Time" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Date" class="control-label"></label>
+                    <input asp-for="Date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label"></label>
+                    <input asp-for="Status" disabled class="form-control" />
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AppointmentTypeId" class="control-label"></label>
+                    <select asp-for="AppointmentTypeId" class="form-control" asp-items="ViewBag.AppointmentTypeId"></select>
+                    <span asp-validation-for="AppointmentTypeId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Message" class="control-label"></label>
+                    <textarea asp-for="Message" class="form-control" />
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Saved" /> @Html.DisplayNameFor(model => model.Saved)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CenterNotes" class="control-label"></label>
+                    <textarea asp-for="CenterNotes" disabled class="form-control" />
+                    <span asp-validation-for="CenterNotes" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Update" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="ViewAppointments" class="btn btn-secondary">Back to List</a> &nbsp;
+        <a asp-action="DeleteAppointment" asp-route-Id="@Model.Id" class="btn btn-danger">Delete appointment</a>
+    </div>
+
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+    function myComplete() {
+        alert("Appointment successfully updated");
+    }
+
+    function failed() {
+        alert("We could not process your appointment request at the moment");
+    }
+    </script>
+}

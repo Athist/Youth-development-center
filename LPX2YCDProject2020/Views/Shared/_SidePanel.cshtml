@@ -1,5 +1,60 @@
 ﻿
-    <div class="vertical-nav bg-white " id="sidebar">
+<div id="sidebar">
+    <div class="toggle-btn" onclick="toggleSidebar(this)">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <div class="list">
+        Dashboard
+        <div class="item">
+            <a asp-controller="Account" asp-action="ViewProfile" class=" nav-link text-dark bg-light">
+                <i class=" fa fa-th-large mr-3 text-primary fa-fw"></i>
+                Home
+            </a>
+        </div>
+        <div class="item">
+            <a asp-controller="Account" asp-action="UpdateProfileDetails" class="nav-link text-dark">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                Update profile
+            </a>
+        </div>
+        <div class="item">
+            <a asp-controller="Account" asp-action="ChangePassword" class="nav-link text-dark">
+                <i class="fa fa-lock" aria-hidden="true"></i>
+                Change password
+            </a>
+        </div>
+        <div class="item">
+            <a asp-controller="Account" asp-action="SchoolReport" class="nav-link text-dark">
+                <i class="fa fa-file-text" aria-hidden="true"></i>
+                Academic results
+            </a>
+        </div>
+        <div class="item">
+            <a asp-controller="Appointment" asp-action="MyAppointments" class="nav-link text-dark">
+                <i class="fa fa-tasks" aria-hidden="true"></i>
+                Appointments
+            </a>
+        </div>
+    </div>
+</div>
+
+
+    <script type="text/javascript">
+        function toggleSidebar(ref) {
+            document.getElementById("sidebar").classList.toggle('active');
+        }
+    </script>
+
+
+
+
+
+
+
+
+@*<div class="vertical-nav bg-white " id="sidebar">
         <p class=" text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
         <ul class=" nav flex-column bg-white mb-0">
             <li class="nav-item">
@@ -40,4 +95,4 @@
                 </a>
             </li>
         </ul>
-    </div>
+    </div>*@

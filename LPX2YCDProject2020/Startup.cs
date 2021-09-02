@@ -36,7 +36,7 @@ namespace LPX2YCDProject2020
 
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
-            services.AddScoped<IHomeRepository, HomeRepository>();
+  
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

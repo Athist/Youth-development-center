@@ -267,84 +267,61 @@ namespace LPX2YCDProject2020.Migrations
                     b.ToTable("Suburbs");
                 });
 
-            modelBuilder.Entity("LPX2YCDProject2020.Models.ContactUs.ContactUsModel", b =>
+            modelBuilder.Entity("LPX2YCDProject2020.Models.Appointments.AppointmentType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AddressLine1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddressLine2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BusinessName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ContactUsFormModelId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PatronType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProvinceName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SuburbId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SuburbName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SystemDetailsModelId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactUsFormModelId");
+                    b.ToTable("AppointmentType");
+                });
 
-                    b.HasIndex("SuburbId");
+            modelBuilder.Entity("LPX2YCDProject2020.Models.Appointments.UserAppointments", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.HasIndex("SystemDetailsModelId");
+                    b.Property<int>("AppointmentTypeId")
+                        .HasColumnType("int");
 
-                    b.ToTable("ContactUs");
+                    b.Property<string>("CenterNotes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Saved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("assignedEmployee")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("userId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentTypeId");
+
+                    b.ToTable("Appointment");
                 });
 
             modelBuilder.Entity("LPX2YCDProject2020.Models.ContactUsFormModel", b =>
@@ -375,7 +352,51 @@ namespace LPX2YCDProject2020.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactUsFormModel");
+                    b.ToTable("Enquiries");
+                });
+
+            modelBuilder.Entity("LPX2YCDProject2020.Models.HomeModels.CenterDetails", b =>
+                {
+                    b.Property<int>("CenterId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AddressLine1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AddressLine2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BusinessName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Saved")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SuburbId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CenterId");
+
+                    b.HasIndex("SuburbId");
+
+                    b.ToTable("CenterDetails");
                 });
 
             modelBuilder.Entity("LPX2YCDProject2020.Models.SignUpModel", b =>
@@ -411,44 +432,6 @@ namespace LPX2YCDProject2020.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Signup");
-                });
-
-            modelBuilder.Entity("LPX2YCDProject2020.Models.SystemDetailsModel", b =>
-                {
-                    b.Property<int>("SystemDetailsModelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AddressLine1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddressLine2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BusinessName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SuburbId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SystemDetailsModelId");
-
-                    b.HasIndex("SuburbId");
-
-                    b.ToTable("SystemDetails");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -634,28 +617,18 @@ namespace LPX2YCDProject2020.Migrations
                     b.Navigation("City");
                 });
 
-            modelBuilder.Entity("LPX2YCDProject2020.Models.ContactUs.ContactUsModel", b =>
+            modelBuilder.Entity("LPX2YCDProject2020.Models.Appointments.UserAppointments", b =>
                 {
-                    b.HasOne("LPX2YCDProject2020.Models.ContactUsFormModel", "ContactUsFormModel")
-                        .WithMany()
-                        .HasForeignKey("ContactUsFormModelId");
+                    b.HasOne("LPX2YCDProject2020.Models.Appointments.AppointmentType", "appointmentTypes")
+                        .WithMany("appointments")
+                        .HasForeignKey("AppointmentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("LPX2YCDProject2020.Models.AddressModels.Suburb", "Suburb")
-                        .WithMany()
-                        .HasForeignKey("SuburbId");
-
-                    b.HasOne("LPX2YCDProject2020.Models.SystemDetailsModel", "SystemDetailsModel")
-                        .WithMany()
-                        .HasForeignKey("SystemDetailsModelId");
-
-                    b.Navigation("ContactUsFormModel");
-
-                    b.Navigation("Suburb");
-
-                    b.Navigation("SystemDetailsModel");
+                    b.Navigation("appointmentTypes");
                 });
 
-            modelBuilder.Entity("LPX2YCDProject2020.Models.SystemDetailsModel", b =>
+            modelBuilder.Entity("LPX2YCDProject2020.Models.HomeModels.CenterDetails", b =>
                 {
                     b.HasOne("LPX2YCDProject2020.Models.AddressModels.Suburb", "Suburb")
                         .WithMany()
@@ -735,6 +708,11 @@ namespace LPX2YCDProject2020.Migrations
             modelBuilder.Entity("LPX2YCDProject2020.Models.AddressModels.Province", b =>
                 {
                     b.Navigation("City");
+                });
+
+            modelBuilder.Entity("LPX2YCDProject2020.Models.Appointments.AppointmentType", b =>
+                {
+                    b.Navigation("appointments");
                 });
 #pragma warning restore 612, 618
         }

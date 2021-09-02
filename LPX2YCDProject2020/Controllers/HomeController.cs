@@ -20,20 +20,24 @@ namespace LPX2YCDProject2020.Controllers
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly IAddressRepository _addressRepository;
-        private readonly IHomeRepository _homeRepository;
 
-        public HomeController(ApplicationDbContext context, IHomeRepository homeRepository, IUserService userService, IEmailService emailService, IAddressRepository addressRepository)
+        public HomeController(ApplicationDbContext context, IUserService userService, IEmailService emailService, IAddressRepository addressRepository)
         {
             _userService = userService;
             _emailService = emailService;
             _addressRepository = addressRepository;
             _context = context;
-            _homeRepository = homeRepository;
         }
 
-        public  IActionResult Index() => View();
+        public IActionResult Home() => View();
 
-        public IActionResult _EnquiryForm() => View();
+        public  IActionResult Index()
+        {
+            var results = _context.CenterDetails.FirstOrDefault();
+    
+            return View(results);
+        }
+
 
         public IActionResult AboutUs()
         {
@@ -48,34 +52,30 @@ namespace LPX2YCDProject2020.Controllers
 
             return View(_context.Cities.ToList());
         }
-
-        [HttpPost]
-
-
-
-
-
-
-
         //Get Method for contact us form
-        public IActionResult ContactUs() => View(_homeRepository.GetSystemDetailsAsync());
+        public async Task<IActionResult> ContactUs() 
+         {
+            ContactUsModel model = new ContactUsModel();
+            //string centerName; 
+            model.systemDetails = await _context.CenterDetails.Include(c => c.Suburb)
+                .ThenInclude(v => v.City)
+                .ThenInclude(z => z.Province)
+                .ToListAsync();
 
+            return View(model);
+        }
         //Post Method for contact us form
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ContactUs(ContactUsModel model)
+        public async Task<IActionResult> SendEnquiry(ContactUsModel model)
         {
-
             if (ModelState.IsValid)
             {
-                _context.Add(model);
-         
-                var result = await _context.SaveChangesAsync();
+                _context.Enquiries.Add(model.ContactUsFormModel);
+                await _context.SaveChangesAsync();
                 ViewBag.EnquirySent = "Thank you. We will be in touch soon.";
-
-                return RedirectToAction(nameof(ContactUs), model = _homeRepository.GetSystemDetailsAsync());
+                return RedirectToAction(nameof(ContactUs));
             }
-
             return View(model);
         }
 

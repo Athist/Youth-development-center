@@ -29,6 +29,10 @@
       "provider": "unpkg",
       "library": "bootstrap@5.0.2",
       "destination": "wwwroot/bootstrap/"
+    },
+    {
+      "library": "font-awesome@5.15.4",
+      "destination": "wwwroot/lib/font-awesome/"
     }
   ]
 }

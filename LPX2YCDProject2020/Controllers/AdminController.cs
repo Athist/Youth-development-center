@@ -1,9 +1,13 @@
 ﻿using LPX2YCDProject2020.Models;
 using LPX2YCDProject2020.Models.AddressModels;
+using LPX2YCDProject2020.Models.HomeModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,17 +16,22 @@ namespace LPX2YCDProject2020.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAddressRepository _addressRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment)
         {
+            _webHostEnvironment = webHostEnvironment;
+            _addressRepository = addressRepository;
             _context = context;
         }
 
+        public IActionResult ErrorPage(string message) => View(message);
 
         //<-----Start of Province action methods ------>
 
         public IActionResult ViewProvinces() => View(_context.Provinces.ToList());
-  
+
         [HttpGet]
         public IActionResult AddProvinces() => View();
 
@@ -30,25 +39,32 @@ namespace LPX2YCDProject2020.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProvinces(Province model)
         {
-            Province result = _context.Provinces.FirstOrDefault(a => a.ProvinceName == model.ProvinceName);
-
-            if (result != null)
+            try
             {
-                ModelState.AddModelError("", "Province already exists");
+                Province result = _context.Provinces.FirstOrDefault(a => a.ProvinceName == model.ProvinceName);
+
+                if (result != null)
+                {
+                    ModelState.AddModelError("", "Province already exists");
+                    return View(model);
+                }
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        model.Country = "South Africa";
+                        _context.Add(model);
+                        await _context.SaveChangesAsync();
+                        ModelState.Clear();
+                        return RedirectToAction(nameof(ViewProvinces));
+                    }
+                }
                 return View(model);
             }
-            else
+            catch(Exception c)
             {
-                if (ModelState.IsValid)
-                {
-                    model.Country = "South Africa";
-                    _context.Add(model);
-                    await _context.SaveChangesAsync();
-                    ModelState.Clear();
-                    return RedirectToAction(nameof(ViewProvinces));
-                }
+                return RedirectToAction(nameof(ErrorPage), new { message = c }) ;
             }
-            return View(model);
         }
 
         public async Task<IActionResult> EditProvince(int? provinceId)
@@ -72,7 +88,7 @@ namespace LPX2YCDProject2020.Controllers
         {
             if (ModelState.IsValid)
             {
-                var province = await _context.Provinces.SingleOrDefaultAsync(c=> c.ProvinceId == model.ProvinceId);
+                var province = await _context.Provinces.SingleOrDefaultAsync(c => c.ProvinceId == model.ProvinceId);
 
                 if (province == null)
                     return NotFound();
@@ -96,7 +112,7 @@ namespace LPX2YCDProject2020.Controllers
                 return NotFound();
             var province = await _context.Provinces.FirstOrDefaultAsync(i => i.ProvinceId == provinceId);
 
-             _context.Remove(province);
+            _context.Remove(province);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ViewProvinces));
         }
@@ -152,7 +168,7 @@ namespace LPX2YCDProject2020.Controllers
                     _context.Cities.Add(model.City);
                     await _context.SaveChangesAsync();
                     ModelState.Clear();
-                    return RedirectToAction(nameof(GetCitiesByProvince),new { provinceId = id });
+                    return RedirectToAction(nameof(GetCitiesByProvince), new { provinceId = id });
                 }
             }
             return View(model);
@@ -321,8 +337,95 @@ namespace LPX2YCDProject2020.Controllers
         //<-----About us page action methods------>
         public IActionResult AddAboutInfo()
         {
-            var details = _context.SystemDetails.ToList();
-            return View(details);
+            ViewBag.ProvinceList = new SelectList(_addressRepository.GetProvinceListAsync(), "ProvinceId", "ProvinceName");
+            var details = _context.CenterDetails.ToList();
+
+            CenterDetails model = new CenterDetails();
+            foreach (var a in details)
+            {
+                model.ProfilePhoto = a.ProfilePhoto;
+                model.ImageUrl = a.ImageUrl;
+                model.AddressLine1 = a.AddressLine1;
+                model.AddressLine2 = a.AddressLine2;
+                model.BusinessName = a.BusinessName;
+                model.CenterId = a.CenterId;
+                model.ContactNumber = a.ContactNumber;
+                model.EmailAddress = a.EmailAddress;
+                model.Saved = false;
+                model.SuburbId = a.SuburbId;
+                model.Url = a.Url;
+            }
+
+            return View(model);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateAboutInfo(CenterDetails model)
+        {
+            var results = _context.CenterDetails.FirstOrDefault();
+            if(results == null)
+            {
+                return RedirectToAction(nameof(ErrorPage));
+            }
+            else
+            {
+                if (model.ProfilePhoto != null)
+                {
+                    string folder = "Images/ProfilePhotos/";
+                    folder += Guid.NewGuid().ToString() + "_" + model.ProfilePhoto.FileName;
+                    model.ImageUrl = "/" + folder;
+                    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+
+                    await model.ProfilePhoto.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+                }
+
+                results.CenterId = model.CenterId;
+                results.ImageUrl = model.ImageUrl;
+                results.ProfilePhoto = model.ProfilePhoto;
+                results.AddressLine1 = model.AddressLine1;
+                results.AddressLine2 = model.AddressLine2;
+                results.EmailAddress = model.EmailAddress;
+                results.BusinessName = model.BusinessName;
+                results.ContactNumber = model.ContactNumber;
+                results.SuburbId = model.SuburbId;
+                results.Url = model.Url;
+
+                try
+                {
+                    _context.CenterDetails.Update(results);
+                    await _context.SaveChangesAsync();
+                }
+              catch(Exception e)
+                {
+                    return RedirectToAction(nameof(ErrorPage),new { message = e.Message });
+                }
+                model.Saved = true;
+                ViewBag.ProvinceList = new SelectList(_addressRepository.GetProvinceListAsync(), "ProvinceId", "ProvinceName");
+                return RedirectToAction(nameof(AddAboutInfo));
+                
+            }
+        }
+        //<-----End About us action methods------->
+
+        
+
+        public JsonResult GetCityList(int ProvinceId)
+        {
+            var cityList = _context.Cities.Where(p => p.provinceId == ProvinceId).ToList();
+            return Json(new SelectList(cityList, "CityId", "CityName"));
+        }
+        public JsonResult GetSuburbList(int CityId)
+        {
+            var suburbList = _context.Suburbs.Where(p => p.CityId == CityId).ToList();
+
+            return Json(new SelectList(suburbList, "SuburbId", "SuburbName"));
+        }
+
+        public JsonResult GetSuburbPCode(int SuburbId)
+        {
+            var code = _context.Suburbs.Where(p => p.SuburbId == SuburbId).ToList();
+            return Json(new SelectList(code, "SuburbId", "PostalCode"));
+        }
+
     }
 }
