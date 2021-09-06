@@ -3,6 +3,7 @@ using LPX2YCDProject2020.Models.Appointments;
 using LPX2YCDProject2020.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,11 +107,15 @@ namespace LPX2YCDProject2020.Controllers
             return RedirectToAction(nameof(ViewAppointments));
         }
 
-        public IActionResult ViewAppointments()
+        public async Task<IActionResult> ViewAppointments()
         {
             var userId = _userService.GetUserId();
-            var results = _context.Appointment.Where(a=>a.userId == userId).ToList();
-            return View(results);
+
+            var appts = await _context.Appointment.Include(c => c.appointmentTypes).
+                 Where(a => a.userId == userId)
+                 .ToListAsync();
+
+            return View(appts);
         }
 
 

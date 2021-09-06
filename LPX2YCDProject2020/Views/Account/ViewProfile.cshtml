@@ -10,9 +10,11 @@
 
 <div class="container">
 
-    <h2>My profile</h2>
+    <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
+        <h3 class="title-main">My <span>Profile</span></h3>
+    </div>
 
-    <div class="row">
+    @*<div class="row">*@
         <div class="col">
             <div class="accordion" id="accordionExample">
 
@@ -28,26 +30,26 @@
                             <h3>Primary details</h3>
                             @foreach (var photo in Model?.LearnerProfiles)
                             {
-                            
-                                    <div class="py-4 px-3 mb-4 bg-light">
-                                        <div class="media d-flex align-items-center ">
-                                            <img src="@photo.ImageUrl" alt="Profile photo" class="mr-5 rounded-circle img-thumbnail shadow-sm" height="200" width="200" />
-                                        </div>
-                                        <div class="media-body">
-                                            <h4 class="m-0">@User.FindFirst("UserFirstName").Value @User.FindFirst("UserLastName").Value</h4>
-                                            <p class=" font-weight-normal text-muted mb-0"> @User.FindFirst("EmailAddr").Value</p>
 
-                                            @foreach (var a in Model?.LearnerProfiles)
-                                            {
-                                                <p class=" font-weight-normal text-muted mb-0">Gender:.@a?.Gender </p>
-                                                <p class=" font-weight-normal text-muted mb-0">Identity number: @a.IDNumber</p>
-                                                <p class=" font-weight-normal text-muted mb-0">Date of birth: @a.DateOfBirth</p>
-                                                <p class=" font-weight-normal text-muted mb-0"> Cell number: @a.ContactNumber</p>
-                                                <hr />
-                                            }
-                                        </div>
+                                <div class="py-4 px-3 mb-4 bg-light">
+                                    <div class="media d-flex align-items-center ">
+                                        <img src="@photo.ImageUrl" alt="Profile photo" class="mr-5 rounded-circle img-thumbnail shadow-sm" height="200" width="200" />
                                     </div>
-                       
+                                    <div class="media-body">
+                                        <h4 class="m-0">@User.FindFirst("UserFirstName").Value @User.FindFirst("UserLastName").Value</h4>
+                                        <p class=" font-weight-normal text-muted mb-0"> @User.FindFirst("EmailAddr").Value</p>
+
+                                        @foreach (var a in Model?.LearnerProfiles)
+                                        {
+                                            <p class=" font-weight-normal text-muted mb-0">Gender:.@a?.Gender </p>
+                                            <p class=" font-weight-normal text-muted mb-0">Identity number: @a.IDNumber</p>
+                                            <p class=" font-weight-normal text-muted mb-0">Date of birth: @a.DateOfBirth</p>
+                                            <p class=" font-weight-normal text-muted mb-0"> Cell number: @a.ContactNumber</p>
+                                            <hr />
+                                        }
+                                    </div>
+                                </div>
+
                             }
 
 
@@ -91,7 +93,7 @@
                                     @Html.DisplayFor(item => r.suburb.City.Province.Country)
                                     <hr />
 
-                                    
+
                                 }
                             </div>
 
@@ -117,7 +119,7 @@
 
                                         @Html.DisplayFor(i => v.NameOfSchool)
                                     </p>
-                                   
+
                                 </div>
                                 <div class="form-group">
                                     <p>
@@ -179,7 +181,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    @*</div>*@
 </div>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

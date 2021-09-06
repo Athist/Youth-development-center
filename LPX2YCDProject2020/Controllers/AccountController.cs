@@ -189,6 +189,7 @@ namespace LPX2YCDProject2020.Controllers
             return RedirectToAction(nameof(SchoolReport));
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult UpdateProfileDetails(bool IsSuccess = false)
         {

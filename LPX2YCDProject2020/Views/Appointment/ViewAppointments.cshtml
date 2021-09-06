@@ -2,132 +2,94 @@
 
 @{
     ViewData["Title"] = "View Appointments";
-    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <h1 class="text-decoration-underline">My Appointments</h1>
-
-    <p>
-        <a asp-action="CreateNewAppointment">Create New</a>
-    </p>
-    @if (Model.Count == 0)
-    {
-        <div class="align-content-center">
-            <p class=" text-danger">You have no appointments </p>
-            <p>
-                <a asp-action="CreateNewAppointment">Create New</a>
-            </p>
+<div class="w3l-grids-block-5 w3l-grids-block-6 py-5">
+    <div class="container py-md-5 py-4">
+        <p>
+            <a asp-action="CreateNewAppointment">Create New</a>
+        </p>
+        <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
+            <h3 class="title-main">My <span>Appointments</span></h3>
         </div>
-    }
-    else
-    {
-        <h4 class="align-center">Upcoming appiontments</h4>
-        @foreach (var a in Model)
-        {
-            @if (@*a.Status == "Approved" &&*@ a.Date > DateTime.Now)
-            {
-                <div class="col-md-4">
-                    <div class="card border-success mb-3" style="max-width: 18rem;">
-                        <div class="card-header bg-transparent border-success">Date: @a.Date</div>
-                        <div class="card-body text-success">
-                            <h5 class="card-title">@a.AppointmentTypeId </h5>
-                            <p class="card-text">
-                                <h6>Details</h6>
-                                Time: @a.Time
-                                @a?.Message
-                                <br />
-                                <button class="btn btn-primary" asp-action="UpdateAppointment" asp-route-Id="@a.Id">Delete</button>
-                            </p>
-                        </div>
-                        <div class="card-footer bg-transparent border-success">
-                            @a.Status
-                            <button class="btn btn-danger" asp-action="DeleteAppointment" asp-route-Id="@a.Id">Delete</button>
-                        </div>
-                    </div>
-                </div>
-              }
-        }
-        <br />
-        <h4 class="align-center">Appointment history</h4>
-        @foreach (var a in Model)
-        {
-            @if (a.Date < DateTime.Now)
-            {
 
-                <div class="card border-danger mb-3" style="max-width: 18rem;">
-                    <div class="card-header">Date: @a.AppointmentTypeId</div>
-                    <div class="card-body text-danger">
-                        <h5 class="card-title">Danger card title</h5>
-                        <p class="card-text">
-                            <h6>Details</h6>
-                            Time: @a.Time
-                            @a?.Message
-                            Assisted by: @a?.assignedEmployee
-                        </p>
-                    </div>
-                    <div class="card-footer bg-transparent border-success">@a.Status</div>
+        <div class=" row">
+            @if (Model.Count == 0)
+            {
+                <div class="align-content-center">
+                    <p class=" text-danger">You have no appointments </p>
+                    <p>
+                        <a asp-action="CreateNewAppointment">Create New</a>
+                    </p>
                 </div>
             }
-        }
-    }
-</div>
-
-@*@if (Model.Saved == true)
-        {
-    <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
-        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill" /></svg>
-        <div>
-           Appointment created
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-        }*@
-
-
-@*<table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        <label class="control-label">Appointment type</label>
-                    </th>
-                    <th>
-                        <label class="control-label">Name</label>
-                    </th>
-                    <th>
-                        <label class="control-label">Time</label>
-                    </th>
-                    <th>
-                        <label class="control-label">Date</label>
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
+            else
+            {
+                @foreach (var a in Model)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AppointmentTypeId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.userId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Time)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Date)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        </td>
-                    </tr>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="blog-card-single">
+                            <div class="grids5-info position-relative">
+                                <img src="/Images/appointment-slots.jpg" alt="" class="img-fluid" />
+                            </div>
+                            <div class="content-main-top">
+                                <div class="content-top mb-4 mt-3">
+                                    <ul class="list-unstyled d-flex align-items-center justify-content-between">
+                                        <li> <i class="fa fa-signal" aria-hidden="true"></i> @a.Date.ToShortDateString()</li>
+                                        <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@a.Time.ToShortTimeString()</li>
+                                    </ul>
+                                </div>
+                                <h4><a href="courses.html">@a.appointmentTypes.Description</a></h4>
+                                <p>@a.Message</p>
+                                <br />
+                                @if (@a.Status == null)
+                                {
+                                    <p>Status: Pendng</p>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">@a.?Status</p>
+                                }
+
+                                <div class="top-content-border d-flex align-items-center justify-content-between mt-5 pt-4">
+                                    <ul class="rating-list">
+                                        <a class="btn btn-sm btn-primary" asp-action="UpdateAppointment" asp-route-Id="@a.Id">Update appointment</a>
+                                    </ul>
+                                    &nbsp;
+                                    <a class="btn btn-style btn-style-primary" asp-action="" asp-controller="Admin" asp-route-Id="@a.Id">
+                                        <a class="btn btn-sm btn-danger" asp-action="DeleteAppointment" asp-route-Id="@a.Id">Cancel appointment</a>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 }
-            </tbody>
-        </table>
-    }*@
-
-
+                <br />
+                <h4 class="align-center">Appointment history</h4>
+                @foreach (var a in Model)
+                {
+                    @if (a.Date < DateTime.Now)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card border-danger mb-3" style="max-width: 18rem;">
+                                <div class="card-header">Date: @a.AppointmentTypeId</div>
+                                <div class="card-body text-danger">
+                                    <h5 class="card-title">Danger card title</h5>
+                                    <p class="card-text">
+                                        <h6>Details</h6>
+                                        Time: @a.Time
+                                        @a?.Message
+                                        Assisted by: @a?.assignedEmployee
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-transparent border-success">@a.Status</div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+</div>

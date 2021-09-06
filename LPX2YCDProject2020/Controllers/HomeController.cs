@@ -29,7 +29,13 @@ namespace LPX2YCDProject2020.Controllers
             _context = context;
         }
 
-        public IActionResult Home() => View();
+        public IActionResult Home()
+        {
+            HomePageViewModel viewModel = new HomePageViewModel();
+            viewModel.learners = _context.StudentProfiles.ToList();
+            viewModel.programmes = _context.Programmes.ToList();
+            return View(viewModel); 
+        }
 
         public  IActionResult Index()
         {
@@ -41,17 +47,13 @@ namespace LPX2YCDProject2020.Controllers
 
         public IActionResult AboutUs()
         {
-           
-            return View();
-            
+            HomePageViewModel viewModel = new HomePageViewModel();
+            viewModel.learners = _context.StudentProfiles.ToList();
+            viewModel.programmes = _context.Programmes.ToList();
+            return View(viewModel);
         }
 
         [HttpGet]
-        public IActionResult Gallery()
-        {
-
-            return View(_context.Cities.ToList());
-        }
         //Get Method for contact us form
         public async Task<IActionResult> ContactUs() 
          {
@@ -83,7 +85,8 @@ namespace LPX2YCDProject2020.Controllers
 
         //public IActionResult MakeAppointment() => View();
 
-        public IActionResult Donate() => View();
+        public IActionResult Programmes() => 
+            View(_context.Programmes.ToList());
 
         public IActionResult EmailUs() =>   View();
 

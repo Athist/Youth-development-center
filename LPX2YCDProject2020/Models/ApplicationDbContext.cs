@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LPX2YCDProject2020.Models;
 using LPX2YCDProject2020.Models.Appointments;
+using LPX2YCDProject2020.Models.AdminModels;
 
 namespace LPX2YCDProject2020.Models
 {
@@ -31,6 +32,7 @@ namespace LPX2YCDProject2020.Models
         public DbSet<ContactUsFormModel> Enquiries { get; set; }
         public DbSet<UserAppointments> Appointment { get; set; }
         public DbSet<AppointmentType> AppointmentType{ get; set; }
+        public DbSet<Programme> Programmes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

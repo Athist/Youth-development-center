@@ -19,7 +19,9 @@
 <div class="container-fluid h-100">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h2>Update profile</h2>
+            <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
+                <h3 class="title-main">Update <span>Profile</span></h3>
+            </div>
 
 
             @if (ViewBag.IsSuccess == true)
@@ -27,15 +29,15 @@
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong>
                         Updated.
-                    </strong> 
+                    </strong>
                     Click here to view details
                     <button type="button" class="close" data-dismiss="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
             }
-             
-            <form asp-controller="Account" enctype="multipart/form-data" class="row g-3"  data-ajax-failure="failed" data-ajax-complete="myComplete" data-ajax="true">
+
+            <form asp-controller="Account" enctype="multipart/form-data" class="row g-3" data-ajax-failure="failed" data-ajax-complete="myComplete" data-ajax="true">
                 <div class="container">
                     <div class="row">
                         <div class="profile-header-container">
@@ -44,7 +46,7 @@
                                 <!-- badge -->
                                 <div class="custom-file">
                                     <span class="label label-default rank-label"> <input asp-for="@Model.ProfilePhoto" class="form-control-file"></span>
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -59,7 +61,7 @@
 
                 <div class="col-md-6">
                     <label class="form-label">Surname</label>
-                    <input disabled="disabled" class="form-control" value="@User.FindFirst("UserLastName").Value" >
+                    <input disabled="disabled" class="form-control" value="@User.FindFirst("UserLastName").Value">
                 </div>
 
                 <div class="col-md-8">

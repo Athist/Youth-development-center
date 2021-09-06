@@ -1,33 +1,5 @@
 ﻿@model IEnumerable<LPX2YCDProject2020.Models.HomeModels.CenterDetails>
 
-@*@foreach (var a in Model)
-{
-
-    <p>Or Call us on: @a.ContactNumber</p>
-    <p class="text text-lg text-body">
-        <span>
-            <i class="fa fa-envelope-o" aria-hidden="true"></i>
-        </span>
-        Email: @a.EmailAddress
-    </p>
-    <br />
-    <h3>You can alternatively drop us an note here: </h3>
-    <p class="text text-lg text-info">
-
-        @a.BusinessName
-    </p>
-    <p class="text text-lg text-info">
-        <span><i class="fa fa-street-view" aria-hidden="true"></i></span>@a.AddressLine1 <br />
-        @a.AddressLine2
-    </p>
-    <p class="text text-lg text-info"> @a.Suburb.SuburbName</p>
-    <p class="text text-lg text-info">  @a.Suburb.City.CityName</p>
-    <p class="text text-lg text-info"> @a.Suburb.City.Province.ProvinceName</p>
-    <p class="text text-lg text-info"> @a.Suburb.PostalCode</p>
-    <p class="text text-lg text-info"> @a.Suburb.City.Province.Country</p>
-}*@
-
-
 @foreach (var a in Model)
 {
     <div class="col-md-5 contact-left">
@@ -80,5 +52,4 @@
              width="100%" height="400" frameborder="0" allowfullscreen=""></iframe>
         </div>
     </div>
-
 }
