@@ -33,6 +33,7 @@ namespace LPX2YCDProject2020.Models
         public DbSet<UserAppointments> Appointment { get; set; }
         public DbSet<AppointmentType> AppointmentType{ get; set; }
         public DbSet<Programme> Programmes { get; set; }
+        public DbSet<EventReservations> EventReservations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -48,6 +49,9 @@ namespace LPX2YCDProject2020.Models
                 .HasOne<StudentProfileModel>(sc => sc.Student)
                 .WithMany(s => s.Enrolments)
                 .HasForeignKey(sc => sc.UserId);
+
+            //builder.Entity<EventReservations>()
+            //     .HasKey(c => new { c.ProgramId, c.UserId });
 
             //builder.Entity<StudentSubjects>()
             //     .HasKey(c => new { c.UserId, c.SubjectId });

@@ -1,14 +1,14 @@
 ﻿@model List<LPX2YCDProject2020.Models.Appointments.UserAppointments>
 
 @{
-    ViewData["Title"] = "View Appointments";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "My appointments";
+    Layout = "~/Views/Shared/_userDashboard.cshtml";
 }
 
 <div class="w3l-grids-block-5 w3l-grids-block-6 py-5">
     <div class="container py-md-5 py-4">
         <p>
-            <a asp-action="CreateNewAppointment">Create New</a>
+            <a asp-action="CreateAppointment">Create New</a>
         </p>
         <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
             <h3 class="title-main">My <span>Appointments</span></h3>
@@ -20,7 +20,7 @@
                 <div class="align-content-center">
                     <p class=" text-danger">You have no appointments </p>
                     <p>
-                        <a asp-action="CreateNewAppointment">Create New</a>
+                        <a asp-action="CreateAppointment">Create New</a>
                     </p>
                 </div>
             }
@@ -41,7 +41,7 @@
                                         <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@a.Time.ToShortTimeString()</li>
                                     </ul>
                                 </div>
-                                <h4><a href="courses.html">@a.appointmentTypes.Description</a></h4>
+                                <h4><a>@a.appointmentTypes.Description</a></h4>
                                 <p>@a.Message</p>
                                 <br />
                                 @if (@a.Status == null)
@@ -58,32 +58,46 @@
                                         <a class="btn btn-sm btn-primary" asp-action="UpdateAppointment" asp-route-Id="@a.Id">Update appointment</a>
                                     </ul>
                                     &nbsp;
-                                    <a class="btn btn-style btn-style-primary" asp-action="" asp-controller="Admin" asp-route-Id="@a.Id">
-                                        <a class="btn btn-sm btn-danger" asp-action="DeleteAppointment" asp-route-Id="@a.Id">Cancel appointment</a>
-                                    </a>
+                                    @*<a class="btn btn-sm btn-style btn-style-primary" asp-action="CancellAppointments" asp-controller="Appointment" asp-route-Id="@a.Id">
+                                            Cancel appointment
+                                        </a>*@
+
+                                    <form asp-controller="Appointment" asp-action="CancellAppointments" asp-route-Id="@a.Id">
+                                        <input value="@a.Id" asp-route-id="@a.Id" id="Id" hidden />
+                                        <input type="submit" value=" Cancel appointment" class="btn btn-sm btn-style btn-style-primary" />
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 }
                 <br />
+                <br />
+                <hr />
+                <br />
+                <div class="clearfix"> </div>
+                <br />
+                <br />
                 <h4 class="align-center">Appointment history</h4>
+                <br />
+                <br />
                 @foreach (var a in Model)
                 {
                     @if (a.Date < DateTime.Now)
                     {
                         <div class="col-lg-4 col-md-6">
                             <div class="card border-danger mb-3" style="max-width: 18rem;">
-                                <div class="card-header">Date: @a.AppointmentTypeId</div>
+                                <div class="card-header"><i class="fa fa-calendar"></i> @a.Date.ToShortDateString() &nbsp; <span><i class="fa fa-clock"></i></span>@a.Time.ToShortTimeString()</div>
                                 <div class="card-body text-danger">
-                                    <h5 class="card-title">Danger card title</h5>
-                                    <p class="card-text">
-                                        <h6>Details</h6>
-                                        Time: @a.Time
-                                        @a?.Message
-                                        Assisted by: @a?.assignedEmployee
-                                    </p>
+                                    <h5 class="card-title">@a.appointmentTypes.Description</h5>
+                                    <span><i class="fa fa-info"></i></span>
+                                
+                                    <p>@a?.Message</p>
+                                    <p>Assisted by: @a?.assignedEmployee</p>
+
                                 </div>
+                             
                                 <div class="card-footer bg-transparent border-success">@a.Status</div>
                             </div>
                         </div>
@@ -91,5 +105,15 @@
                 }
             }
         </div>
+        </div>
     </div>
-</div>
+        @section scripts{
+            <script type="text/javascript">
+                function Deleted() {
+                    alert("Appointment successfully deleted");
+                };
+
+
+            </script>
+
+        }

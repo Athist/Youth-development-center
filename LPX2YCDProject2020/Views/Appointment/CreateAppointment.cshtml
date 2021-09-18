@@ -2,18 +2,18 @@
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
 
 @{
-    ViewData["Title"] = "CreateAppointment";
-    Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
+    ViewData["Title"] = "Create Appointment";
+    Layout = "~/Views/Shared/_userDashboard.cshtml";
 }
 
-<div class="w3l-grids-block-5 w3l-grids-block-6 py-5">
+<div class="container-fluid h-100">
     <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
         <h3 class="title-main">Create <span>Appointment</span></h3>
     </div>
 
-    <div class="row offset-5">
+    <div class="row h-100 justify-content-center align-items-center">
         <div class="col-md-4">
-            <form asp-action="SaveAppointment" data-ajax-failure="failed" data-ajax-complete="myComplete" data-ajax="true">
+            <form asp-action="SaveAppointment">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input hidden asp-for="userId" value="@User.FindFirst("studGroup").Value" />
 
@@ -47,7 +47,7 @@
     </div>
 
     <div>
-        <a asp-action="Index" class="btn btn-secondary">View all appointmets</a>
+        <a asp-action="ViewAppointments" class="btn btn-secondary">View all appointmets</a>
     </div>
 </div>
 
@@ -72,12 +72,24 @@
             }
         }
 
-        function myComplete() {
-            alert("Appointment successfully updated");
-        }
 
-        function failed() {
-            alert("We could not process your appointment request at the moment");
-        }
+
+
+  $(document).ready(function() {
+      $("#EnterDate").datepicker({
+          dateFormat:"dd-mm-yy",
+          minDate: -0,
+          maxDate: "+0M +0D"
+
+      });
+  });
+
+    //function myComplete() {
+    //    alert("Appointment successfully updated");
+    //}
+
+    //function failed() {
+    //    alert("We could not process your appointment request at the moment");
+    //}
     </script>
 }

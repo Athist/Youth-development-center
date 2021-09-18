@@ -1,20 +1,10 @@
 ﻿@model StudentProfileModel
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
 
-
 @{
     ViewData["Title"] = "Update profile";
-    Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
-
-    //Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    Layout = "~/Views/Shared/_userDashboard.cshtml";
 }
-@*<style>
-    body, html {
-        height: auto;
-        background-repeat: no-repeat;
-        background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
-    }
-</style>*@
 
 <div class="container-fluid h-100">
     <div class="row h-100 justify-content-center align-items-center">
@@ -30,14 +20,17 @@
                     <strong>
                         Updated.
                     </strong>
-                    Click here to view details
+                    
                     <button type="button" class="close" data-dismiss="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
             }
 
-            <form asp-controller="Account" enctype="multipart/form-data" class="row g-3" data-ajax-failure="failed" data-ajax-complete="myComplete" data-ajax="true">
+            <form asp-controller="Account" enctype="multipart/form-data" class="row g-3">
+                <input asp-for="ImageUrl" hidden />
+                @*<input asp-for="CityId" hidden />
+                <input asp-for="ProvinceId" hidden />*@
                 <div class="container">
                     <div class="row">
                         <div class="profile-header-container">
@@ -154,22 +147,15 @@
     </div>
 </div>
 
-<script src="~/lib/jquery/jquery.min.js"></script>
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 @section scripts{
 
     <script type="text/javascript">
-
-        function myComplete() {
-            alert("Profile successfully updated");
-        }
-
-        function failed() {
-            alert("We could not process your request at this moment");
-        }
-
-        $(document).ready(function ()
-        {
+        $.noConflict();
+        $(document).ready(function () {
 
             $("#ProvinceId").change(function () {
                 $("#SuburbId").empty();
@@ -230,72 +216,72 @@
                 return false;
             });
 
-            $('#IDNumber').mouseleave(function () {
+            //$('#IDNumber').mouseleave(function () {
 
-                var idNumber = $('#IDNumber').val();
+            //    var idNumber = $('#IDNumber').val();
 
-                // assume everything is correct and if it later turns out not to be, just set this to false
-                var correct = true;
+            //    // assume everything is correct and if it later turns out not to be, just set this to false
+            //    var correct = true;
 
-                //Ref: http://www.sadev.co.za/content/what-south-african-id-number-made
-                // SA ID Number have to be 13 digits, so check the length
-                if (idNumber.length != 13 || !isNumber(idNumber)) {
-                    alert('Id number must be 13 digits longs');
-                    $('#IDNumber').empty();
-                    correct = false;
-                }
+            //    //Ref: http://www.sadev.co.za/content/what-south-african-id-number-made
+            //    // SA ID Number have to be 13 digits, so check the length
+            //    if (idNumber.length != 13 || !isNumber(idNumber)) {
+            //        alert('Id number must be 13 digits longs');
+            //        $('#IDNumber').empty();
+            //        correct = false;
+            //    }
 
-                // get first 6 digits as a valid date
-                var tempDate = new Date(idNumber.substring(0, 2), idNumber.substring(2, 4) - 1, idNumber.substring(4, 6));
+            //    // get first 6 digits as a valid date
+            //    var tempDate = new Date(idNumber.substring(0, 2), idNumber.substring(2, 4) - 1, idNumber.substring(4, 6));
 
-                var id_date = tempDate.getDate();
-                var id_month = tempDate.getMonth();
-                var id_year = tempDate.getFullYear();
+            //    var id_date = tempDate.getDate();
+            //    var id_month = tempDate.getMonth();
+            //    var id_year = tempDate.getFullYear();
 
-                var fullDate = id_year + "/" + id_month + 1 + "/" + id_date;
+            //    var fullDate = id_year + "/" + id_month + 1 + "/" + id_date;
 
-                if (!((tempDate.getYear() == idNumber.substring(0, 2)) && (id_month == idNumber.substring(2, 4) - 1) && (id_date == idNumber.substring(4, 6)))) {
-                    //error.append('<p>ID number does not appear to be authentic - date part not valid</p>');
-                    correct = false;
-                }
+            //    if (!((tempDate.getYear() == idNumber.substring(0, 2)) && (id_month == idNumber.substring(2, 4) - 1) && (id_date == idNumber.substring(4, 6)))) {
+            //        //error.append('<p>ID number does not appear to be authentic - date part not valid</p>');
+            //        correct = false;
+            //    }
 
-                // get the gender
-                var genderCode = idNumber.substring(6, 10);
-                var gender = parseInt(genderCode) < 5000 ? "Female" : "Male";
+            //    // get the gender
+            //    var genderCode = idNumber.substring(6, 10);
+            //    var gender = parseInt(genderCode) < 5000 ? "Female" : "Male";
 
-                // get country ID for citzenship
-                var citzenship = parseInt(idNumber.substring(10, 11)) == 0 ? "Yes" : "No";
+            //    // get country ID for citzenship
+            //    var citzenship = parseInt(idNumber.substring(10, 11)) == 0 ? "Yes" : "No";
 
-                // apply Luhn formula for check-digits
-                var tempTotal = 0;
-                var checkSum = 0;
-                var multiplier = 1;
-                for (var i = 0; i < 13; ++i) {
-                    tempTotal = parseInt(idNumber.charAt(i)) * multiplier;
-                    if (tempTotal > 9) {
-                        tempTotal = parseInt(tempTotal.toString().charAt(0)) + parseInt(tempTotal.toString().charAt(1));
-                    }
-                    checkSum = checkSum + tempTotal;
-                    multiplier = (multiplier % 2 == 0) ? 1 : 2;
-                }
-                if ((checkSum % 10) != 0) {
-                    //error.append('<p>ID number does not appear to be authentic - check digit is not valid</p>');
-                    alert('Id number must be 13 digits longs');
-                    correct = false;
-                };
+            //    // apply Luhn formula for check-digits
+            //    var tempTotal = 0;
+            //    var checkSum = 0;
+            //    var multiplier = 1;
+            //    for (var i = 0; i < 13; ++i) {
+            //        tempTotal = parseInt(idNumber.charAt(i)) * multiplier;
+            //        if (tempTotal > 9) {
+            //            tempTotal = parseInt(tempTotal.toString().charAt(0)) + parseInt(tempTotal.toString().charAt(1));
+            //        }
+            //        checkSum = checkSum + tempTotal;
+            //        multiplier = (multiplier % 2 == 0) ? 1 : 2;
+            //    }
+            //    if ((checkSum % 10) != 0) {
+            //        //error.append('<p>ID number does not appear to be authentic - check digit is not valid</p>');
+            //        alert('Id number must be 13 digits longs');
+            //        correct = false;
+            //    };
 
-                // if no error found, hide the error message
-                if (correct) {
+            //    // if no error found, hide the error message
+            //    if (correct) {
 
-                    $('#DateOfBirth').append(fullDate.val);
-                    $('#Gender').append(gender.val);
-                    alert('Done');
-                }
+            //        $('#DateOfBirth').append(fullDate.val);
+            //        $('#Gender').append(gender.val);
+            //        alert('Done');
+            //    }
 
-                else {
-                    alert("This id number is invalid");
-                };
-            });
+            //    else {
+            //        alert("This id number is invalid");
+            //    };
+            //});
 
         });
 

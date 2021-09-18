@@ -36,7 +36,8 @@ namespace LPX2YCDProject2020
 
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
-  
+
+            services.AddCoreAdmin();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -89,7 +90,7 @@ namespace LPX2YCDProject2020
             {
                 routes.MapRoute(
                 name: "default",
-                template: "{controller=Home}/{action=Index}/{id?}");
+                template: "{controller=Home}/{action=Home}/{id?}");
             });
 
         }

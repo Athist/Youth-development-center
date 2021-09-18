@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LPX2YCDProject2020.Models.Account;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,16 +11,22 @@ namespace LPX2YCDProject2020.Models.AdminModels
 {
     public class Programme
     {
+        [Key]
         public int Id { get; set; }
 
         [Display(Name = "Programme description"), Required(ErrorMessage = "Please enter a decsription")]
-        public string Decription { get; set; }
+        public string Description { get; set; }
 
         [Display(Name = "Programme name"), Required(ErrorMessage = "Please enter the name of the programme")]
         public string ProgrammeName { get; set; }
 
-        [Required(ErrorMessage = "Please provide a date")]
-        public DateTime Date { get; set; }
+        public virtual ICollection<EventReservations> Rsvps { get; set; } = new HashSet<EventReservations>();
+
+        [Display(Name = "Start date"), Required(ErrorMessage = "Please provide a date")]
+        public DateTime StartDate { get; set; }
+
+        [Display(Name ="End date"),Required(ErrorMessage = "Please provide a date")]
+        public DateTime EndDate { get; set; }
 
         [Display(Name = "Start time")]
         public DateTime StartTime { get; set; }

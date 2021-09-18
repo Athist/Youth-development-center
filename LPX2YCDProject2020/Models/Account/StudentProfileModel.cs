@@ -1,4 +1,5 @@
 ﻿using LPX2YCDProject2020.Models.AddressModels;
+using LPX2YCDProject2020.Models.AdminModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -12,11 +13,7 @@ namespace LPX2YCDProject2020.Models.Account
 {
     public class StudentProfileModel
     {
-        //public StudentProfileModel()
-        //{
-        //    this.SubjectDetails = new HashSet<SubjectDetails>();
-        //}
-
+        
         [Key]   
         public string UserId{ get; set; }
 
@@ -38,7 +35,9 @@ namespace LPX2YCDProject2020.Models.Account
         [Display(Name = "Subject")]
         public int subjectId { get; set; }
 
-        public virtual ICollection<StudentSubjects> Enrolments { get; set; } = new HashSet<StudentSubjects>();
+        public virtual ICollection<StudentSubjects> Enrolments { get; set; } 
+
+        public ICollection<EventReservations> Rsvps { get; set; }
 
         [Display(Name ="Gender")]
         public string Gender { get; set; }

@@ -11,6 +11,7 @@ using LPX2YCDProject2020.Models;
 using Microsoft.EntityFrameworkCore;
 using LPX2YCDProject2020.Models.ContactUs;
 using LPX2YCDProject2020.Models.HomeModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace LPX2YCDProject2020.Controllers
 {
@@ -20,19 +21,29 @@ namespace LPX2YCDProject2020.Controllers
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly IAddressRepository _addressRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ApplicationDbContext context, IUserService userService, IEmailService emailService, IAddressRepository addressRepository)
+        public HomeController(ApplicationDbContext context, IUserService userService, IEmailService emailService, IAddressRepository addressRepository, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _userService = userService;
             _emailService = emailService;
             _addressRepository = addressRepository;
             _context = context;
         }
 
+        public IActionResult pdf()
+        {
+            return View();
+        }
+
         public IActionResult Home()
         {
             HomePageViewModel viewModel = new HomePageViewModel();
-            viewModel.learners = _context.StudentProfiles.ToList();
+
+            var allUsers = _userManager.Users.AsQueryable();
+
+            viewModel.NoOfAccounts = (int)allUsers.Count();
             viewModel.programmes = _context.Programmes.ToList();
             return View(viewModel); 
         }
@@ -44,11 +55,15 @@ namespace LPX2YCDProject2020.Controllers
             return View(results);
         }
 
+       
+      
 
         public IActionResult AboutUs()
         {
             HomePageViewModel viewModel = new HomePageViewModel();
-            viewModel.learners = _context.StudentProfiles.ToList();
+            var allUsers = _userManager.Users.AsQueryable();
+
+            viewModel.NoOfAccounts = (int)allUsers.Count();
             viewModel.programmes = _context.Programmes.ToList();
             return View(viewModel);
         }

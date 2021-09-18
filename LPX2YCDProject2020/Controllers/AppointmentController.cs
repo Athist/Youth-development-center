@@ -1,6 +1,7 @@
 ﻿using LPX2YCDProject2020.Models;
 using LPX2YCDProject2020.Models.Appointments;
 using LPX2YCDProject2020.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace LPX2YCDProject2020.Controllers
             _context = context;
         }
 
+       
 
         [HttpGet]
         public IActionResult CreateAppointment()
@@ -93,20 +95,23 @@ namespace LPX2YCDProject2020.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteAppointment(int Id)
+        public async Task<IActionResult> CancellAppointments(int Id)
         {
             if (Id == 0)
                 return RedirectToAction("ErrorPage", "Admin");
 
-            var appointment = await _context.Appointment.FindAsync(Id);
+            var appointment = await _context.Appointment.SingleOrDefaultAsync(c => c.Id == Id);
 
             if (appointment == null)
                 return RedirectToAction("ErrorPage", "Admin");
 
-            _context.Appointment.Remove(appointment);
+           var result  = _context.Appointment.Remove(appointment);
+            _context.SaveChanges();
             return RedirectToAction(nameof(ViewAppointments));
         }
 
+        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> ViewAppointments()
         {
             var userId = _userService.GetUserId();
@@ -117,9 +122,6 @@ namespace LPX2YCDProject2020.Controllers
 
             return View(appts);
         }
-
-
-
 
 
 

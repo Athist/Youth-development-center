@@ -13,6 +13,7 @@ namespace LPX2YCDProject2020.Models.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _config;
@@ -23,14 +24,24 @@ namespace LPX2YCDProject2020.Models.Account
             SignInManager<ApplicationUser> signInManager,
             IUserService userSevice,
             IEmailService emailService,
-            IConfiguration config)
+            IConfiguration config,
+             RoleManager<IdentityRole> roleManager
+            )
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _userService = userSevice;
             _emailService = emailService;
             _config = config;
         }
+
+        public async Task<IdentityResult> AddUserToRoles(ApplicationUser user)
+        {
+            return await _userManager.AddToRoleAsync(user, "Learner");
+            
+        } 
+
 
         public async Task<ApplicationUser> GetUserById(string Id)
         {
@@ -42,7 +53,51 @@ namespace LPX2YCDProject2020.Models.Account
             return await _userManager.ConfirmEmailAsync(await _userManager.FindByIdAsync(uid), token);
         }
 
-       
+        public async Task<IdentityResult> CreateLearnerAccountAsync(SignUpModel signUp)
+        {
+            var user = new ApplicationUser()
+            {
+                Email = signUp.Email,
+                UserName = signUp.Email,
+                DateJoined = signUp.Email,
+                FirstName = signUp.FirstName,
+                LastName = signUp.LastName,
+
+            };
+
+            var result = await _userManager.CreateAsync(user, signUp.Password);
+
+            if(result.Succeeded)
+                await GenerateNewEmailTokenAsync(user);
+
+            await _userManager.AddToRoleAsync(user, "Learner");
+
+            return result;
+        }
+
+        public async Task<IdentityResult> CreateProvincialLiaisonAccount(SignUpModel signUp)
+        {
+            var user = new ApplicationUser()
+            {
+                Email = signUp.Email,
+                UserName = signUp.Email,
+                DateJoined = signUp.Email, 
+                FirstName = signUp.FirstName,
+                LastName = signUp.LastName,
+                EmailConfirmed = true,
+                
+            };
+
+            var result = await _userManager.CreateAsync(user, signUp.Password);
+
+            if (result.Succeeded)
+                await GenerateNewEmailTokenAsync(user);
+
+            await _userManager.AddToRoleAsync(user, "Provincial Liaison Officer");
+
+            return result;
+        }
+
 
         public async Task<IdentityResult> CreateUserAsync(SignUpModel signUp)
         {
@@ -53,6 +108,7 @@ namespace LPX2YCDProject2020.Models.Account
                 DateJoined = signUp.DateJoined,
                 FirstName = signUp.FirstName,
                 LastName = signUp.LastName,
+                
             };
            
             var result = await _userManager.CreateAsync(user, signUp.Password);

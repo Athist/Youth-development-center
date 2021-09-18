@@ -45,11 +45,10 @@ namespace LPX2YCDProject2020.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpModel signUp)
         {
-                signUp.DateJoined = DateTime.Now.ToString("yyyy/MM/dd");
+                signUp.DateJoined = DateTime.Now.ToShortDateString();
                 if (ModelState.IsValid)
                 {
-
-                    var result = await _accountRepository.CreateUserAsync(signUp);
+                    var result = await _accountRepository.CreateLearnerAccountAsync(signUp);
                     if (!result.Succeeded)
                     {
                         foreach (var error in result.Errors)
@@ -269,7 +268,7 @@ namespace LPX2YCDProject2020.Controllers
         public async Task<IActionResult> Logout()
         {
             await _accountRepository.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Home", "Home");
         }
 
         public IActionResult ChangePassword()

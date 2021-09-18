@@ -22,11 +22,11 @@
 
 #sidebar {
     position: absolute;
-    top: 110px;
-    left: -200px;
+    top: 118px;
+    left: 0px;
     width: 200px;
     height: 100%;
-    background: #151719;
+    background: #FFFFFF;
     transition: all 300ms linear;
 }
 #sidebar.active {

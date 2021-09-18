@@ -11,6 +11,7 @@ namespace LPX2YCDProject2020.Models
     public interface IAccountRepository 
     {
         Task<IdentityResult> CreateUserAsync(SignUpModel signUp);
+        Task<IdentityResult> CreateLearnerAccountAsync(SignUpModel signUp);
         Task<SignInResult> PasswordSignInAsync(SignInModel signIn);
         Task SignOut();
         Task<IdentityResult> ChangePasswordAsync(ChangePasswordModel model);

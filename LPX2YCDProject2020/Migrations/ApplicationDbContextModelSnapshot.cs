@@ -267,6 +267,38 @@ namespace LPX2YCDProject2020.Migrations
                     b.ToTable("Suburbs");
                 });
 
+            modelBuilder.Entity("LPX2YCDProject2020.Models.AdminModels.EventReservations", b =>
+                {
+                    b.Property<int>("ReservationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Feedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProgramId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("attended")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("programmeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReservationId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("programmeId");
+
+                    b.ToTable("EventReservations");
+                });
+
             modelBuilder.Entity("LPX2YCDProject2020.Models.AdminModels.Programme", b =>
                 {
                     b.Property<int>("Id")
@@ -274,15 +306,15 @@ namespace LPX2YCDProject2020.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Decription")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Duration")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("EventCategory")
                         .IsRequired()
@@ -297,6 +329,9 @@ namespace LPX2YCDProject2020.Migrations
                     b.Property<string>("ProgrammeName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
@@ -659,6 +694,23 @@ namespace LPX2YCDProject2020.Migrations
                     b.Navigation("City");
                 });
 
+            modelBuilder.Entity("LPX2YCDProject2020.Models.AdminModels.EventReservations", b =>
+                {
+                    b.HasOne("LPX2YCDProject2020.Models.Account.StudentProfileModel", "User")
+                        .WithMany("Rsvps")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LPX2YCDProject2020.Models.AdminModels.Programme", "programme")
+                        .WithMany("Rsvps")
+                        .HasForeignKey("programmeId");
+
+                    b.Navigation("programme");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LPX2YCDProject2020.Models.Appointments.UserAppointments", b =>
                 {
                     b.HasOne("LPX2YCDProject2020.Models.Appointments.AppointmentType", "appointmentTypes")
@@ -735,6 +787,8 @@ namespace LPX2YCDProject2020.Migrations
             modelBuilder.Entity("LPX2YCDProject2020.Models.Account.StudentProfileModel", b =>
                 {
                     b.Navigation("Enrolments");
+
+                    b.Navigation("Rsvps");
                 });
 
             modelBuilder.Entity("LPX2YCDProject2020.Models.Account.SubjectDetails", b =>
@@ -750,6 +804,11 @@ namespace LPX2YCDProject2020.Migrations
             modelBuilder.Entity("LPX2YCDProject2020.Models.AddressModels.Province", b =>
                 {
                     b.Navigation("City");
+                });
+
+            modelBuilder.Entity("LPX2YCDProject2020.Models.AdminModels.Programme", b =>
+                {
+                    b.Navigation("Rsvps");
                 });
 
             modelBuilder.Entity("LPX2YCDProject2020.Models.Appointments.AppointmentType", b =>

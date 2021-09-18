@@ -1,20 +1,17 @@
 ﻿
 @{
-    Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
-
-    //Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    Layout = "~/Views/Shared/_userDashboard.cshtml";
 }
 
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
 @model StudentProfileViewModel
 
 
-<div class=" container">
     <form asp-action="AddStudentSubjects">
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
         <input hidden="hidden" asp-for="@Model.Subjects.UserId" value="@User.FindFirst("studGroup").Value">
-        <div class="table table-bordered table-active">
+        <div class="table">
             <div class="row">
 
                 <div class="col-sm-2">
@@ -61,22 +58,22 @@
                 </div>
 
                 <div class="col-sm-1">
-                    <input asp-for="@Model.Subjects.FirstTermMark" id="FirstTermMark" class="form-control" />
+                    <input asp-for="@Model.Subjects.FirstTermMark" id="FirstTermMark" value="0" class="form-control" />
                     <span asp-validation-for="@Model.Subjects.FirstTermMark" class="text-danger" hidden="hidden"></span>
                 </div>
 
                 <div class="col-sm-1">
-                    <input asp-for="@Model.Subjects.SecondTermMark" id="SecondTermMark" class="form-control" />
+                    <input asp-for="@Model.Subjects.SecondTermMark" value="0" id="SecondTermMark" class="form-control" />
                     <span asp-validation-for="@Model.Subjects.SecondTermMark" class="text-danger" hidden="hidden"></span>
                 </div>
 
                 <div class="col-sm-1">
-                    <input asp-for="@Model.Subjects.ThirdTermMark" id="ThirdTermMark" class="form-control" />
+                    <input asp-for="@Model.Subjects.ThirdTermMark" value="0" id="ThirdTermMark" class="form-control" />
                     <span asp-validation-for="@Model.Subjects.SecondTermMark" class="text-danger" hidden="hidden"></span>
                 </div>
 
                 <div class="col-sm-1">
-                    <input asp-for="@Model.Subjects.Target" id="Target" class="form-control" />
+                    <input asp-for="@Model.Subjects.Target" value="0" id="Target" class="form-control" />
                     <span asp-validation-for="@Model.Subjects.SecondTermMark" class="text-danger" hidden="hidden"></span>
                 </div>
 
@@ -84,7 +81,7 @@
                     <textarea asp-for="@Model.Subjects.Comments" cols="2" rows="2" class="form-control" id="Comments" placeholder="We want to hear from you"></textarea>
                 </div>
                 <div class=" col-sm-2">
-                    <input type="submit" id="SendToDb" value="Add" class="btn btn-sm btn-primary" />
+                    <input type="submit" id="SendToDb" value="Add" class="btn btn-sm btn-secondary" />
                 </div>
             </div>
         </div>
@@ -133,8 +130,9 @@
                             @Html.DisplayFor(z => c.Comments)
                         </td>
                         <td>
-                           <a class="btn btn-primary" asp-action="EditStudentSubjects" asp-route-id="@c.Id" >Edit</a>
-                            <partial name="_tableButtonPartialView" model="new ButtonPartialModel {ServiceID = c.Id}" />
+                           <a class="btn btn-sm btn-primary" asp-action="EditStudentSubjects" asp-route-id="@c.Id" >Edit</a>
+                            <a class="btn btn-sm btn-danger" asp-action="DeleteEnrolment" asp-route-id="@c.Id">Delete</a>
+                            @*<partial name="_tableButtonPartialView" model="new ButtonPartialModel {ServiceID = c.Id}" />*@
                             <input asp-for="@Model.Subjects.Subjects.Id" name="Id" hidden="hidden" />
 
                         </td>
@@ -143,7 +141,7 @@
             }
         </tbody>
     </table>
-</div>
+
 
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -1,201 +1,169 @@
 ﻿
 @{
     ViewData["Title"] = "Update profile";
-    Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
+    Layout = "~/Views/Shared/_userDashboard.cshtml";
 }
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
 @model StudentProfileViewModel
 
-@{ dynamic data = ViewBag.suburbList;}
+<div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
+    <h3 class="title-main">My <span>Profile</span></h3>
+</div>
 
-<div class="container">
+<div class="accordion" id="accordionExample">
 
-    <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
-        <h3 class="title-main">My <span>Profile</span></h3>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Personal Details
+            </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+
+                @foreach (var photo in Model?.LearnerProfiles)
+                {
+                    <div class="py-4 px-3 mb-4 bg-light">
+                        <div class="media d-flex align-items-center ">
+                            <img src="@photo.ImageUrl" alt="Profile photo" class="mr-5 rounded-circle img-thumbnail shadow-sm" height="200" width="200" />
+                        </div>
+                        <div class="media-body">
+                            <h4 class="m-0">@User.FindFirst("UserFirstName").Value @User.FindFirst("UserLastName").Value</h4>
+                            <p class=" font-weight-normal text-muted mb-0"> @User.FindFirst("EmailAddr").Value</p>
+
+                            @foreach (var a in Model?.LearnerProfiles)
+                            {
+                                <p class=" font-weight-normal text-muted mb-0">Gender:.@a?.Gender </p>
+                                <p class=" font-weight-normal text-muted mb-0">Identity number: @a.IDNumber</p>
+                                <p class=" font-weight-normal text-muted mb-0">Date of birth: @a.DateOfBirth</p>
+                                <p class=" font-weight-normal text-muted mb-0"> Cell number: @a.ContactNumber</p>
+                                <hr />
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 
-    @*<div class="row">*@
-        <div class="col">
-            <div class="accordion" id="accordionExample">
+    <div class="accordion-item border border-primary">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Address
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
 
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Personal Details
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-
-                            <h3>Primary details</h3>
-                            @foreach (var photo in Model?.LearnerProfiles)
-                            {
-
-                                <div class="py-4 px-3 mb-4 bg-light">
-                                    <div class="media d-flex align-items-center ">
-                                        <img src="@photo.ImageUrl" alt="Profile photo" class="mr-5 rounded-circle img-thumbnail shadow-sm" height="200" width="200" />
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="m-0">@User.FindFirst("UserFirstName").Value @User.FindFirst("UserLastName").Value</h4>
-                                        <p class=" font-weight-normal text-muted mb-0"> @User.FindFirst("EmailAddr").Value</p>
-
-                                        @foreach (var a in Model?.LearnerProfiles)
-                                        {
-                                            <p class=" font-weight-normal text-muted mb-0">Gender:.@a?.Gender </p>
-                                            <p class=" font-weight-normal text-muted mb-0">Identity number: @a.IDNumber</p>
-                                            <p class=" font-weight-normal text-muted mb-0">Date of birth: @a.DateOfBirth</p>
-                                            <p class=" font-weight-normal text-muted mb-0"> Cell number: @a.ContactNumber</p>
-                                            <hr />
-                                        }
-                                    </div>
-                                </div>
-
-                            }
-
-
+                <div>
+                    @foreach (var r in Model?.LearnerProfiles)
+                    {
+                        <div class="cont-left text-center mr-3">
+                            <span class="fa fa-globe"></span>
                         </div>
-                    </div>
-                </div>
+                        @Html.DisplayFor(item => r.AddressLine1)
+                        <br />
 
-                <div class="accordion-item border border-primary">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Address
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
+                        @Html.DisplayFor(item => r.AddressLine2)
+                        <br />
 
-                            <div>
-                                @foreach (var r in Model?.LearnerProfiles)
-                                {
-                                    <div class="cont-left text-center mr-3">
-                                        <span class="fa fa-globe"></span>
-                                    </div>
-                                    @Html.DisplayFor(item => r.AddressLine1)
-                                    <br />
+                        @Html.DisplayFor(item => r.suburb.SuburbName)
+                        <br />
 
-                                    @Html.DisplayFor(item => r.AddressLine2)
-                                    <br />
+                        @Html.DisplayFor(item => r.suburb.City.CityName)
+                        <br />
 
-                                    @Html.DisplayFor(item => r.suburb.SuburbName)
-                                    <br />
+                        @Html.DisplayFor(item => r.suburb.City.Province.ProvinceName)
+                        <br />
 
-                                    @Html.DisplayFor(item => r.suburb.City.CityName)
-                                    <br />
+                        @Html.DisplayFor(item => r.suburb.PostalCode)
+                        <br />
 
-                                    @Html.DisplayFor(item => r.suburb.City.Province.ProvinceName)
-                                    <br />
-
-                                    @Html.DisplayFor(item => r.suburb.PostalCode)
-                                    <br />
-
-                                    @Html.DisplayFor(item => r.suburb.City.Province.Country)
-                                    <hr />
+                        @Html.DisplayFor(item => r.suburb.City.Province.Country)
+                        <hr />
 
 
-                                }
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            School results
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            @foreach (var v in Model?.LearnerProfiles)
-                            {
-
-                                <div class=" form-group">
-                                    <p>
-                                        <label asp-for="@v.NameOfSchool " class="control-label"></label>
-                                        &nbsp;
-
-                                        @Html.DisplayFor(i => v.NameOfSchool)
-                                    </p>
-
-                                </div>
-                                <div class="form-group">
-                                    <p>
-                                        <label asp-for="@v.Grade" class="control-label"></label>
-                                        &nbsp;
-                                        @Html.DisplayFor(i => v.Grade)
-                                    </p>
-                                </div>
-                            }
-
-                            <table class="table table-hover table-condensed">
-                                <thead>
-                                    <tr>
-                                        <th>Subject name</th>
-                                        <th>Year</th>
-                                        <th>Term 1 mark</th>
-                                        <th>Term 2 mark</th>
-                                        <th>Term 3 mark</th>
-                                        <th>Term 4 goal</th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model.EnrolledSubjects != null)
-                                    {
-                                        @foreach (var c in Model?.EnrolledSubjects)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    @Html.DisplayFor(v => c.Subjects.SubjectName)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(v => c.Year)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(v => c.FirstTermMark)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(v => c.SecondTermMark)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(v => c.ThirdTermMark)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(v => c.Target)
-                                                </td>
-                                                <td>
-                                                    @Html.DisplayFor(z => c.Comments)
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
-    @*</div>*@
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                School results
+            </button>
+        </h2>
+        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                @foreach (var v in Model?.LearnerProfiles)
+                {
+                    <div class=" form-group">
+                        <p>
+                            <label asp-for="@v.NameOfSchool " class="control-label"></label>
+                            &nbsp;
+
+                            @Html.DisplayFor(i => v.NameOfSchool)
+                        </p>
+
+                    </div>
+                    <div class="form-group">
+                        <p>
+                            <label asp-for="@v.Grade" class="control-label"></label>
+                            &nbsp;
+                            @Html.DisplayFor(i => v.Grade)
+                        </p>
+                    </div>
+                }
+
+                <table class="table table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Subject name</th>
+                            <th>Year</th>
+                            <th>Term 1 mark</th>
+                            <th>Term 2 mark</th>
+                            <th>Term 3 mark</th>
+                            <th>Term 4 goal</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EnrolledSubjects != null)
+                        {
+                            @foreach (var c in Model?.EnrolledSubjects)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(v => c.Subjects.SubjectName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(v => c.Year)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(v => c.FirstTermMark)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(v => c.SecondTermMark)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(v => c.ThirdTermMark)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(v => c.Target)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(z => c.Comments)
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/bootstrap/dist/js/bootstrap.min.js"></script>
-
-@section scripts{
-
-    <script type="text/javascript">
-
-            //$(document).load(function () {
-            //    if (ViewBag.Successful != null) {
-            //        alert("Your password has been sucessfully reset.")
-            //    }
-            //});
-    </script>
-}
-

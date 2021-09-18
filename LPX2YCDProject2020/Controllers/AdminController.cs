@@ -1,10 +1,19 @@
 ﻿using LPX2YCDProject2020.Models;
+using LPX2YCDProject2020.Models.Account;
 using LPX2YCDProject2020.Models.AddressModels;
+using LPX2YCDProject2020.Models.AdminModels;
 using LPX2YCDProject2020.Models.HomeModels;
+using LPX2YCDProject2020.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using SelectPdf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,18 +24,214 @@ namespace LPX2YCDProject2020.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly IUserService _userService;
+        private readonly IAccountRepository _accRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IAddressRepository _addressRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ICompositeViewEngine _viewEngine;
 
-        public AdminController(ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment)
+        public AdminController(ICompositeViewEngine viewEngine , IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
+            _viewEngine = viewEngine;
+            _userService = userService;
+            _userManager = userManager;
+            _accRepository = accRepository;
+            _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
             _addressRepository = addressRepository;
             _context = context;
         }
 
-        public IActionResult ErrorPage(string message) => View(message);
+        public IActionResult CertificateOfParticipation(int id)
+        {
+
+            if (id == 0)
+                return RedirectToAction(nameof(ErrorPage), new { message = "The resource you are trying to access is currently unavailable" });
+
+            CertificateViewModel model = new CertificateViewModel();
+
+            model.centerDetails = _context.CenterDetails.Include(c => c.Suburb)
+               .ThenInclude(v => v.City)
+               .ThenInclude(z => z.Province)
+              .SingleOrDefault();
+
+            var userId = _userService.GetUserId();
+
+            model.learner = _context.StudentProfiles.SingleOrDefault(w => w.UserId == userId);
+
+            model.programme = _context.Programmes.SingleOrDefault(f => f.Id == id);
+
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> PrintCertificate()
+        {
+            using (var stringWriter = new StringWriter())
+            {
+                var viewResult = _viewEngine.FindView(ControllerContext, "CertificateOfParticipation",true);
+
+                if(viewResult.View == null)
+                {
+                    return RedirectToAction(nameof(ErrorPage), new { message = "The resource you are trying to access is currently unavailable" });
+                }
+
+                var view = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary());
+
+                var viewContext = new ViewContext(
+                    ControllerContext,
+                    viewResult.View,
+                    view,
+                    TempData,
+                    stringWriter,
+                    new HtmlHelperOptions());
+
+                await viewResult.View.RenderAsync(viewContext);
+                var htmlToPdf = new HtmlToPdf(1000, 1414);
+                htmlToPdf.Options.DrawBackground = true;
+
+                var pdf = htmlToPdf.ConvertHtmlString(stringWriter.ToString());
+                var pdfBytes = pdf.Save();
+
+                return File(pdfBytes, "application/pdf");
+            }
+        }
+
+        public async Task<IActionResult> Deregister(int id)
+        {
+            if (id == 0)
+            {
+                return RedirectToAction(nameof(ErrorPage), new { message = "The resource you are trying to access is currently unavailable" });
+            }
+
+            var record = await _context.EventReservations.SingleOrDefaultAsync(c => c.ReservationId == id);
+
+            if (record == null)
+            {
+                return RedirectToAction(nameof(ErrorPage), new { message = "The resource you are trying to access is currently unavailable" });
+            }
+
+            try
+            {
+                _context.EventReservations.Remove(record);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ViewPrograms));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction(nameof(ErrorPage), new { message = "The resource you are trying to access is currently unavailable" });
+            }
+        }
+
+        public IActionResult PostFeedback(int id)
+        {
+            StudentProgramViewModel results = new StudentProgramViewModel();
+            results.Programmes = _context.Programmes.SingleOrDefault(c => c.Id == id);
+
+            var userId = _userService.GetUserId();
+
+            results.rsvp = (from c in _context.EventReservations
+                              where c.UserId == userId &&
+                              c.ProgramId == id
+                              select c)
+                           .FirstOrDefault();
+           
+            return View(results);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostFeedback(StudentProgramViewModel model)
+        {
+            var result = await _context.EventReservations.SingleOrDefaultAsync(v => v.ReservationId == model.rsvp.ReservationId);
+
+            if (result == null)
+                return RedirectToAction(nameof(ErrorPage));
+
+            var record = new EventReservations()
+            {
+                ReservationId = model.rsvp.ReservationId,
+                attended = result.attended,
+                Feedback = model.rsvp.Feedback,
+                ProgramId = model.rsvp.ProgramId,
+                UserId = model.rsvp.UserId,
+            };
+
+            try
+            {
+                _context.EventReservations.Update(record);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(PostFeedback));
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction(nameof(ErrorPage), new { message = "The resource you are trying to access is currently unavailable" });
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Enroll(int Id, string UserId)
+        {
+            if (Id == 0 || UserId == null)
+                return RedirectToAction(nameof(ViewPrograms));
+
+            var model = new EventReservations()
+            {
+                ProgramId = Id,
+                UserId = UserId
+            };
+
+            try
+            {
+                var enrolled = _context.EventReservations.Where(v => v.ProgramId == Id).ToList();
+                if (enrolled.Count() > 0)
+                {
+                    ViewBag.error = "You are already enrolled for this programme";
+                    return RedirectToAction(nameof(ViewPrograms));
+                }
+
+                _context.EventReservations.Add(model);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ViewPrograms));
+            }
+            catch (Exception c)
+            {
+                return RedirectToAction(nameof(ErrorPage), new { message = "The resource you are trying to access is currently unavailable" });
+            }
+
+        }
+
+        public IActionResult ViewPrograms(string message)
+        {
+            StudentProgramViewModel model = new StudentProgramViewModel();
+            var id = _userService.GetUserId();
+
+            try
+            {
+                model.programmes = _context.Programmes
+                     .Include(p => p.Rsvps)
+                     .OrderBy(c => c.StartDate)
+                     .ToList();
+                model.eventRsvps = _context.EventReservations
+                    .Where(c => c.UserId == id)
+                    .ToList();
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction(nameof(ErrorPage), new { message = e.ToString() });
+            }
+
+            return View(model);
+        }
+
+        public IActionResult Appointments()
+        {
+            return View(_context.Appointment.ToList());
+        }
+
+        //<------Error page ------>
+        public IActionResult ErrorPage(string message) => View();
 
         //<-----Start of Province action methods ------>
 
@@ -61,9 +266,9 @@ namespace LPX2YCDProject2020.Controllers
                 }
                 return View(model);
             }
-            catch(Exception c)
+            catch (Exception c)
             {
-                return RedirectToAction(nameof(ErrorPage), new { message = c }) ;
+                return RedirectToAction(nameof(ErrorPage), new { message = c });
             }
         }
 
@@ -363,7 +568,7 @@ namespace LPX2YCDProject2020.Controllers
         public async Task<IActionResult> UpdateAboutInfo(CenterDetails model)
         {
             var results = _context.CenterDetails.FirstOrDefault();
-            if(results == null)
+            if (results == null)
             {
                 return RedirectToAction(nameof(ErrorPage));
             }
@@ -395,19 +600,19 @@ namespace LPX2YCDProject2020.Controllers
                     _context.CenterDetails.Update(results);
                     await _context.SaveChangesAsync();
                 }
-              catch(Exception e)
+                catch (Exception e)
                 {
-                    return RedirectToAction(nameof(ErrorPage),new { message = e.Message });
+                    return RedirectToAction(nameof(ErrorPage), new { message = e.Message });
                 }
                 model.Saved = true;
                 ViewBag.ProvinceList = new SelectList(_addressRepository.GetProvinceListAsync(), "ProvinceId", "ProvinceName");
                 return RedirectToAction(nameof(AddAboutInfo));
-                
+
             }
         }
         //<-----End About us action methods------->
 
-        
+
 
         public JsonResult GetCityList(int ProvinceId)
         {

@@ -3,29 +3,18 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <link href="~/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <script src="~/bootstrap/dist/js/bootstrap.min.js"></script>
-    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
-
+   
     <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
-        <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
+        <link href="~/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
         <link href="~/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
         <link href="~/lib/private.css" rel="stylesheet" />
         <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <link href="~/css/style-starter.css" rel="stylesheet" />
+        <link href="~/css/site.css" rel="stylesheet" />
     </environment>
     <environment exclude="Development">
-        <script src="~/lib/jquery/jquery.min.js"></script>
-        <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-        <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous"
               asp-fallback-href="C:\Users\Athist\.nuget\packages\bootstrap\5.0.1\contentFiles\any\any\wwwroot\css\bootstrap.min.css"
               asp-fallback-test-class="sr-only"
@@ -35,6 +24,7 @@
         <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
         <link href="//fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <link href="~/css/style-starter.css" rel="stylesheet" />
+        <link href="~/css/site.min.css" rel="stylesheet" />
     </environment>
 
 </head>
@@ -43,34 +33,90 @@
     <partial name="_topHeader" />
     <partial name="_lowerHeader" />
 
-   
-   
-    <div class="page-content p-5" id="content">
-        <div>
-            <partial name="_SidePanel" />
+
+    <div id="sidebar">
+        @*<div class="toggle-btn" onclick="toggleSidebar(this)">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>*@
+        <div class="list">
+           <h5 class="h5 text-center">Menu</h5>
+            <div class="item">
+                <a asp-controller="Account" asp-action="ViewProfile" class=" nav-link text-dark bg-light">
+                    <i class=" fa fa-home mr-3 text-primary fa-fw"></i>
+                    Home
+                </a>
+            </div>
+            <div class="item">
+                <a asp-controller="Account" asp-action="UpdateProfileDetails" class="nav-link text-dark">
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                    Update profile
+                </a>
+            </div>
+            <div class="item">
+                <a asp-controller="Account" asp-action="ChangePassword" class="nav-link text-dark">
+                    <i class="fa fa-lock" aria-hidden="true"></i>
+                    Change password
+                </a>
+            </div>
+            <div class="item">
+                <a asp-controller="Account" asp-action="SchoolReport" class="nav-link text-dark">
+                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                    Academic results
+                </a>
+            </div>
+            <div class="item">
+                <a asp-controller="Appointment" asp-action="ViewAppointments" class="nav-link text-dark">
+                    <i class="fa fa-tasks" aria-hidden="true"></i>
+                    Appointments
+                </a>
+            </div>
+            <div class="item">
+                <a asp-controller="Admin" asp-action="ViewPrograms" class="nav-link text-dark">
+                    <i class="fa fa-tasks" aria-hidden="true"></i>
+                    Programs
+                </a>
+            </div>
         </div>
-        <div class="content">
+    </div>
+
+    <div>
+       
             @RenderBody()
-        </div>
+      
 
     </div>
 
-    <partial name="_layoutFooter" />
+    <partial name="_footer" />
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <environment include="Development">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        @*<script src="~/lib/jquery/dist/jquery.js"></script>*@
+        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
         <script src="~/lib/jquery-validate/jquery.validate.js"></script>
         <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
         <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
+        <script src="~/lib/js/bootstrap.min.js"></script>
     </environment>
     <environment exclude="Development">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
         <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
     </environment>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        function toggleSidebar(ref) {
+            document.getElementById("sidebar").classList.toggle('active');
+        }
+    </script>
+
 
     <button onclick="topFunction()" id="movetop" title="Go to top">
         <span class="fa fa-level-up" aria-hidden="true"></span>

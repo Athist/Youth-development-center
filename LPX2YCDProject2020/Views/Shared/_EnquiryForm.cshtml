@@ -17,11 +17,12 @@
                        class="contact-input" required="" />
                 <input type="email" asp-for="EmailAddress" placeholder="Your Email*"
                        class="contact-input" required="" />
-                <select asp-for="PatronType" class="contact-input">
+                <select asp-for="PatronType" placeholder="What describes you best*" class="form-control">
                     <option>Future sponsor</option>
                     <option>Learner</option>
                     <option>Other</option>
                 </select>
+                <br />
             </div>
             <div class="form-input">
                 <textarea asp-for="Message" placeholder="Type your message here*"

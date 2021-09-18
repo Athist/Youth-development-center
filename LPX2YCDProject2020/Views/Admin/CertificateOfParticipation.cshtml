@@ -1,0 +1,49 @@
+﻿@model LPX2YCDProject2020.Models.AdminModels.CertificateViewModel
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
+
+@{
+    ViewData["Title"] = "CertificateOfParticipation";
+    Layout = "~/Views/Shared/_userDashboard.cshtml";
+}
+
+<div style="width:800px; height:600px; padding:20px; text-align:center; border: 10px solid #787878">
+
+    <!--Header content-->
+    <div class="header_bg">
+        <div class="header">
+            <div class="head-t">
+                <div class="logo">
+                    <div style="height:120px; width:150px;">
+                        <img src="/Images/courseThumbnail.png" class="img-responsive" alt="Center Logo">
+                    </div>
+                </div>
+                <div class="clearfix"> </div>
+                <div class="header_right">
+                    <div class="rgt-bottom">
+                        <div style="height:120px; width:120px;">
+                            <img src="@Model.learner.ImageUrl" alt="Profile photo" class="mr-5 rounded-circle img-thumbnail shadow-sm" />
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/Header Content-->
+    <div style="width:750px; height:550px; padding:20px; text-align:center; border: 5px solid #787878">
+        <span style="font-size:50px; font-weight:bold">Certificate of Participation</span>
+        <br><br>
+        <span style="font-size:25px"><i>This is to certify that</i></span>
+        <br><br>
+        <span style="font-size:30px"><b>@User.FindFirst("UserFirstName").Value @User.FindFirst("UserLastName").Value</b></span><br /><br />
+        <span style="font-size:30px"><b>Id number: @Model.learner.IDNumber</b></span><br /><br />
+        <span style="font-size:30px">Has attended the @Model.programme.ProgrammeName programme</span> <br /><br />
+        <span style="font-size:25px"><i>has attende the course</i></span> <br /><br />
+        <span style="font-size:20px">with score of <b>$grade.getPoints()%</b></span> <br /><br /><br /><br />
+        <span style="font-size:25px"><i>dated</i></span><br>
+        @DateTime.Now.ToShortDateString()
+        <span style="font-size:30px">$dt</span>
+    </div>
+</div>
+

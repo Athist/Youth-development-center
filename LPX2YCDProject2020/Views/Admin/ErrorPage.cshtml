@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<string>
 @{
     ViewData["Title"] = "Error";
-    Layout = "~/Views/Shared/_GeneralLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="errorPage">
@@ -11,10 +11,9 @@
             Esh! The page you are looking for is currently under unavailable, please bear with us while we fix this issue.<br />
             If this issue persists, please don't hesitate to <a asp-controller="Home" asp-action="ContactUs">contact us</a>.
         </p>
-        @foreach (string a in Model)
-        {
-            <p class="text-danger">@a</p>
-        }
+      <div class=" text-danger">
+          @Model?.ToString();
+      </div>
 
     </div>
 </div>

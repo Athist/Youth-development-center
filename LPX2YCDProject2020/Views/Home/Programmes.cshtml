@@ -55,39 +55,14 @@
                         <div class="content-main-top">
                             <div class="content-top mb-4 mt-3">
                                 <ul class="list-unstyled d-flex align-items-center justify-content-between">
-                                    <li> <i class="fa fa-signal" aria-hidden="true"></i> @c.Date.ToShortDateString()</li>
+                                    <li> <i class="fa fa-signal" aria-hidden="true"></i> @c.StartDate.ToShortDateString()</li>
                                     <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@c.StartTime.ToShortTimeString()</li>
                                 </ul>
                             </div>
                             <h4><a href="courses.html">@c.ProgrammeName</a></h4>
-                            <p>@c.Decription</p>
+                            <p>@c.Description</p>
                             <div class="top-content-border d-flex align-items-center justify-content-between mt-5 pt-4">
-                                <ul class="rating-list">
-                                    <li>
-                                        <a href="#rate">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#rate">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#rate">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#rate">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        @c?.Link
-                                    </li>
-                                </ul>
-                                <a class="btn btn-style btn-style-primary" asp-action="" asp-controller="Admin" asp-route-Id="@c.Id">
+                                <a class="btn btn-style btn-style-primary" asp-action="Enroll" asp-controller="Admin" asp-route-Id="@c.Id">
                                     Enroll<i class="fa fa-arrow-right ml-2" aria-hidden="true"></i>
                                 </a>
                             </div>
@@ -96,30 +71,6 @@
                 </div>
 
             }
-            <!-- pagination -->
-            @*<div class="pagination-style text-center">
-                <ul>
-                    <li>
-                        <a href="#none" class="not-allowed" disabled="">
-                            <span class="fa fa-angle-double-left" aria-hidden="true"></span>
-                        </a>
-                    </li>
-                    <li><a class="active" href="#page">1</a></li>
-                    <li>
-                        <a href="#page">2</a>
-                    </li>
-                    <li>
-                        <a href="#page">3</a>
-                    </li>
-                    <li>
-                        <a href="#page">
-                            <span class="fa fa-angle-double-right" aria-hidden="true"></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>*@
-            <!-- //pagination -->
         </div>
     </div>
-    <!-- //courses section -->
 </div>
