@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using SelectPdf;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace LPX2YCDProject2020.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ICompositeViewEngine _viewEngine;
 
-        public AdminController(ICompositeViewEngine viewEngine , IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public AdminController(ICompositeViewEngine viewEngine, IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
             _viewEngine = viewEngine;
             _userService = userService;
@@ -63,40 +64,28 @@ namespace LPX2YCDProject2020.Controllers
 
             model.programme = _context.Programmes.SingleOrDefault(f => f.Id == id);
 
+            CertificatePdf(model);
             return View(model);
         }
 
-
-        public async Task<IActionResult> PrintCertificate()
+        public IActionResult CertificatePdf(CertificateViewModel model)
         {
-            using (var stringWriter = new StringWriter())
-            {
-                var viewResult = _viewEngine.FindView(ControllerContext, "CertificateOfParticipation",true);
+            return View(model);
+        }
 
-                if(viewResult.View == null)
-                {
-                    return RedirectToAction(nameof(ErrorPage), new { message = "The resource you are trying to access is currently unavailable" });
-                }
+        public IActionResult PrintCertificate(int id)
+        {
+            CertificateViewModel data = new CertificateViewModel();
+            var userId = _userService.GetUserId();
 
-                var view = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary());
+            data.programme = _context.Programmes.SingleOrDefault(q => q.Id == id);
+            data.learner = _context.StudentProfiles.SingleOrDefault(v => v.UserId == userId);
+            data.centerDetails = _context.CenterDetails.Include(c => c.Suburb)
+               .ThenInclude(v => v.City)
+               .ThenInclude(z => z.Province)
+               .SingleOrDefault();
 
-                var viewContext = new ViewContext(
-                    ControllerContext,
-                    viewResult.View,
-                    view,
-                    TempData,
-                    stringWriter,
-                    new HtmlHelperOptions());
-
-                await viewResult.View.RenderAsync(viewContext);
-                var htmlToPdf = new HtmlToPdf(1000, 1414);
-                htmlToPdf.Options.DrawBackground = true;
-
-                var pdf = htmlToPdf.ConvertHtmlString(stringWriter.ToString());
-                var pdfBytes = pdf.Save();
-
-                return File(pdfBytes, "application/pdf");
-            }
+            return new ViewAsPdf("CertificatePdf", data);
         }
 
         public async Task<IActionResult> Deregister(int id)
@@ -133,11 +122,11 @@ namespace LPX2YCDProject2020.Controllers
             var userId = _userService.GetUserId();
 
             results.rsvp = (from c in _context.EventReservations
-                              where c.UserId == userId &&
-                              c.ProgramId == id
-                              select c)
+                            where c.UserId == userId &&
+                            c.ProgramId == id
+                            select c)
                            .FirstOrDefault();
-           
+
             return View(results);
         }
 
