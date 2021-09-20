@@ -601,8 +601,6 @@ namespace LPX2YCDProject2020.Controllers
         }
         //<-----End About us action methods------->
 
-
-
         public JsonResult GetCityList(int ProvinceId)
         {
             var cityList = _context.Cities.Where(p => p.provinceId == ProvinceId).ToList();

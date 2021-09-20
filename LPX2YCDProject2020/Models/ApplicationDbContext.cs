@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using LPX2YCDProject2020.Models;
 using LPX2YCDProject2020.Models.Appointments;
 using LPX2YCDProject2020.Models.AdminModels;
+using LPX2YCDProject2020.Models.PortalModels;
 
 namespace LPX2YCDProject2020.Models
 {
@@ -34,6 +35,9 @@ namespace LPX2YCDProject2020.Models
         public DbSet<AppointmentType> AppointmentType{ get; set; }
         public DbSet<Programme> Programmes { get; set; }
         public DbSet<EventReservations> EventReservations { get; set; }
+        public DbSet<Bursary> Bursaries { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<BursaryCourses> BursaryCourses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -49,6 +53,9 @@ namespace LPX2YCDProject2020.Models
                 .HasOne<StudentProfileModel>(sc => sc.Student)
                 .WithMany(s => s.Enrolments)
                 .HasForeignKey(sc => sc.UserId);
+
+            builder.Entity<BursaryCourses>()
+              .HasKey(c => new { c.CourseId, c.BursaryId });
 
             //builder.Entity<EventReservations>()
             //     .HasKey(c => new { c.ProgramId, c.UserId });

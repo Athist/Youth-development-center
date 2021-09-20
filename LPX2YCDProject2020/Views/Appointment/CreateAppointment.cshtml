@@ -19,7 +19,7 @@
 
                 <div class="form-group">
                     <label asp-for="Date" class="control-label"></label>
-                    <input asp-for="Date" onchange="CheckDate(this)" class="form-control" />
+                    <input asp-for="Date" class="form-control" />
                     <span asp-validation-for="Date" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -53,43 +53,33 @@
 
 @section scripts{
     <script type="text/javascript">
+        $(document).ready(function () {
+            //Disables previous dates
+            var todaysDate = new Date();
 
-                function CheckTime() {
-                    var time = document.getElementById("Time").value;
-                    if (time < "08:00" || time > "16:00") {
-                        alert("Outside operating hours, please select time between 08:00 and 16:00");
-                        $("Time").value.empty();
-                        document.getElementById("Time").innerHTML = ' ';
-                    }
-                }
+            var month = todaysDate.getMonth() + 1;
+            var day = todaysDate.getDate() + 1;
+            var year = todaysDate.getFullYear();
 
-        function CheckDate() {
-            var date = document.getElementById("Date").value;
+            if (month < 10)
+                month = '0' + month.toString();
+            if (day < 10)
+                day = '0' + day.toString();
 
-            if (date < @DateTime.Now.Date.ToShortDateString()) {
-                alert("You cannon book an appointment for a date that has passed. please select a future date");
-                $("Date").empty();
+            var maxDate = year + '-' + month + '-' + day;
+            $('#Date').attr('min', maxDate);
+            //End
+
+        });
+        function CheckTime() {
+            var time = document.getElementById("Time").value;
+            if (time < "08:00" || time > "16:00") {
+                alert("Outside operating hours, please select time between 08:00 and 16:00");
+                $("Time").attr("min", '08:15');
+                document.getElementById("Time").innerHTML = '08:15';
             }
         }
 
-
-
-
-  $(document).ready(function() {
-      $("#EnterDate").datepicker({
-          dateFormat:"dd-mm-yy",
-          minDate: -0,
-          maxDate: "+0M +0D"
-
-      });
-  });
-
-    //function myComplete() {
-    //    alert("Appointment successfully updated");
-    //}
-
-    //function failed() {
-    //    alert("We could not process your appointment request at the moment");
-    //}
+       
     </script>
 }

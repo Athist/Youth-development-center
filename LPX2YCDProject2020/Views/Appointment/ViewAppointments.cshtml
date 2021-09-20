@@ -8,7 +8,7 @@
 <div class="w3l-grids-block-5 w3l-grids-block-6 py-5">
     <div class="container py-md-5 py-4">
         <p>
-            <a asp-action="CreateAppointment">Create New</a>
+            <a asp-action="CreateAppointment">Create new appointment</a>
         </p>
         <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
             <h3 class="title-main">My <span>Appointments</span></h3>
@@ -28,49 +28,51 @@
             {
                 @foreach (var a in Model)
                 {
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="blog-card-single">
-                            <div class="grids5-info position-relative">
-                                <img src="/Images/appointment-slots.jpg" alt="" class="img-fluid" />
-                            </div>
-                            <div class="content-main-top">
-                                <div class="content-top mb-4 mt-3">
-                                    <ul class="list-unstyled d-flex align-items-center justify-content-between">
-                                        <li> <i class="fa fa-signal" aria-hidden="true"></i> @a.Date.ToShortDateString()</li>
-                                        <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@a.Time.ToShortTimeString()</li>
-                                    </ul>
+                    @if (a.Date >= DateTime.Now)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="blog-card-single">
+                                <div class="grids5-info position-relative">
+                                    <img src="/Images/appointment-slots.jpg" alt="" class="img-fluid" />
                                 </div>
-                                <h4><a>@a.appointmentTypes.Description</a></h4>
-                                <p>@a.Message</p>
-                                <br />
-                                @if (@a.Status == null)
-                                {
-                                    <p>Status: Pendng</p>
-                                }
-                                else
-                                {
-                                    <p class="text-muted">@a.?Status</p>
-                                }
+                                <div class="content-main-top">
+                                    <div class="content-top mb-4 mt-3">
+                                        <ul class="list-unstyled d-flex align-items-center justify-content-between">
+                                            <li> <i class="fa fa-signal" aria-hidden="true"></i> @a.Date.ToShortDateString()</li>
+                                            <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@a.Time.ToShortTimeString()</li>
+                                        </ul>
+                                    </div>
+                                    <h4><a>@a.appointmentTypes.Description</a></h4>
+                                    <p>@a.Message</p>
+                                    <br />
+                                    @if (@a.Status == null)
+                                    {
+                                        <p>Status: Pendng</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted">@a.?Status</p>
+                                    }
 
-                                <div class="top-content-border d-flex align-items-center justify-content-between mt-5 pt-4">
-                                    <ul class="rating-list">
-                                        <a class="btn btn-sm btn-primary" asp-action="UpdateAppointment" asp-route-Id="@a.Id">Update appointment</a>
-                                    </ul>
-                                    &nbsp;
-                                    @*<a class="btn btn-sm btn-style btn-style-primary" asp-action="CancellAppointments" asp-controller="Appointment" asp-route-Id="@a.Id">
-                                            Cancel appointment
-                                        </a>*@
+                                    <div class="top-content-border d-flex align-items-center justify-content-between mt-5 pt-4">
+                                        <ul class="rating-list">
+                                            <a class="btn btn-sm btn-primary" asp-action="UpdateAppointment" asp-route-Id="@a.Id">Update appointment</a>
+                                        </ul>
+                                        &nbsp;
+                                        @*<a class="btn btn-sm btn-style btn-style-primary" asp-action="CancellAppointments" asp-controller="Appointment" asp-route-Id="@a.Id">
+                                        Cancel appointment
+                                    </a>*@
 
-                                    <form asp-controller="Appointment" asp-action="CancellAppointments" asp-route-Id="@a.Id">
-                                        <input value="@a.Id" asp-route-id="@a.Id" id="Id" hidden />
-                                        <input type="submit" value=" Cancel appointment" class="btn btn-sm btn-style btn-style-primary" />
-                                    </form>
+                                        <form asp-controller="Appointment" asp-action="CancellAppointments" asp-route-Id="@a.Id">
+                                            <input value="@a.Id" asp-route-id="@a.Id" id="Id" hidden />
+                                            <input type="submit" value=" Cancel appointment" class="btn btn-sm btn-style btn-style-primary" />
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                    }
                 }
                 <br />
                 <br />
@@ -84,7 +86,7 @@
                 <br />
                 @foreach (var a in Model)
                 {
-                    @if (a.Date < DateTime.Now)
+                    @if (a.Date < DateTime.Now && a.Status == "Approved" || a.Date < DateTime.Now && a.Status == null)
                     {
                         <div class="col-lg-4 col-md-6">
                             <div class="card border-danger mb-3" style="max-width: 18rem;">
@@ -92,12 +94,12 @@
                                 <div class="card-body text-danger">
                                     <h5 class="card-title">@a.appointmentTypes.Description</h5>
                                     <span><i class="fa fa-info"></i></span>
-                                
+
                                     <p>@a?.Message</p>
                                     <p>Assisted by: @a?.assignedEmployee</p>
 
                                 </div>
-                             
+
                                 <div class="card-footer bg-transparent border-success">@a.Status</div>
                             </div>
                         </div>
