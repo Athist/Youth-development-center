@@ -28,6 +28,10 @@ namespace LPX2YCDProject2020.Models.PortalModels
         [Display(Name = "Requirements")]
         public string MinimumRequirements { get; set; }
 
-        public ICollection<BursaryCourses> BursaryCourses { get; set; } = new HashSet<BursaryCourses>();
+        [Display(Name = "Sponsored study fields")]
+        public ICollection<BursaryCourses> SponsoredFields { get; set; }
+
+        [Display(Name = "Required subjects")]
+        public ICollection<RequiredSubjects> RequiredSubjects { get; set; }
     }
 }

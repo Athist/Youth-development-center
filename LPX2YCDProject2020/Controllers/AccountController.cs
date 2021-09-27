@@ -146,7 +146,6 @@ namespace LPX2YCDProject2020.Controllers
                     _context.Add(newStudentSubject);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(SchoolReport));
-
                 }
                 else
                 {

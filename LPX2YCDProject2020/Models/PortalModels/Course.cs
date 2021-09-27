@@ -8,7 +8,7 @@ namespace LPX2YCDProject2020.Models.PortalModels
 {
     public class Course
     {
-        public int Id { get; set; }
+        public int CourseId { get; set; }
 
         [Display(Name = "Qualification")]
         public string CourseName { get; set; }

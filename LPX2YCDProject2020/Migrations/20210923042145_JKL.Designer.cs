@@ -4,14 +4,16 @@ using LPX2YCDProject2020.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LPX2YCDProject2020.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210923042145_JKL")]
+    partial class JKL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -550,6 +552,9 @@ namespace LPX2YCDProject2020.Migrations
                     b.Property<int>("Percentage")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SubjectDetailsId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
@@ -557,7 +562,7 @@ namespace LPX2YCDProject2020.Migrations
 
                     b.HasIndex("BursaryId");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("SubjectDetailsId");
 
                     b.ToTable("SubjectRequirement");
                 });
@@ -848,9 +853,7 @@ namespace LPX2YCDProject2020.Migrations
 
                     b.HasOne("LPX2YCDProject2020.Models.Account.SubjectDetails", "SubjectDetails")
                         .WithMany("RequiredSubjects")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubjectDetailsId");
 
                     b.Navigation("SubjectDetails");
                 });

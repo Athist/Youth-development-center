@@ -38,6 +38,8 @@ namespace LPX2YCDProject2020.Models
         public DbSet<Bursary> Bursaries { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<BursaryCourses> BursaryCourses { get; set; }
+        public DbSet<RequiredSubjects> SubjectRequirement { get; set; }
+        public DbSet<SubjectResources> StudyResources { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -57,8 +59,8 @@ namespace LPX2YCDProject2020.Models
             builder.Entity<BursaryCourses>()
               .HasKey(c => new { c.CourseId, c.BursaryId });
 
-            //builder.Entity<EventReservations>()
-            //     .HasKey(c => new { c.ProgramId, c.UserId });
+            //builder.Entity<RequiredSubject>()
+            //     .HasKey(c => new { c.BursaryId, c.SubjectId });
 
             //builder.Entity<StudentSubjects>()
             //     .HasKey(c => new { c.UserId, c.SubjectId });

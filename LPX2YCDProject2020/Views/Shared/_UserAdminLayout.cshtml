@@ -32,60 +32,56 @@
 
     <partial name="_topHeader" />
     <partial name="_lowerHeader" />
-
-
-    <div id="sidebar">
-        @*<div class="toggle-btn" onclick="toggleSidebar(this)">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>*@
-        <div class="list">
-           <h5 class="h5 text-center">Menu</h5>
-            <div class="item">
-                <a asp-controller="Account" asp-action="ViewProfile" class=" nav-link text-dark bg-light">
-                    <i class=" fa fa-home mr-3 text-primary fa-fw"></i>
-                    Home
-                </a>
+    <div>
+        <div id="sidebar">
+            <div class="toggle-btn" onclick="toggleSidebar(this)">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-            <div class="item">
-                <a asp-controller="Account" asp-action="UpdateProfileDetails" class="nav-link text-dark">
-                    <i class="fa fa-user" aria-hidden="true"></i>
-                    Update profile
-                </a>
-            </div>
-            <div class="item">
-                <a asp-controller="Account" asp-action="ChangePassword" class="nav-link text-dark">
-                    <i class="fa fa-lock" aria-hidden="true"></i>
-                    Change password
-                </a>
-            </div>
-            <div class="item">
-                <a asp-controller="Account" asp-action="SchoolReport" class="nav-link text-dark">
-                    <i class="fa fa-file-text" aria-hidden="true"></i>
-                    Academic results
-                </a>
-            </div>
-            <div class="item">
-                <a asp-controller="Appointment" asp-action="ViewAppointments" class="nav-link text-dark">
-                    <i class="fa fa-tasks" aria-hidden="true"></i>
-                    Appointments
-                </a>
-            </div>
-            <div class="item">
-                <a asp-controller="Admin" asp-action="ViewPrograms" class="nav-link text-dark">
-                    <i class="fa fa-tasks" aria-hidden="true"></i>
-                    Programs
-                </a>
+            <div class="list">
+               <h5 class="h5 text-center">Menu</h5>
+                <div class="item">
+                    <a asp-controller="Account" asp-action="ViewProfile" class=" nav-link text-dark bg-light">
+                        <i class=" fa fa-home mr-3 text-primary fa-fw"></i>
+                        Home
+                    </a>
+                </div>
+                <div class="item">
+                    <a asp-controller="Account" asp-action="UpdateProfileDetails" class="nav-link text-dark">
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                        Update profile
+                    </a>
+                </div>
+                <div class="item">
+                    <a asp-controller="Account" asp-action="ChangePassword" class="nav-link text-dark">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                        Change password
+                    </a>
+                </div>
+                <div class="item">
+                    <a asp-controller="Account" asp-action="SchoolReport" class="nav-link text-dark">
+                        <i class="fa fa-file-text" aria-hidden="true"></i>
+                        Academic results
+                    </a>
+                </div>
+                <div class="item">
+                    <a asp-controller="Appointment" asp-action="ViewAppointments" class="nav-link text-dark">
+                        <i class="fa fa-tasks" aria-hidden="true"></i>
+                        Appointments
+                    </a>
+                </div>
+                <div class="item">
+                    <a asp-controller="Admin" asp-action="ViewPrograms" class="nav-link text-dark">
+                        <i class="fa fa-tasks" aria-hidden="true"></i>
+                        Programs
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div>
-       
+        <div>
             @RenderBody()
-      
-
+        </div>
     </div>
 
     <partial name="_footer" />

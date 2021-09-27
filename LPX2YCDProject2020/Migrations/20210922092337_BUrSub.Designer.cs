@@ -4,14 +4,16 @@ using LPX2YCDProject2020.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LPX2YCDProject2020.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210922092337_BUrSub")]
+    partial class BUrSub
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -524,7 +526,7 @@ namespace LPX2YCDProject2020.Migrations
 
             modelBuilder.Entity("LPX2YCDProject2020.Models.PortalModels.Course", b =>
                 {
-                    b.Property<int>("CourseId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -532,34 +534,30 @@ namespace LPX2YCDProject2020.Migrations
                     b.Property<string>("CourseName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CourseId");
+                    b.HasKey("Id");
 
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("LPX2YCDProject2020.Models.PortalModels.RequiredSubjects", b =>
+            modelBuilder.Entity("LPX2YCDProject2020.Models.PortalModels.RequiredSubject", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<int>("BursaryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Percentage")
                         .HasColumnType("int");
 
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Percentage")
+                        .HasColumnType("int");
 
-                    b.HasIndex("BursaryId");
+                    b.Property<int?>("SubjectDetailsId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("SubjectId");
+                    b.HasKey("BursaryId", "SubjectId");
 
-                    b.ToTable("SubjectRequirement");
+                    b.HasIndex("SubjectDetailsId");
+
+                    b.ToTable("RequiredSubjects");
                 });
 
             modelBuilder.Entity("LPX2YCDProject2020.Models.SignUpModel", b =>
@@ -838,7 +836,7 @@ namespace LPX2YCDProject2020.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("LPX2YCDProject2020.Models.PortalModels.RequiredSubjects", b =>
+            modelBuilder.Entity("LPX2YCDProject2020.Models.PortalModels.RequiredSubject", b =>
                 {
                     b.HasOne("LPX2YCDProject2020.Models.PortalModels.Bursary", null)
                         .WithMany("RequiredSubjects")
@@ -848,9 +846,7 @@ namespace LPX2YCDProject2020.Migrations
 
                     b.HasOne("LPX2YCDProject2020.Models.Account.SubjectDetails", "SubjectDetails")
                         .WithMany("RequiredSubjects")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubjectDetailsId");
 
                     b.Navigation("SubjectDetails");
                 });
