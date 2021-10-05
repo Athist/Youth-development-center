@@ -40,6 +40,8 @@ namespace LPX2YCDProject2020.Models
         public DbSet<BursaryCourses> BursaryCourses { get; set; }
         public DbSet<RequiredSubjects> SubjectRequirement { get; set; }
         public DbSet<SubjectResources> StudyResources { get; set; }
+        public DbSet<ExternalManagement> ExternalManagement { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -71,6 +73,8 @@ namespace LPX2YCDProject2020.Models
             //builder.Entity<StudentProfileModel>()
             //    .HasMany<StudentSubjects>(v=>v.)
         }
+
+        public DbSet<LPX2YCDProject2020.Models.Account.LiaisonProfileModel> LiaisonProfileModel { get; set; }
 
     }
 }

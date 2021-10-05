@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Account\ProvincialLiason\" />
+    <Folder Include="Views\Account\Provincial Liaison\" />
     <Folder Include="wwwroot\Resources\" />
     <Folder Include="Views\User\" />
   </ItemGroup>

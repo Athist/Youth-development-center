@@ -36,6 +36,26 @@ namespace LPX2YCDProject2020.Models.Account
             _config = config;
         }
 
+        public async Task<IdentityResult> CreateProvincialLiaisonAsync(SignUpModel signUp)
+        {
+            var user = new ApplicationUser()
+            {
+                Email = signUp.Email,
+                UserName = signUp.Email,
+                DateJoined = signUp.DateJoined,
+                FirstName = signUp.FirstName,
+                LastName = signUp.LastName,
+                EmailConfirmed = true,
+            };
+
+            var result = await _userManager.CreateAsync(user, signUp.Password);
+
+            if (result.Succeeded)
+                await GenerateNewEmailTokenAsync(user);
+            await _userManager.AddToRoleAsync(user, "ProvincialLiaison");
+            return result;
+        }
+
         public async Task<IdentityResult> AddUserToRoles(ApplicationUser user)
         {
             return await _userManager.AddToRoleAsync(user, "Learner");

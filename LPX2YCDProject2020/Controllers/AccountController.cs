@@ -19,6 +19,7 @@ using System.IO;
 
 namespace LPX2YCDProject2020.Controllers
 {
+
     public class AccountController : Controller
     {
         private readonly IAccountRepository _accountRepository;
@@ -28,6 +29,8 @@ namespace LPX2YCDProject2020.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
+
+
         public AccountController(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, IAddressRepository addressRepository, IAccountRepository accountRepository, IUserService userService, UserManager<ApplicationUser> userManager)
         {
             _accountRepository = accountRepository;
@@ -36,6 +39,73 @@ namespace LPX2YCDProject2020.Controllers
             _addressRepository = addressRepository;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
+        }
+
+
+        public IActionResult CreateLiaisonAccount() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> CreateLiaisonAccount(SignUpModel signUp)
+        {
+            signUp.DateJoined = DateTime.Now.ToString("yyyy/MM/dd");
+            if (ModelState.IsValid)
+            {
+
+                var result = await _accountRepository.CreateProvincialLiaisonAsync(signUp);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError("", error.Description);
+
+                    return View(signUp);
+                }
+                ModelState.Clear();
+                return RedirectToAction();
+            }
+
+            return View(signUp);
+        }
+
+        public async Task<IActionResult> ViewLiaisonProfile(string UserId)
+        {
+            if (UserId == null)
+                UserId = _userService.GetUserId();
+
+            var results = await _context.ExternalManagement
+           .FirstOrDefaultAsync(q => q.UserId == UserId);
+
+            if (results == null)
+                return RedirectToAction("ErrorPage", "Admin", new { message = "The resource you are trying to access is currently unavailable" });
+            return View(results);
+        }
+
+        public async Task<IActionResult> EditLiaisonProfile()
+        {
+            var UserId = _userService.GetUserId();
+
+            var results = await _context.ExternalManagement
+           .FirstOrDefaultAsync(q => q.UserId == UserId);
+
+            return View(results); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateLiaisonProfile(ExternalManagement model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.ExternalManagement.Add(model);
+                    await _context.SaveChangesAsync();
+                    var newUser = model.UserId;
+                    return RedirectToAction(nameof(ViewLiaisonProfile), new { UserId = newUser });
+                }catch(Exception c)
+                {
+                    return RedirectToAction("ErrorPage", "Admin");
+                }
+            }
+            return View(model);
         }
 
         //[Route("signup")]
