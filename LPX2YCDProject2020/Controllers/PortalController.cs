@@ -28,7 +28,6 @@ namespace LPX2YCDProject2020.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ICompositeViewEngine _viewEngine;
 
-
         public PortalController(ICompositeViewEngine viewEngine, IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
             _viewEngine = viewEngine;
@@ -43,6 +42,21 @@ namespace LPX2YCDProject2020.Controllers
 
         //Bursaries methods
         public IActionResult AddBursaries() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteBursary(int id)
+        {
+            if (id == 0)
+                return RedirectToAction("ErrorPage", "Admin");
+
+            var result = _context.Bursaries.FirstOrDefault(i => i.Id == id);
+            if(result == null)
+                return RedirectToAction("ErrorPage", "Admin");
+
+            _context.Bursaries.Remove(result);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ListBursaries), new { IsSuccess = true });
+        }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
@@ -61,7 +75,8 @@ namespace LPX2YCDProject2020.Controllers
                 {
                     _context.Bursaries.Add(model);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(ListBursaries));
+                    int Id = model.Id;
+                    return RedirectToAction(nameof(BursaryDetailsAdminView), new {Id ,IsSuccess = true });
                 }
             }
             catch (Exception c)
@@ -71,26 +86,21 @@ namespace LPX2YCDProject2020.Controllers
             return RedirectToAction(nameof(AddBursaries));
         }
 
-        public async Task<IActionResult> ListBursaries() =>
-         View(await _context.Bursaries
-        .Include(p => p.RequiredSubjects)
-        .ThenInclude(p => p.SubjectDetails)
-        .Include(q => q.SponsoredFields)
-        .ThenInclude(w => w.Course)
-        .OrderBy(w => w.openingDate)
-        .ToListAsync());
+        public async Task<IActionResult> ListBursaries(bool IsSucess)
+        {
+            ViewBag.IsSuccess = IsSucess;
+            var results = await _context.Bursaries
+                         .Include(p => p.RequiredSubjects)
+                         .ThenInclude(p => p.SubjectDetails)
+                         .Include(q => q.SponsoredFields)
+                         .ThenInclude(w => w.Course)
+                         .OrderBy(w => w.openingDate)
+                         .ToListAsync();
 
-        public async Task<IActionResult> ShowAllBursaries() =>
-         View(await _context.Bursaries
-             .Include(p => p.RequiredSubjects)
-             .ThenInclude(p => p.SubjectDetails)
-             .Include(q => q.SponsoredFields)
-             .ThenInclude(w => w.Course)
-             .OrderBy(w => w.openingDate)
-             .ToListAsync());
+            return View(results);
+        }
 
-
-        public async Task<IActionResult> BursaryDetails(int Id)
+        public async Task<IActionResult> BursaryDetailsAdminView(int Id, bool IsSuccess)
         {
             if (Id == 0)
                 return RedirectToAction(nameof(BursaryDetails));
@@ -103,10 +113,39 @@ namespace LPX2YCDProject2020.Controllers
              .OrderBy(w => w.openingDate)
              .FirstOrDefaultAsync(c => c.Id == Id);
 
+            ViewBag.IsSuccess = IsSuccess;
+
             return View(results);
         }
 
-        //
+        public IActionResult EditBursary(int id)
+        {
+            if (id == 0)
+                return RedirectToAction("ErrorView", "Admin");
+            var bursary = _context.Bursaries
+                .Include(q => q.SponsoredFields)
+                .Include(x => x.RequiredSubjects)
+                .ThenInclude(a => a.SubjectDetails)
+                .FirstOrDefault(e => e.Id == id);
+
+            if (bursary == null)
+                RedirectToAction("ErrorPage", "Admin");
+
+            return View(bursary);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBursary(Bursary model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Bursaries.Update(model);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ListBursaries), new { IsSuccess = true });
+            }
+            return View(model);
+        }
+
         public IActionResult AddBursarySubject(int id)
         {
             if (id == 0)
@@ -122,7 +161,7 @@ namespace LPX2YCDProject2020.Controllers
 
             BursaryCourses model = new BursaryCourses();
             model.BursaryId = result.Id;
-            ViewBag.Course = new SelectList(GetCoursesAsync(), "Id", "CourseName");
+            ViewBag.Course = new SelectList(GetCoursesAsync(), "CourseId", "CourseName");
 
             return View(model);
         }
@@ -134,6 +173,7 @@ namespace LPX2YCDProject2020.Controllers
                                       where c.BursaryId == model.BursaryId
                                       && c.CourseId == model.CourseId
                                       select c).FirstOrDefault();
+
             if (results != null)
             {
                 ModelState.AddModelError("", "The record already exists");
@@ -198,6 +238,7 @@ namespace LPX2YCDProject2020.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    //model.Id = int.Parse(null);
                     _context.SubjectRequirement.Add(model);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(ListBursaries));
@@ -207,30 +248,55 @@ namespace LPX2YCDProject2020.Controllers
             {
                 return RedirectToAction("ErrorPage", "Admin", new { message = e });
             }
-            return View();
+            return View(model);
         }
 
+        //For displaying bursaries in the learner interface
+        public async Task<IActionResult> ShowAllBursaries() =>
+         View(await _context.Bursaries
+             .Include(p => p.RequiredSubjects)
+             .ThenInclude(p => p.SubjectDetails)
+             .Include(q => q.SponsoredFields)
+             .ThenInclude(w => w.Course)
+             .OrderBy(w => w.openingDate)
+             .ToListAsync());
+        public async Task<IActionResult> BursaryDetails(int Id)
+        {
+            if (Id == 0)
+                return RedirectToAction(nameof(BursaryDetails));
 
-        public IActionResult ViewBursary() => View();
-        public IActionResult UpdateBursary() => View();
-        public IActionResult DeleteBursary() => View();
+            var results = await _context.Bursaries
+                .Include(p => p.RequiredSubjects)
+             .ThenInclude(p => p.SubjectDetails)
+             .Include(q => q.SponsoredFields)
+             .ThenInclude(w => w.Course)
+             .OrderBy(w => w.openingDate)
+             .FirstOrDefaultAsync(c => c.Id == Id);
 
+            return View(results);
+        }
         //End Bursaries methods
 
         //Study materials methods
-        public IActionResult AddMaterial()
+        public IActionResult AddMaterial(bool IsSucess)
         {
+            ViewBag.IsSucess = IsSucess;
             ViewBag.Subject = new SelectList(GetSubjectAsync(), "Id", "SubjectName");
             return View();
         }
-         
 
         [HttpPost]
         public async Task<IActionResult> AddMaterial(SubjectResources model)
         {
+            if (model.Pdf == null)
+            {
+                ModelState.AddModelError("", "Please select a document to upload");
+                return View();
+            }
+
             if (ModelState.IsValid)
             {
-                if(model.Pdf != null)
+                if (model.Pdf != null)
                 {
                     string folder = "Resources/";
                     folder += Guid.NewGuid().ToString() + "_" + model.Pdf.FileName;
@@ -241,17 +307,31 @@ namespace LPX2YCDProject2020.Controllers
 
                 _context.StudyResources.Add(model);
                 await _context.SaveChangesAsync();
+
                 ViewBag.Subject = new SelectList(GetSubjectAsync(), "Id", "SubjectName");
-                return RedirectToAction(nameof(AddMaterial), new { isSuccess = true});
+                return RedirectToAction(nameof(MaterialDisplay), new { isSuccess = true });
             }
             ViewBag.Subject = new SelectList(GetSubjectAsync(), "Id", "SubjectName");
             return View(model);
         }
 
-        public IActionResult ListAllMaterial() 
+        //Get
+        public IActionResult ListAllMaterial()
             => View(_context.StudyResources
-                .Include(v=>v.Subject));
+                .Include(v => v.Subject));
 
+        //Get
+        public IActionResult MaterialDisplay(bool? isSuccess)
+        {
+            var results = _context.StudyResources
+              .Include(v => v.Subject);
+
+            ViewBag.IsSuccess = isSuccess;
+
+            return View(results);
+        }
+
+        //Get
         public IActionResult ViewMaterialDetails(int id)
         {
             if (id == 0)
@@ -263,15 +343,20 @@ namespace LPX2YCDProject2020.Controllers
             return View(result);
         }
 
+        //Get
         public IActionResult UpdateMaterial(int Id)
         {
             if (Id == 0)
                 return RedirectToAction("ErrorPage", "Admin");
 
-            var result = _context.SubjectRequirement
-                .Include(c=>c.SubjectDetails)
-                .FirstOrDefault(x => x.Id == Id);
+            var result = _context.StudyResources
+              .Include(q => q.Subject)
+              .FirstOrDefault(o => o.Id == Id);
 
+            if (result == null)
+                return RedirectToAction("ErrorPage", "Admin");
+
+            ViewBag.Subject = new SelectList(GetSubjectAsync(), "Id", "SubjectName");
             return View(result);
         }
 
@@ -290,8 +375,9 @@ namespace LPX2YCDProject2020.Controllers
                 }
                 _context.StudyResources.Update(model);
                 await _context.SaveChangesAsync();
-                return View();
+                return RedirectToAction(nameof(MaterialDisplay), new { IsSuccess = true });
             }
+            ViewBag.Subject = new SelectList(GetSubjectAsync(), "Id", "SubjectName");
             return View(model);
         }
 
@@ -300,20 +386,13 @@ namespace LPX2YCDProject2020.Controllers
             if (id == 0)
                 return RedirectToAction("ErrorPage", "Admin");
             var results = _context.StudyResources.FirstOrDefault(c => c.Id == id);
+
+            if (results == null)
+                return RedirectToAction("ErrorPage", "Admin");
+
             _context.Remove(results);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ListAllMaterial));
-        }
-
-
-
-
-        private async Task<string> UploadFile(string folderPath, IFormFile file)
-        {
-            folderPath += Guid.NewGuid().ToString() + "_" + file.FileName;
-            string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
-            await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
-            return "/" + folderPath;
+            return RedirectToAction(nameof(MaterialDisplay), new { IsSuccess = true });
         }
 
         public List<SubjectDetails> GetSubjectAsync()

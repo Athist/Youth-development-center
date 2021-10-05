@@ -27,8 +27,8 @@ namespace LPX2YCDProject2020.Models.PortalModels
 
         [NotMapped]
         [Display(Name ="Upload Pdf")]
-        [Required]
         public IFormFile Pdf { get; set; }
+
         public string PdfUrl { get; set; }
 
       

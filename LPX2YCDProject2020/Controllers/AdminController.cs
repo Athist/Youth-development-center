@@ -44,7 +44,7 @@ namespace LPX2YCDProject2020.Controllers
             _addressRepository = addressRepository;
             _context = context;
         }
-
+        //Certificate methods
         public IActionResult CertificateOfParticipation(int id)
         {
 
@@ -88,6 +88,7 @@ namespace LPX2YCDProject2020.Controllers
             return new ViewAsPdf("CertificatePdf", data);
         }
 
+        //Deregister for a programme
         public async Task<IActionResult> Deregister(int id)
         {
             if (id == 0)
@@ -159,7 +160,6 @@ namespace LPX2YCDProject2020.Controllers
             }
         }
 
-        [Authorize]
         public async Task<IActionResult> Enroll(int Id, string UserId)
         {
             if (Id == 0 || UserId == null)
@@ -223,7 +223,6 @@ namespace LPX2YCDProject2020.Controllers
         public IActionResult ErrorPage(string message) => View();
 
         //<-----Start of Province action methods ------>
-
         public IActionResult ViewProvinces() => View(_context.Provinces.ToList());
 
         [HttpGet]
@@ -436,7 +435,6 @@ namespace LPX2YCDProject2020.Controllers
         }
         //<-----End of City action methods ------>
 
-
         //<-----start of Suburb action methods ------>
         public async Task<IActionResult> AddSuburb(int? id)
         {
@@ -619,5 +617,88 @@ namespace LPX2YCDProject2020.Controllers
             return Json(new SelectList(code, "SuburbId", "PostalCode"));
         }
 
+        //Admin Program methods
+        public IActionResult CreateProgram() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProgram(Programme model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Programmes.Add(model);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ListAllPrograms), new { IsSuccess = true });
+                }
+                catch (Exception c)
+                {
+                    return RedirectToAction("ErrorPage", "Admin");
+                }
+            }
+            return View(model);
+        }
+
+        public IActionResult ListAllPrograms(bool IsSuccess)
+        {
+            ViewBag.IsSuccess = IsSuccess;
+            var AllPrograms = _context.Programmes.ToList();
+            return View(AllPrograms);
+        }
+
+        public IActionResult EditProgram(int id)
+        {
+            if (id == 0)
+                return RedirectToAction(nameof(ErrorPage));
+
+            var results = _context.Programmes.FirstOrDefault(v => v.Id == id);
+            if (results == null)
+                return RedirectToAction(nameof(ErrorPage));
+
+            return View(results);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProgram(Programme model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Programmes.Update(model);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ListAllPrograms), new { IsSuccess = true });
+                }
+                catch (Exception c)
+                {
+                    RedirectToAction(nameof(ErrorPage));
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProgram(int id)
+        {
+            if (id == 0)
+                return RedirectToAction(nameof(ErrorPage));
+
+            var results = _context.Programmes.FirstOrDefault(i => i.Id == id);
+            if (results == null)
+                return RedirectToAction(nameof(ErrorPage));
+
+            try
+            {
+                _context.Programmes.Remove(results);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ListAllPrograms), new { IsSuccess = true });
+            }
+            catch (Exception c)
+            {
+                RedirectToAction(nameof(ErrorPage));
+            }
+
+            return RedirectToAction(nameof(ListAllPrograms));
+        }
     }
 }

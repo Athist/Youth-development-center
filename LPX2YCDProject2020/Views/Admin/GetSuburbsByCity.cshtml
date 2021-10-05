@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Settings";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
 }
 
 <a asp-action="ViewProvinces" class="link-black link-info">Back to provinces</a>
@@ -19,7 +19,7 @@
     {
         @foreach (var a in Model.suburbs)
         {
-            <p>@a.SuburbName <a asp-action="EditSuburb" asp-route-suburbId="@a.SuburbId">Edit</a>|<a asp-action="DeleteSuburb" asp-route-suburbId="@a.SuburbId">Delete</a> </p>
+            <p>@a.SuburbName &nbsp; <a asp-action="EditSuburb" asp-route-suburbId="@a.SuburbId">Edit</a>|<a asp-action="DeleteSuburb" asp-route-suburbId="@a.SuburbId">Delete</a> </p>
         }
         <br />
         <a asp-action="AddSuburb" asp-route-id="@Model.City.CityId" class="link-secondary">Add suburbs to @Model.City.CityName</a>

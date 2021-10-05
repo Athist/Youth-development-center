@@ -2,7 +2,8 @@
 
 @{
     ViewData["Title"] = "Suburb";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
+
 }
 
 <div class="container">
@@ -34,6 +35,6 @@
     </div>
 
     <div>
-        <a asp-action="GetSuburbsByCity" asp-route-id="@Model.City.CityId">Show all suburbs in @Model.City.CityName</a>
+        <a asp-action="GetSuburbsByCity" asp-route-cityId="@Model.City.CityId">Show all suburbs in @Model.City.CityName</a>
     </div>
 </div>

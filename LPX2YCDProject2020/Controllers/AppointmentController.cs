@@ -23,8 +23,6 @@ namespace LPX2YCDProject2020.Controllers
             _context = context;
         }
 
-       
-
         [HttpGet]
         public IActionResult CreateAppointment()
         {
@@ -122,8 +120,6 @@ namespace LPX2YCDProject2020.Controllers
 
             return View(appts);
         }
-
-
 
         public List<AppointmentType> GetAppointmentTypeAsync()
         {
