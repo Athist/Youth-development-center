@@ -13,7 +13,6 @@
                 <h3 class="title-main">Update <span>Profile</span></h3>
             </div>
 
-
             @if (ViewBag.IsSuccess == true)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -26,11 +25,12 @@
                     </button>
                 </div>
             }
-
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <p class="small text-muted text-danger">fields marked with <bold>(*)</bold> are required</p>
             <form asp-controller="Account" enctype="multipart/form-data" class="row g-3">
+
                 <input asp-for="ImageUrl" hidden />
-                @*<input asp-for="CityId" hidden />
-                <input asp-for="ProvinceId" hidden />*@
+
                 <div class="container">
                     <div class="row">
                         <div class="profile-header-container">
@@ -39,13 +39,14 @@
                                 <!-- badge -->
                                 <div class="custom-file">
                                     <span class="label label-default rank-label"> <input asp-for="@Model.ProfilePhoto" class="form-control-file"></span>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <underline><h4 class="info">Personal information</h4></underline>
+
+                <br />
+                <underline><h4>Personal details</h4></underline>
 
                 <div class="col-md-6">
                     <label class="form-label">Name</label>
@@ -57,14 +58,15 @@
                     <input disabled="disabled" class="form-control" value="@User.FindFirst("UserLastName").Value">
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-md-7">
+                    <span class="text-danger">*</span>
                     <label asp-for="@Model.IDNumber" class="form-label"></label>
                     <input type="number" asp-for="@Model.IDNumber" class="form-control" />
-
                     <span asp-validation-for="@Model.IDNumber" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-5">
+                    <p class="text-danger">*</p>
                     <label asp-for="@Model.DateOfBirth" class="form-label"></label>
                     <input type="date" asp-for="@Model.DateOfBirth" class="form-control" />
 
@@ -78,25 +80,25 @@
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                     </select>
-
                     <span asp-validation-for="@Model.Gender" class="text-danger"></span>
                 </div>
 
-                <underline> <h4 class="info">Contact information</h4> </underline>
+                <underline> <h4>Contact details</h4> </underline>
                 <div class="col-md-6">
-
+                    <p class="text-danger">*</p>
                     <label asp-for="@Model.ContactNumber" class="form-label"></label>
-
                     <input type="number" asp-for="@Model.ContactNumber" class="form-control" />
-
                     <span asp-validation-for="@Model.ContactNumber" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
+                    <p class="text-danger">*</p>
                     <label class="form-label">Email</label>
                     <input value="@User.FindFirst("EmailAddr").Value" disabled="disabled" class="form-control" />
                 </div>
 
-                <underline><h4 class="info">Residential information</h4></underline>
+                <br />
+                <underline><h4>Residential details</h4></underline>
+
                 <div class="col-6">
                     <label asp-for="@Model.AddressLine1" class="form-label"></label>
                     <input type="text" class="form-control" asp-for="@Model.AddressLine1">
@@ -107,6 +109,7 @@
                 </div>
 
                 <div class="col-md-6">
+                    <p class="text-danger">*</p>
                     @if (ViewBag.ProvinceList != null)
                     {
                         <label asp-for="@Model.ProvinceId" class="control-label"></label>
@@ -117,14 +120,16 @@
                 </div>
 
                 <div class="col-md-6">
+                    <p class="text-danger">*</p>
                     <label asp-for="@Model.CityId" class="control-label"></label>
-                    <select asp-for="@Model.CityId" id="CityId" class="form-control">
+                    <select asp-for="@Model.CityId" value="@Model.CityId" id="CityId" class="form-control">
                         <option> --Please select city--</option>
                     </select>
                 </div>
                 <div class="col-md-6">
+                    <p class="text-danger">*</p>
                     <label asp-for="@Model.SuburbId" class="control-label"></label>
-                    <select asp-for="@Model.SuburbId" id="SuburbId" class="form-control">
+                    <select asp-for="@Model.SuburbId" id="SuburbId" value="@Model.SuburbId" class="form-control">
                         <option> --Please select suburb--</option>
                     </select>
                 </div>

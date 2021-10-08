@@ -13,6 +13,7 @@ using LPX2YCDProject2020.Models;
 using LPX2YCDProject2020.Models.Appointments;
 using LPX2YCDProject2020.Models.AdminModels;
 using LPX2YCDProject2020.Models.PortalModels;
+using LPX2YCDProject2020.Models.EmailModels;
 
 namespace LPX2YCDProject2020.Models
 {
@@ -75,6 +76,8 @@ namespace LPX2YCDProject2020.Models
         }
 
         public DbSet<LPX2YCDProject2020.Models.Account.LiaisonProfileModel> LiaisonProfileModel { get; set; }
+
+        public DbSet<LPX2YCDProject2020.Models.EmailModels.EmailEnquiryResponse> EmailEnquiryResponse { get; set; }
 
     }
 }

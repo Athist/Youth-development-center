@@ -32,12 +32,12 @@ namespace LPX2YCDProject2020.Models
         [Required(ErrorMessage = "Enter a password")]
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Password must be at lest 6 characters long")]
-        [Compare("ConfirmPassword", ErrorMessage = "Passwords do not match")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Re-type password")]
         [Display(Name = "Confirm password")]
         [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; }
 
         [DataType(DataType.Date)]

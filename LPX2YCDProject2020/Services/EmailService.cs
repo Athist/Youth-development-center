@@ -24,10 +24,10 @@ namespace LPX2YCDProject2020.Services
             _smtpConfig = smtpConfig.Value;
         }
 
-        public async Task SendTestEmail(UserEmailOptions userEmailOptions)
+        public async Task SendEqnuiryResponseEmail(UserEmailOptions userEmailOptions)
         {
-            userEmailOptions.Subject = UpdatePlaceholders("This is test email subject from LXP youth development management software", userEmailOptions.PlaceHolders);
-            userEmailOptions.Body = UpdatePlaceholders(GetEmailBody("TestEmail"), userEmailOptions.PlaceHolders);
+            userEmailOptions.Subject = UpdatePlaceholders("Hello {{UserName}}", userEmailOptions.PlaceHolders);
+            userEmailOptions.Body = UpdatePlaceholders(GetEmailBody("UserEmailResponse"), userEmailOptions.PlaceHolders);
 
             await SendEmail(userEmailOptions);
         }
@@ -47,6 +47,8 @@ namespace LPX2YCDProject2020.Services
 
             await SendEmail(userEmailOptions);
         }
+
+       
 
         private async Task SendEmail(UserEmailOptions userEmailOptions)
         {

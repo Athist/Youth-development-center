@@ -6,7 +6,10 @@
 @inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
 @model StudentProfileViewModel
 
-
+<div class="container py-md-5 py-4 justify-content-center">
+    <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
+        <h3 class="title-main">Add<span>Subjects</span></h3>
+    </div>
     <form asp-action="AddStudentSubjects">
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
@@ -50,7 +53,7 @@
                         </select>
 
                     }
-                    <span asp-validation-for="@Model.Subjects.SubjectId" class="text-danger" hidden="hidden"></span>
+                    <span asp-validation-for="@Model.Subjects.SubjectId" class="text-danger"></span>
                 </div>
 
                 <div class="col-sm-1">
@@ -81,11 +84,11 @@
                     <textarea asp-for="@Model.Subjects.Comments" cols="2" rows="2" class="form-control" id="Comments" placeholder="We want to hear from you"></textarea>
                 </div>
                 <div class=" col-sm-2">
-                    <input type="submit" id="SendToDb" value="Add" class="btn btn-sm btn-secondary" />
+                    <input type="submit" id="SendToDb" value="Add" class="btn btn-sm btn-primary" />
                 </div>
             </div>
         </div>
-       
+
     </form>
 
     <table class="table table-hover table-condensed">
@@ -130,11 +133,9 @@
                             @Html.DisplayFor(z => c.Comments)
                         </td>
                         <td>
-                           <a class="btn btn-sm btn-primary" asp-action="EditStudentSubjects" asp-route-id="@c.Id" >Edit</a>
+                            <a class="btn btn-sm btn-primary" asp-action="EditStudentSubjects" asp-route-id="@c.Id">Edit</a>
                             <a class="btn btn-sm btn-danger" asp-action="DeleteEnrolment" asp-route-id="@c.Id">Delete</a>
-                            @*<partial name="_tableButtonPartialView" model="new ButtonPartialModel {ServiceID = c.Id}" />*@
                             <input asp-for="@Model.Subjects.Subjects.Id" name="Id" hidden="hidden" />
-
                         </td>
                     </tr>
                 }
@@ -142,18 +143,18 @@
         </tbody>
     </table>
 
+</div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/site.js"></script>
+    <script src="~/bootstrap/dist/js/bootstrap.min.js"></script>
 
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/site.js"></script>
-<script src="~/bootstrap/dist/js/bootstrap.min.js"></script>
 
-
-
-@section scripts
+    @section scripts
 {
 
-    <script type="text/javascript">
+        <script type="text/javascript">
 
         //$(document).ready(function () {
 
@@ -248,5 +249,5 @@
                 });
             }
         });*@
-    </script>
-} 
+        </script>
+    }

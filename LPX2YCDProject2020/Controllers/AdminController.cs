@@ -2,6 +2,7 @@
 using LPX2YCDProject2020.Models.Account;
 using LPX2YCDProject2020.Models.AddressModels;
 using LPX2YCDProject2020.Models.AdminModels;
+using LPX2YCDProject2020.Models.EmailModels;
 using LPX2YCDProject2020.Models.HomeModels;
 using LPX2YCDProject2020.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Rotativa.AspNetCore;
 using SelectPdf;
 using System;
@@ -20,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 
 namespace LPX2YCDProject2020.Controllers
 {
@@ -32,9 +35,14 @@ namespace LPX2YCDProject2020.Controllers
         private readonly IAddressRepository _addressRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ICompositeViewEngine _viewEngine;
+        private readonly IConfiguration _config;
+        IEmailService _emailService;
 
-        public AdminController(ICompositeViewEngine viewEngine, IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+
+        public AdminController(IEmailService emailService,IConfiguration config, ICompositeViewEngine viewEngine, IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
+            _emailService = emailService;
+            _config = config;
             _viewEngine = viewEngine;
             _userService = userService;
             _userManager = userManager;
@@ -160,6 +168,8 @@ namespace LPX2YCDProject2020.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> Enroll(int Id, string UserId)
         {
             if (Id == 0 || UserId == null)
@@ -700,5 +710,73 @@ namespace LPX2YCDProject2020.Controllers
 
             return RedirectToAction(nameof(ListAllPrograms));
         }
+
+        public IActionResult EndUserFeedback(string message)
+        {
+            ViewBag.Message = message;
+            var results = _context.Enquiries.ToList();
+            return View(results);
+        }
+
+        public IActionResult SendUserFeedback(int id, string message)
+        {
+            if (id == 0)
+                return RedirectToAction(nameof(ErrorPage));
+
+            var model = _context.Enquiries.FirstOrDefault(w => w.Id == id);
+
+            if(model ==  null)
+                return RedirectToAction(nameof(ErrorPage));
+            ViewBag.message = message;
+            EmailEnquiryResponse response = new EmailEnquiryResponse
+            {
+                Name = model.FirstName + " " + model.LastName,
+                userEmail = model.EmailAddress
+            };
+            return View(response);
+        }
+
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult SendUserFeedback(EmailEnquiryResponse model)
+        {
+           
+            if (ModelState.IsValid)
+            {
+                var results = SendResponseEmail(model);
+                string message = "Response has been sent Successfully";
+                return RedirectToAction(nameof(EndUserFeedback), new { message = message });
+            }
+            return View(model);
+        }
+
+
+
+
+
+
+
+
+
+        private async Task SendResponseEmail(EmailEnquiryResponse model)
+        {
+            string appDomain = _config.GetSection("Application:AppDomain").Value;
+            string confirmationLink = _config.GetSection("Application:EmailConfirmation").Value;
+
+            UserEmailOptions options = new UserEmailOptions
+            {
+                ToEmails = new List<string> { model.userEmail },
+                PlaceHolders = new List<KeyValuePair<string, string>>()
+                {
+                    new KeyValuePair<string, string>("{{UserName}}", model.Name),
+                     new KeyValuePair<string, string>("{{message}}", model.body),
+                }
+            };
+            await _emailService.SendEqnuiryResponseEmail(options);
+        }
+
+
+
     }
 }

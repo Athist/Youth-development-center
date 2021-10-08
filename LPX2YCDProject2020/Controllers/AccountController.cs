@@ -30,7 +30,6 @@ namespace LPX2YCDProject2020.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
 
 
-
         public AccountController(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, IAddressRepository addressRepository, IAccountRepository accountRepository, IUserService userService, UserManager<ApplicationUser> userManager)
         {
             _accountRepository = accountRepository;
@@ -40,7 +39,6 @@ namespace LPX2YCDProject2020.Controllers
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
         }
-
 
         public IActionResult CreateLiaisonAccount() => View();
 
@@ -107,6 +105,10 @@ namespace LPX2YCDProject2020.Controllers
             }
             return View(model);
         }
+
+
+
+
 
         //[Route("signup")]
         public IActionResult SignUp() =>  View();
@@ -209,8 +211,8 @@ namespace LPX2YCDProject2020.Controllers
 
             if (ModelState.IsValid)
             {
-                var found = await _context.StudentSubjects.SingleAsync(v => v.SubjectId == newStudentSubject.SubjectId && v.UserId == newStudentSubject.UserId);
-
+                var found =  _context.StudentSubjects.FirstOrDefault(v => v.SubjectId == newStudentSubject.SubjectId && v.UserId == newStudentSubject.UserId);
+                
                 if (found == null)
                 {
                     _context.Add(newStudentSubject);
@@ -259,7 +261,7 @@ namespace LPX2YCDProject2020.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult UpdateProfileDetails(bool IsSuccess = false)
+        public IActionResult UpdateProfileDetails(bool IsSuccess)
         {
             ViewBag.IsSuccess = IsSuccess;
             var user = _userService.GetUserId();
@@ -305,6 +307,8 @@ namespace LPX2YCDProject2020.Controllers
                 }
 
             }
+           
+            ViewBag.ProvinceList = new SelectList(_addressRepository.GetProvinceListAsync(), "ProvinceId", "ProvinceName");
             return View(model);
         }
 
@@ -340,8 +344,9 @@ namespace LPX2YCDProject2020.Controllers
             return RedirectToAction("Home", "Home");
         }
 
-        public IActionResult ChangePassword()
+        public IActionResult ChangePassword(bool message)
         {
+            ViewBag.IsSuccessful = message;
             return View();
         }
 
@@ -353,9 +358,9 @@ namespace LPX2YCDProject2020.Controllers
                 var result = await _accountRepository.ChangePasswordAsync(model);
                 if(result.Succeeded)
                 {
-                    ViewBag.IsSuccessful = true;
+                    bool IsSuccessful = true;
                     ModelState.Clear();
-                    return View();
+                    return RedirectToAction(nameof(ChangePassword), new { message =  IsSuccessful});
                 }
 
                 foreach (var error in result.Errors)
@@ -404,11 +409,8 @@ namespace LPX2YCDProject2020.Controllers
         }
 
         [AllowAnonymous, HttpGet("forgot-password")]
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
+        public IActionResult ForgotPassword() => View();
+       
         [AllowAnonymous, HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
@@ -427,6 +429,26 @@ namespace LPX2YCDProject2020.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult UserForgotPassword() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> UserForgotPassword(ForgotPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _accountRepository.GetUserByEmailAsync(model.Email);
+
+                if (user != null)
+                {
+                    await _accountRepository.GenerateForgotPasswordTokenAsync(user);
+                }
+
+                ModelState.Clear();
+                model.EmailSent = true;
+            }
+            return View(model);
+        }
 
         [AllowAnonymous, HttpGet("reset-password")]
         public IActionResult ResetPassword(string uid, string token)

@@ -155,36 +155,7 @@
                             </div>
                             <h4><a href="courses.html">@c.ProgrammeName</a></h4>
                             <p>@c.Description</p>
-                            <div class="top-content-border d-flex align-items-center justify-content-between mt-5 pt-4">
-                                <ul class="rating-list">
-                                    <li>
-                                        <a href="#rate">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#rate">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#rate">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#rate">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        @c?.Link
-                                    </li>
-                                </ul>
-                                <a class="btn btn-style btn-style-primary" asp-action="" asp-controller="Admin" asp-route-Id="@c.Id">
-                                    Enroll<i class="fa fa-arrow-right ml-2" aria-hidden="true"></i>
-                                </a>
-                            </div>
+                          
                         </div>
                     </div>
                 </div>
@@ -192,7 +163,7 @@
 
         </div>
         <div class="text-center mt-5">
-            <a class="btn btn-style btn-style-secondary mt-sm-3" asp-controller="" asp-action="">
+            <a class="btn btn-style btn-style-secondary mt-sm-3" asp-controller="Home" asp-action="Programmes">
                 Browse more programmes<i class="fa fa-arrow-right ml-2" aria-hidden="true"></i>
             </a>
         </div>

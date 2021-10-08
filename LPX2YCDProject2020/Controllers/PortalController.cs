@@ -1,6 +1,7 @@
 ﻿using LPX2YCDProject2020.Models;
 using LPX2YCDProject2020.Models.Account;
 using LPX2YCDProject2020.Models.AddressModels;
+using LPX2YCDProject2020.Models.Appointments;
 using LPX2YCDProject2020.Models.PortalModels;
 using LPX2YCDProject2020.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,43 @@ namespace LPX2YCDProject2020.Controllers
             _webHostEnvironment = webHostEnvironment;
             _addressRepository = addressRepository;
             _context = context;
+        }
+
+        public IActionResult AllAppointments() => View(_context.Appointment.Include(a => a.appointmentTypes));
+            
+        [HttpGet]
+        public IActionResult GetAppointment(int id, bool IsSuccess)
+        {
+            if (id == 0)
+                return RedirectToAction("ErrorPage", "Admin");
+
+            var results = _context.Appointment
+              .Include(f => f.appointmentTypes)
+              .FirstOrDefault(w => w.Id == id);
+
+            ViewBag.IsSuccess = IsSuccess;
+            return View(results);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateAppointment(UserAppointments model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Appointment.Add(model);
+                    await _context.SaveChangesAsync();
+                    model.Saved = true;
+                    return RedirectToAction(nameof(GetAppointment), new { id = model.Id, IsSuccess = model.Saved });
+                }
+                catch(Exception c)
+                {
+                    return RedirectToAction("ErrorPage", "Admin");
+                }
+            }
+            return View(model);
         }
 
         //Bursaries methods

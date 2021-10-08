@@ -1,17 +1,14 @@
-﻿using LPX2YCDProject2020.Models.Account;
-using LPX2YCDProject2020.Services;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LPX2YCDProject2020.Models;
+using LPX2YCDProject2020.Models.Account;
 using LPX2YCDProject2020.Models.AddressModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using LPX2YCDProject2020.Models;
-using Microsoft.EntityFrameworkCore;
 using LPX2YCDProject2020.Models.ContactUs;
 using LPX2YCDProject2020.Models.HomeModels;
+using LPX2YCDProject2020.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LPX2YCDProject2020.Controllers
 {
@@ -32,11 +29,6 @@ namespace LPX2YCDProject2020.Controllers
             _context = context;
         }
 
-        public IActionResult pdf()
-        {
-            return View();
-        }
-
         public IActionResult Home()
         {
             HomePageViewModel viewModel = new HomePageViewModel();
@@ -47,16 +39,6 @@ namespace LPX2YCDProject2020.Controllers
             viewModel.programmes = _context.Programmes.ToList();
             return View(viewModel); 
         }
-
-        public  IActionResult Index()
-        {
-            var results = _context.CenterDetails.FirstOrDefault();
-    
-            return View(results);
-        }
-
-       
-      
 
         public IActionResult AboutUs()
         {
@@ -70,8 +52,10 @@ namespace LPX2YCDProject2020.Controllers
 
         [HttpGet]
         //Get Method for contact us form
-        public async Task<IActionResult> ContactUs() 
-         {
+        public async Task<IActionResult> ContactUs(string message) 
+        {
+            ViewBag.message = message;
+
             ContactUsModel model = new ContactUsModel();
             //string centerName; 
             model.systemDetails = await _context.CenterDetails.Include(c => c.Suburb)
@@ -81,31 +65,23 @@ namespace LPX2YCDProject2020.Controllers
 
             return View(model);
         }
+
         //Post Method for contact us form
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendEnquiry(ContactUsModel model)
+        public async Task<IActionResult> SendEnquiry(ContactUsFormModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Enquiries.Add(model.ContactUsFormModel);
+                _context.Enquiries.Add(model);
                 await _context.SaveChangesAsync();
-                ViewBag.EnquirySent = "Thank you. We will be in touch soon.";
-                return RedirectToAction(nameof(ContactUs));
+                string message = "Thank you for reaching out.. We will be in touch with you soon.";
+                return RedirectToAction(nameof(ContactUs), new { message = message });
             }
             return View(model);
         }
 
-        //public IActionResult LearningMaterial() => View();
-
-        //public IActionResult MakeAppointment() => View();
-
         public IActionResult Programmes() => 
             View(_context.Programmes.ToList());
-
-        public IActionResult EmailUs() =>   View();
-
-
-      
     }
 }

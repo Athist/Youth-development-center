@@ -30,10 +30,11 @@ namespace LPX2YCDProject2020.Models.Appointments
 
         public string Status { get; set; }
 
-        [Display(Name = "Reson for visit"), Required]
+        [Display(Name = "Reason for visit"), Required(ErrorMessage = "Select appointment type")]
         public int AppointmentTypeId { get; set; }
         public AppointmentType appointmentTypes { get; set; }
 
         public bool Saved { get; set; }
+        public bool Arrived { get; set; }
     }
 }

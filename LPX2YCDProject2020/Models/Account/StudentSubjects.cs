@@ -23,7 +23,7 @@ namespace LPX2YCDProject2020.Models.Account
         public string Year { get; set; }
 
         [ForeignKey("SubjectDetails")]
-        [Required]
+        [Required(ErrorMessage ="Please select")]
         public int SubjectId { get; set; }
         public virtual SubjectDetails Subjects { get; set; }
 

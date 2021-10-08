@@ -40,7 +40,7 @@ namespace LPX2YCDProject2020.Controllers
                 _context.Appointment.Add(model);
                 await _context.SaveChangesAsync();
                 model.Saved = true;
-                return RedirectToAction(nameof(ViewAppointments));
+                return RedirectToAction(nameof(ViewAppointments), new { IsSuccess = model.Saved });
             }
            
             return View(model);
@@ -86,7 +86,7 @@ namespace LPX2YCDProject2020.Controllers
                     _context.Appointment.Update(appointmet);
                     await _context.SaveChangesAsync();
                     model.Saved = true;
-                    return RedirectToAction(nameof(ViewAppointments));
+                    return RedirectToAction(nameof(ViewAppointments), new { IsSuccess = model.Saved });
                 }
             }
             return View(model);
@@ -105,18 +105,20 @@ namespace LPX2YCDProject2020.Controllers
 
            var result  = _context.Appointment.Remove(appointment);
             _context.SaveChanges();
-            return RedirectToAction(nameof(ViewAppointments));
+            bool Saved = true;
+            return RedirectToAction(nameof(ViewAppointments), new { IsSuccess = Saved });
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> ViewAppointments()
+        public async Task<IActionResult> ViewAppointments(bool IsSuccess)
         {
             var userId = _userService.GetUserId();
 
             var appts = await _context.Appointment.Include(c => c.appointmentTypes).
                  Where(a => a.userId == userId)
                  .ToListAsync();
+            ViewBag.IsSuccess = IsSuccess;
 
             return View(appts);
         }
