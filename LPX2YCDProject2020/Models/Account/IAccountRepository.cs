@@ -22,6 +22,7 @@ namespace LPX2YCDProject2020.Models
         Task<IdentityResult> ResetPasswordAsync(ResetPasswordModel model);
         Task<ApplicationUser> GetUserById(string Id);
         Task<IdentityResult> CreateProvincialLiaisonAsync(SignUpModel signUp);
+        Task<IdentityResult> CreateRegCoordinatorAsync(SignUpModel signUp);
 
     }
 }
