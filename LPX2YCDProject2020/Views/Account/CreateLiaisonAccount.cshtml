@@ -1,82 +1,63 @@
-﻿@model LPX2YCDProject2020.Models.Account.LiaisonProfileModel
+﻿@model LPX2YCDProject2020.Models.SignUpModel
 
 @{
     ViewData["Title"] = "CreateLiaisonAccount";
-    Layout = "~/Views/Shared/_ProvincialLiaisonMenu.cshtml";
+    Layout = "~/Views/Shared/_UserAdminLayout.cshtml";
 }
 
-<h1>CreateLiaisonAccount</h1>
+<h1>Create Account</h1>
 
-<h4>LiaisonProfileModel</h4>
+@if (ViewBag.Succeeded == true)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>
+            Done .
+        </strong>
+
+        <button type="button" class="close" data-dismiss="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
 <hr />
-<div class=" container">
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="CreateLiaisonAccount">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="IDNumber" class="control-label"></label>
-                    <input asp-for="IDNumber" class="form-control" />
-                    <span asp-validation-for="IDNumber" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ContactNumber" class="control-label"></label>
-                    <input asp-for="ContactNumber" class="form-control" />
-                    <span asp-validation-for="ContactNumber" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="DateOfBirth" class="control-label"></label>
-                    <input asp-for="DateOfBirth" class="form-control" />
-                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Gender" class="control-label"></label>
-                    <input asp-for="Gender" class="form-control" />
-                    <span asp-validation-for="Gender" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="SuburbId" class="control-label"></label>
-                    <select asp-for="SuburbId" class="form-control" asp-items="ViewBag.SuburbId"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="AddressLine1" class="control-label"></label>
-                    <input asp-for="AddressLine1" class="form-control" />
-                    <span asp-validation-for="AddressLine1" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="AddressLine2" class="control-label"></label>
-                    <input asp-for="AddressLine2" class="form-control" />
-                    <span asp-validation-for="AddressLine2" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Email" class="control-label"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="CityId" class="control-label"></label>
-                    <input asp-for="CityId" class="form-control" />
-                    <span asp-validation-for="CityId" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ProvinceId" class="control-label"></label>
-                    <input asp-for="ProvinceId" class="form-control" />
-                    <span asp-validation-for="ProvinceId" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ImageUrl" class="control-label"></label>
-                    <input asp-for="ImageUrl" class="form-control" />
-                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateLiaisonAccount">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateJoined" class="control-label"></label>
+                <input asp-for="DateJoined" class="form-control" />
+                <span asp-validation-for="DateJoined" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

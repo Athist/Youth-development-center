@@ -38,7 +38,6 @@ namespace LPX2YCDProject2020.Controllers
         private readonly IConfiguration _config;
         IEmailService _emailService;
 
-
         public AdminController(IEmailService emailService,IConfiguration config, ICompositeViewEngine viewEngine, IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
             _emailService = emailService;
@@ -52,6 +51,8 @@ namespace LPX2YCDProject2020.Controllers
             _addressRepository = addressRepository;
             _context = context;
         }
+
+
         //Certificate methods
         public IActionResult CertificateOfParticipation(int id)
         {
@@ -173,7 +174,7 @@ namespace LPX2YCDProject2020.Controllers
         public async Task<IActionResult> Enroll(int Id, string UserId)
         {
             if (Id == 0 || UserId == null)
-                return RedirectToAction(nameof(ViewPrograms));
+                return RedirectToAction(nameof(ViewPrograms), new { isSuccess = false});
 
             var model = new EventReservations()
             {
@@ -184,15 +185,15 @@ namespace LPX2YCDProject2020.Controllers
             try
             {
                 var enrolled = _context.EventReservations.Where(v => v.ProgramId == Id).ToList();
+
                 if (enrolled.Count() > 0)
                 {
-                    ViewBag.error = "You are already enrolled for this programme";
-                    return RedirectToAction(nameof(ViewPrograms));
+                    return RedirectToAction(nameof(ViewPrograms), new { message = "You are already enrolled for this programme" });
                 }
 
                 _context.EventReservations.Add(model);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ViewPrograms));
+                return RedirectToAction(nameof(ViewPrograms), new { isSuccess = true});
             }
             catch (Exception c)
             {
@@ -201,7 +202,7 @@ namespace LPX2YCDProject2020.Controllers
 
         }
 
-        public IActionResult ViewPrograms(string message)
+        public IActionResult ViewPrograms(string message, bool isSuccess)
         {
             StudentProgramViewModel model = new StudentProgramViewModel();
             var id = _userService.GetUserId();
@@ -220,6 +221,9 @@ namespace LPX2YCDProject2020.Controllers
             {
                 return RedirectToAction(nameof(ErrorPage), new { message = e.ToString() });
             }
+
+            ViewBag.error = message;
+            ViewBag.isSuccess = isSuccess;
 
             return View(model);
         }

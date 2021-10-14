@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace LPX2YCDProject2020.Models.Account
 {
-    public class ExternalManagement
+    public class  ExternalManagement
     {
         [Key]
         public string UserId { get; set; }
@@ -33,5 +35,16 @@ namespace LPX2YCDProject2020.Models.Account
         [Display(Name = "Office number")]
         public string OfficeNumber { get; set; }
 
+        [Display(Name ="Date of birth")]
+        public DateTime DateOfBirth { get; set; }
+
+        [Required(ErrorMessage = "Please select an option for gender")]
+        public string Gender { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Profile Photo")]
+        public IFormFile ProfilePhoto { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

@@ -52,7 +52,7 @@
             <i class="fab fa-internet-explorer"></i> @Html.DisplayNameFor(model => model.Url)
         </dt>
         <dd class="col-sm-9">
-            <a> @Html.DisplayFor(model => model.Url) </a>
+            <a href="@Html.DisplayFor(model => model.Url)" target="_blank"> @Html.DisplayFor(model => model.Url) </a>
         </dd>
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.MinimumRequirements)

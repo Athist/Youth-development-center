@@ -42,7 +42,7 @@ namespace LPX2YCDProject2020.Models
         public DbSet<RequiredSubjects> SubjectRequirement { get; set; }
         public DbSet<SubjectResources> StudyResources { get; set; }
         public DbSet<ExternalManagement> ExternalManagement { get; set; }
-
+        public DbSet<StaffProfiles> StaffProfiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -62,6 +62,8 @@ namespace LPX2YCDProject2020.Models
             builder.Entity<BursaryCourses>()
               .HasKey(c => new { c.CourseId, c.BursaryId });
 
+            builder.Entity<StudentProgramViewModel>()
+                .HasNoKey();
             //builder.Entity<RequiredSubject>()
             //     .HasKey(c => new { c.BursaryId, c.SubjectId });
 
@@ -78,6 +80,8 @@ namespace LPX2YCDProject2020.Models
         public DbSet<LPX2YCDProject2020.Models.Account.LiaisonProfileModel> LiaisonProfileModel { get; set; }
 
         public DbSet<LPX2YCDProject2020.Models.EmailModels.EmailEnquiryResponse> EmailEnquiryResponse { get; set; }
+
+        public DbSet<LPX2YCDProject2020.Models.Account.StudentProgramViewModel> StudentProgramViewModel { get; set; }
 
     }
 }

@@ -40,7 +40,12 @@ namespace LPX2YCDProject2020.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult CreateLiaisonAccount() => View();
+        public IActionResult CreateLiaisonAccount(bool Succeeded)
+        {
+            ViewBag.Succeeded = Succeeded;
+            ViewBag.ProvinceList = new SelectList(_addressRepository.GetProvinceListAsync(), "ProvinceId", "ProvinceName");
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateLiaisonAccount(SignUpModel signUp)
@@ -48,7 +53,6 @@ namespace LPX2YCDProject2020.Controllers
             signUp.DateJoined = DateTime.Now.ToString("yyyy/MM/dd");
             if (ModelState.IsValid)
             {
-
                 var result = await _accountRepository.CreateProvincialLiaisonAsync(signUp);
                 if (!result.Succeeded)
                 {
@@ -58,7 +62,7 @@ namespace LPX2YCDProject2020.Controllers
                     return View(signUp);
                 }
                 ModelState.Clear();
-                return RedirectToAction();
+                return RedirectToAction(nameof(CreateLiaisonAccount),new { Succeeded = true} );
             }
 
             return View(signUp);
@@ -69,12 +73,18 @@ namespace LPX2YCDProject2020.Controllers
             if (UserId == null)
                 UserId = _userService.GetUserId();
 
-            var results = await _context.ExternalManagement
+            ProLiaisonProfileViewModel model = new ProLiaisonProfileViewModel();
+
+            model.Management = await _context.ExternalManagement
            .FirstOrDefaultAsync(q => q.UserId == UserId);
 
-            if (results == null)
+            model.UserProfile =  _userManager.Users
+                .FirstOrDefault(m => m.Id == UserId);
+
+            if (model.UserProfile == null)
                 return RedirectToAction("ErrorPage", "Admin", new { message = "The resource you are trying to access is currently unavailable" });
-            return View(results);
+
+            return View(model);
         }
 
         public async Task<IActionResult> EditLiaisonProfile()
@@ -135,31 +145,54 @@ namespace LPX2YCDProject2020.Controllers
             return View(signUp);
         }
 
+        public IActionResult EmployeeSignUp() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> EmployeeSignUp(SignUpModel signUp)
+        {
+            signUp.DateJoined = DateTime.Now.ToShortDateString();
+            if (ModelState.IsValid)
+            {
+                var result = await _accountRepository.CreateUserAsync(signUp);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError("", error.Description);
+
+                    return View(signUp);
+                }
+                ModelState.Clear();
+                return RedirectToAction();
+            }
+            return View(signUp);
+        }
+
         [HttpGet]
         public async Task<IActionResult> ViewProfile()
         {
-            try { 
-            var userId = _userService.GetUserId();
-
-            var ViewModel = new StudentProfileViewModel(); 
-            ViewModel.LearnerProfiles = await _context.StudentProfiles
-                .Include(c => c.suburb)
-                .ThenInclude(c => c.City)
-                .ThenInclude(c => c.Province)
-                .Where(i => i.UserId == userId)
-                .ToListAsync();
-
-            ViewModel.EnrolledSubjects = await _context.StudentSubjects
-                .Include(c => c.Subjects)
-                .Where(c => c.UserId == userId)
-                .AsNoTracking()
-                .ToListAsync();
-
-            ViewBag.SubjectList = new SelectList(_addressRepository.GetSubjectListAsync(), "Id", "SubjectName");
-            return View(ViewModel);
-                    }
-            catch(Exception c)
+            try
             {
+                var userId = _userService.GetUserId();
+
+                var ViewModel = new StudentProfileViewModel();
+                ViewModel.LearnerProfiles = await _context.StudentProfiles
+                    .Include(c => c.suburb)
+                    .ThenInclude(c => c.City)
+                    .ThenInclude(c => c.Province)
+                    .Where(i => i.UserId == userId)
+                    .ToListAsync();
+
+                ViewModel.EnrolledSubjects = await _context.StudentSubjects
+                    .Include(c => c.Subjects)
+                    .Where(c => c.UserId == userId)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                ViewBag.SubjectList = new SelectList(_addressRepository.GetSubjectListAsync(), "Id", "SubjectName");
+                return View(ViewModel);
+            }
+            catch (Exception c)
+            { 
                 return RedirectToAction("ErrorPage", "Account", new { message = c }) ;
             }
         }
@@ -295,9 +328,16 @@ namespace LPX2YCDProject2020.Controllers
 
                 if(exists != null)
                 {
-                    _context.Update(model);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(UpdateProfileDetails), new { IsSuccess = true });
+                    try
+                    {
+                        _context.Update(model);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(UpdateProfileDetails), new { IsSuccess = true });
+                    }
+                    catch(Exception)
+                    {
+                        return RedirectToAction("ErrorPage", "Admin");
+                    }
                 }
                 else
                 {
@@ -305,9 +345,7 @@ namespace LPX2YCDProject2020.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(UpdateProfileDetails), new { IsSuccess = true });
                 }
-
             }
-           
             ViewBag.ProvinceList = new SelectList(_addressRepository.GetProvinceListAsync(), "ProvinceId", "ProvinceName");
             return View(model);
         }

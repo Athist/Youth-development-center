@@ -4,82 +4,167 @@
 @{
     ViewData["Title"] = "Programs";
     Layout = "~/Views/Shared/_userDashboard.cshtml";
-    bool found = false;
     int i = 0;
 }
-<p class="text-danger">@ViewBag.error</p>
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.error
+    </div>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+}
+
+@if (ViewBag.isSuccess == true)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Operation completed sucessfully..
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 <!-- courses section -->
 
 
-
-
-
 <div class="w3l-grids-block-5 w3l-grids-block-6 py-5">
-    <div class="container py-md-5 py-4">
-        <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
-            <h3 class="title-main"><span>Programmes</span></h3>
-        </div>
-        <div class="row">
-            @foreach (var c in Model.programmes)
-            {
-                @if (c.StartDate >= DateTime.Now || c.EndDate > DateTime.Now || c.StartDate < DateTime.Now && c.EndDate > DateTime.Now)
+
+    <div class="title-heading-w3 text-center mx-auto mb-5 pb-sm-4">
+        <h3 class="title-main">All<span>programmes</span></h3>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Programme name
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Start date
+                    </th>
+                    <th>
+                        End date
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.programmes)
                 {
-                    <div class="col-lg-4 col-md-6">
-                        <div class="blog-card-single">
-                            <div class="grids5-info position-relative">
-                                <img src="~/Images/courseThumbnail.png" alt="" class="img-fluid" />
-                                <div class="meta-list">
-                                    <a asp-controller="Admin" asp-action="Courses">@c.EventCategory</a>
-                                </div>
-                                <div class="course-price-item">
-                                    <h6>@c?.Duration</h6>
-                                </div>
-                            </div>
-                            <div class="content-main-top">
-                                <div class="content-top mb-4 mt-3">
-                                    <ul class="list-unstyled d-flex align-items-center justify-content-between">
-                                        <li> <i class="fa fa-calendar" aria-hidden="true"></i> @c.StartDate.ToShortDateString() - @c.EndDate.ToShortDateString()</li>
-                                        <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@c.StartTime.ToShortTimeString()</li>
-                                    </ul>
-                                </div>
-                                <h4><a href="courses.html">@c.ProgrammeName</a></h4>
-                                <p>@c.Description</p>
-                                <div class="top-content-border d-flex align-items-center justify-content-between mt-5 pt-4">
-                                    <ul class="rating-list">
-                                        <li>
-
-                                        </li>
-                                    </ul>
-
-                                    @foreach (var b in Model.eventRsvps)
+                    @if (c.StartDate >= DateTime.Now || c.EndDate > DateTime.Now || c.StartDate < DateTime.Now && c.EndDate > DateTime.Now)
+                    {
+                        <tr>
+                            <td>@c.ProgrammeName</td>
+                            <td>@c.Description</td>
+                            <td>@c.StartDate.ToShortDateString()</td>
+                            <td>@c.EndDate.ToShortDateString()</td>
+                            <td>
+                                @foreach (var d in Model.eventRsvps)
+                                {
+                                    if (d.ProgramId == c.Id)
                                     {
-                                        @if (c.Id == b.ProgramId)
-                                        {
-                                            i++;
-                                            break;
-                                        }
-                                        break;
+                                        <span>Enrolled<i class="fa fa-thumbs-up ml-2" aria-hidden="true"></i></span>
+                                        i++;
+                                        //break;
                                     }
-
-                                    @if (i == 0)
+                                    else
                                     {
                                         <a asp-controller="Admin" asp-action="Enroll" asp-route-Id="@c.Id" asp-route-UserId="@User.FindFirst("studGroup").Value" class="btn btn-style btn-style-primary">Enroll</a>
                                     }
-                                    else if (i == 1)
+                                }
+                                @if (i > 1)
+                                {
+                                    <form asp-controller="Admin" asp-action="Enroll" asp-route-UserId="@User.FindFirst("studGroup").Value">
+                                        <input hidden name="Id" value="@c.Id" />
+                                        <input hidden name="UserId" value="@User.FindFirst("studGroup").Value" />
+                                        <input type="submit" class="btn btn-style btn-style-primary" value="Enroll" />
+                                    </form>
+                                    @*<a asp-controller="Admin" asp-action="Enroll" asp-route-Id="@c.Id" asp-route-UserId="@User.FindFirst("studGroup").Value" class="btn btn-style btn-style-primary">Enroll</a>*@
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+
+
+        
+    </div>
+
+
+    @*<div class="row">
+        @foreach (var c in Model.programmes)
+        {
+            @if (c.StartDate >= DateTime.Now || c.EndDate > DateTime.Now || c.StartDate < DateTime.Now && c.EndDate > DateTime.Now)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="blog-card-single">
+                        <div class="grids5-info position-relative">
+                            <img src="~/Images/courseThumbnail.png" alt="" class="img-fluid" />
+                            <div class="meta-list">
+                                <a asp-controller="Admin" asp-action="Courses">@c.EventCategory</a>
+                            </div>
+                            <div class="course-price-item">
+                                <h6>@c?.Duration</h6>
+                            </div>
+                        </div>
+                        <div class="content-main-top">
+                            <div class="content-top mb-4 mt-3">
+                                <ul class="list-unstyled d-flex align-items-center justify-content-between">
+                                    <li> <i class="fa fa-calendar" aria-hidden="true"></i> @c.StartDate.ToShortDateString() - @c.EndDate.ToShortDateString()</li>
+                                    <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@c.StartTime.ToShortTimeString()</li>
+                                </ul>
+                            </div>
+                            <h4><a href="courses.html">@c.ProgrammeName</a></h4>
+                            <p>@c.Description</p>
+                            <div class="top-content-border d-flex align-items-center justify-content-between mt-5 pt-4">
+                                <ul class="rating-list">
+                                    <li>
+
+                                    </li>
+                                </ul>
+
+                                @foreach (var b in Model.eventRsvps)
+                                {
+                                    @if (c.Id == b.ProgramId)
                                     {
-                                        <span>Enrolled<i class="fa fa-thumbs-up ml-2" aria-hidden="true"></i></span>
+                                        i++;
+                                        break;
                                     }
+                                    break;
+                                }
+
+                                @if (i == 0)
+                                {
+                                    <form asp-controller="Admin" asp-action="Enroll" asp-route-UserId="@User.FindFirst("studGroup").Value">
+                                        <input hidden name="Id" value="@c.Id" />
+                                        <input hidden name="UserId" value="@User.FindFirst("studGroup").Value" />
+                                        <input type="submit"class="btn btn-style btn-style-primary" value="Enroll" />
+                                    </form>
+                                    <a asp-controller="Admin" asp-action="Enroll" asp-route-Id="@c.Id" asp-route-UserId="@User.FindFirst("studGroup").Value" class="btn btn-style btn-style-primary">Enroll</a>
+                                }
+                                else if (i == 1)
+                                {
+                                    <span>Enrolled<i class="fa fa-thumbs-up ml-2" aria-hidden="true"></i></span>
+                                }
 
 
 
-                                </div>
                             </div>
                         </div>
                     </div>
-                }
+                </div>
             }
-        </div>
-    </div>
+        }
+    </div>*@
 </div>
 
 <div class="container py-md-5 py-4">

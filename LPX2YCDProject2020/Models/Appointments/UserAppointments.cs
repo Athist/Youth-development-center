@@ -13,7 +13,12 @@ namespace LPX2YCDProject2020.Models.Appointments
         [Display(Name = "Assigned to")]
         public string assignedEmployee { get; set; }
 
-        [Display(Name = "Name"), Required(ErrorMessage = "Please enter your name")]
+        [Display(Name = "Full name")]
+        public string FullName { get; set; }
+
+        public string Email { get; set; }
+
+        [Display(Name = "ID"), Required(ErrorMessage = "Id is required")]
         public string userId { get; set; }
 
         [Display(Name = "Time"), DataType(DataType.Time), Required(ErrorMessage = "Please select time")]

@@ -52,7 +52,8 @@ namespace LPX2YCDProject2020.Models.Account
 
             if (result.Succeeded)
                 await GenerateNewEmailTokenAsync(user);
-            await _userManager.AddToRoleAsync(user, "ProvincialLiaison");
+
+            await _userManager.AddToRoleAsync(user, "Provincial Liaison Officer");
             return result;
         }
 
@@ -61,7 +62,6 @@ namespace LPX2YCDProject2020.Models.Account
             return await _userManager.AddToRoleAsync(user, "Learner");
             
         } 
-
 
         public async Task<ApplicationUser> GetUserById(string Id)
         {
@@ -79,10 +79,9 @@ namespace LPX2YCDProject2020.Models.Account
             {
                 Email = signUp.Email,
                 UserName = signUp.Email,
-                DateJoined = signUp.Email,
+                DateJoined = signUp.DateJoined,
                 FirstName = signUp.FirstName,
                 LastName = signUp.LastName,
-
             };
 
             var result = await _userManager.CreateAsync(user, signUp.Password);
@@ -95,30 +94,6 @@ namespace LPX2YCDProject2020.Models.Account
             return result;
         }
 
-        public async Task<IdentityResult> CreateProvincialLiaisonAccount(SignUpModel signUp)
-        {
-            var user = new ApplicationUser()
-            {
-                Email = signUp.Email,
-                UserName = signUp.Email,
-                DateJoined = signUp.Email, 
-                FirstName = signUp.FirstName,
-                LastName = signUp.LastName,
-                EmailConfirmed = true,
-                
-            };
-
-            var result = await _userManager.CreateAsync(user, signUp.Password);
-
-            if (result.Succeeded)
-                await GenerateNewEmailTokenAsync(user);
-
-            await _userManager.AddToRoleAsync(user, "Provincial Liaison Officer");
-
-            return result;
-        }
-
-
         public async Task<IdentityResult> CreateUserAsync(SignUpModel signUp)
         {
             var user = new ApplicationUser()
@@ -128,14 +103,15 @@ namespace LPX2YCDProject2020.Models.Account
                 DateJoined = signUp.DateJoined,
                 FirstName = signUp.FirstName,
                 LastName = signUp.LastName,
-                
+                EmailConfirmed = true,
             };
            
             var result = await _userManager.CreateAsync(user, signUp.Password);
 
             if (result.Succeeded)
                 await GenerateNewEmailTokenAsync(user);
-              
+
+            await _userManager.AddToRoleAsync(user, "Provincial Liaison Officer");
             return result; 
         }
 
@@ -157,7 +133,6 @@ namespace LPX2YCDProject2020.Models.Account
         }
 
         public async Task SignOut() => await _signInManager.SignOutAsync();
-
 
         //Method allows users to change their passwords
         public async Task<IdentityResult> ChangePasswordAsync(ChangePasswordModel model)

@@ -41,7 +41,11 @@ namespace LPX2YCDProject2020.Controllers
             _context = context;
         }
 
-        public IActionResult AllAppointments() => View(_context.Appointment.Include(a => a.appointmentTypes));
+        public IActionResult AllAppointments() 
+        {
+            var results = _context.Appointment.Include(q => q.appointmentTypes).AsNoTracking().ToList();
+            return View(results);
+        } 
             
         [HttpGet]
         public IActionResult GetAppointment(int id, bool IsSuccess)
@@ -54,6 +58,8 @@ namespace LPX2YCDProject2020.Controllers
               .FirstOrDefault(w => w.Id == id);
 
             ViewBag.IsSuccess = IsSuccess;
+            ViewBag.AppointmentTypes = new SelectList(GetAppointmentTypeAsync(), "Id", "Description");
+            ViewBag.Employees = new SelectList(GetEmployeeList(), "Description", "Description");
             return View(results);
         }
 
@@ -61,14 +67,17 @@ namespace LPX2YCDProject2020.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAppointment(UserAppointments model)
         {
+            var results = _context.Appointment.FirstOrDefault(w => w.Id == model.Id);
+            if(results == null)
+                return RedirectToAction("ErrorPage", "Admin");
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Appointment.Add(model);
+                    _context.Appointment.Update(model);
                     await _context.SaveChangesAsync();
-                    model.Saved = true;
-                    return RedirectToAction(nameof(GetAppointment), new { id = model.Id, IsSuccess = model.Saved });
+                    return RedirectToAction(nameof(GetAppointment), new { id = model.Id, IsSuccess = true });
                 }
                 catch(Exception c)
                 {
@@ -177,10 +186,18 @@ namespace LPX2YCDProject2020.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Bursaries.Update(model);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ListBursaries), new { IsSuccess = true });
+                try
+                {
+                    _context.Bursaries.Update(model);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ListBursaries), new { IsSuccess = true });
+                }
+                catch (Exception e)
+                {
+                    return RedirectToAction("ErrorPage", "Admin", new { message = e });
+                }
             }
+                              
             return View(model);
         }
 
@@ -219,19 +236,20 @@ namespace LPX2YCDProject2020.Controllers
                 return View(model);
             }
 
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
                     _context.BursaryCourses.Add(model);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(ListBursaries));
                 }
+                catch (DbUpdateException e)
+                {
+                    return RedirectToAction("ErrorPage", "Admin", new { message = e });
+                }
             }
-            catch (DbUpdateException e)
-            {
-                return RedirectToAction("ErrorPage", "Admin", new { message = e });
-            }
+            
             return View();
         }
         //
@@ -271,20 +289,18 @@ namespace LPX2YCDProject2020.Controllers
                 ViewBag.Subject = new SelectList(GetSubjectAsync(), "Id", "SubjectName");
                 return View(model);
             }
-
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    //model.Id = int.Parse(null);
                     _context.SubjectRequirement.Add(model);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(ListBursaries));
                 }
-            }
-            catch (DbUpdateException e)
-            {
-                return RedirectToAction("ErrorPage", "Admin", new { message = e });
+                catch (DbUpdateException e)
+                {
+                    return RedirectToAction("ErrorPage", "Admin", new { message = e });
+                }
             }
             return View(model);
         }
@@ -298,6 +314,7 @@ namespace LPX2YCDProject2020.Controllers
              .ThenInclude(w => w.Course)
              .OrderBy(w => w.openingDate)
              .ToListAsync());
+
         public async Task<IActionResult> BursaryDetails(int Id)
         {
             if (Id == 0)
@@ -431,6 +448,37 @@ namespace LPX2YCDProject2020.Controllers
             _context.Remove(results);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(MaterialDisplay), new { IsSuccess = true });
+        }
+
+        //Dropdown Lists methods
+        public List<AppointmentType> GetAppointmentTypeAsync()
+        {
+            List<AppointmentType> appointments = _context.AppointmentType.ToList();
+            return appointments;
+        }
+
+        public List<EmployeeList> GetEmployeeList()
+        {
+            var employeeProfiles = _context.StaffProfiles;
+
+            var members = _userManager.Users;
+
+            List<EmployeeList> employeesList = new List<EmployeeList>();
+
+            foreach (var a in employeeProfiles)
+            {
+                foreach (var b in members)
+                    if (a.Id == b.Id)
+                        employeesList = new List<EmployeeList>()
+                        {
+                           new EmployeeList{
+                               Description = b.FirstName + " " + b.LastName,
+                               Id = b.Id
+                           }
+                        };
+            }
+            
+            return employeesList;
         }
 
         public List<SubjectDetails> GetSubjectAsync()

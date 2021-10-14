@@ -113,7 +113,7 @@
                     @if (ViewBag.ProvinceList != null)
                     {
                         <label asp-for="@Model.ProvinceId" class="control-label"></label>
-                        <select asp-for="@Model.ProvinceId" class="form-control" asp-items="@ViewBag.ProvinceList">
+                        <select value="@Model?.ProvinceId" asp-for="@Model.ProvinceId" class="form-control" asp-items="@ViewBag.ProvinceList">
                             <option>--Select province--</option>
                         </select>
                     }
@@ -122,14 +122,14 @@
                 <div class="col-md-6">
                     <p class="text-danger">*</p>
                     <label asp-for="@Model.CityId" class="control-label"></label>
-                    <select asp-for="@Model.CityId" value="@Model.CityId" id="CityId" class="form-control">
+                    <select asp-for="@Model.CityId" value="@Model?.CityId" id="CityId" class="form-control">
                         <option> --Please select city--</option>
                     </select>
                 </div>
                 <div class="col-md-6">
                     <p class="text-danger">*</p>
                     <label asp-for="@Model.SuburbId" class="control-label"></label>
-                    <select asp-for="@Model.SuburbId" id="SuburbId" value="@Model.SuburbId" class="form-control">
+                    <select asp-for="@Model.SuburbId" id="SuburbId" value="@Model?.SuburbId" class="form-control">
                         <option> --Please select suburb--</option>
                     </select>
                 </div>

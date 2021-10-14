@@ -10,11 +10,18 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.assignedEmployee)
+            </th>
+            <th>
+               <label>Appointment for</label>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.userId)
@@ -37,12 +44,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.appointmentTypes)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Saved)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Arrived)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -51,6 +52,12 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.assignedEmployee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.userId)
@@ -71,17 +78,11 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.appointmentTypes.Id)
+                @Html.DisplayFor(modelItem => item.appointmentTypes.Description)
             </td>
+           
             <td>
-                @Html.DisplayFor(modelItem => item.Saved)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Arrived)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="GetAppointment" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
