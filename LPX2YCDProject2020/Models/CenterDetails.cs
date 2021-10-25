@@ -10,37 +10,35 @@ using System.Threading.Tasks;
 
 namespace LPX2YCDProject2020.Models
 {
-    public class CentersList
+    public class CenterDetails
     {
         [Key]
         public string CenterId { get; set; }
 
 
         [Display(Name = "Center Name")]
-        public string CenterName { get; set; }
+        public string BusinessName { get; set; }
 
         [Display(Name = "Center Manager")]
-        public string CenterManager { get; set; }
+        public string Manager { get; set; }
 
         [Display(Name = "Region")]
-        public string Region { get; set; }
+        public int Suburb { get; set; }
 
         [Display(Name = "Number of youth")]
         public int YouthNumber { get; set; }
 
         [Display(Name = "Email address")]
-        public string Email { get; set; }
+        public string EmailAddress { get; set; }
 
         [Display(Name = "Contact number")]
-        public string PhoneNumber { get; set; }
+        public string ContactNumber { get; set; }
 
-        [Display(Name = "Office number")]
-        public string OfficeNumber { get; set; }
+        [Required(ErrorMessage = "Physical address is required")]
+        public string AddressLine1 { get; set; }
 
-        [Display(Name = "Regional Coordinator Name")]
-        public string Name { get; set; }
+        [Display(Name = "Address 2")]
+        public string AddressLine2 { get; set; }
 
-        [Display(Name = "Regional Coordinator Surname")]
-        public string Surname { get; set; }
     }
 }
