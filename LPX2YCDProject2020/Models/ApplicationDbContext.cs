@@ -64,6 +64,17 @@ namespace LPX2YCDProject2020.Models
 
             builder.Entity<StudentProgramViewModel>()
                 .HasNoKey();
+
+            builder.Entity<EventReservations>()
+                .HasOne<Programme>(p => p.programme)
+                .WithMany(r => r.Rsvps)
+                .HasForeignKey(p => p.ProgramId);
+
+            builder.Entity<EventReservations>()
+              .HasOne<StudentProfileModel>(p => p.User)
+              .WithMany(r => r.Rsvps)
+              .HasForeignKey(p => p.UserId);
+
             //builder.Entity<RequiredSubject>()
             //     .HasKey(c => new { c.BursaryId, c.SubjectId });
 
@@ -77,11 +88,11 @@ namespace LPX2YCDProject2020.Models
             //    .HasMany<StudentSubjects>(v=>v.)
         }
 
-        public DbSet<LPX2YCDProject2020.Models.Account.LiaisonProfileModel> LiaisonProfileModel { get; set; }
+        //public DbSet<LPX2YCDProject2020.Models.Account.LiaisonProfileModel> LiaisonProfileModel { get; set; }
 
-        public DbSet<LPX2YCDProject2020.Models.EmailModels.EmailEnquiryResponse> EmailEnquiryResponse { get; set; }
+        //public DbSet<LPX2YCDProject2020.Models.EmailModels.EmailEnquiryResponse> EmailEnquiryResponse { get; set; }
 
-        public DbSet<LPX2YCDProject2020.Models.Account.StudentProgramViewModel> StudentProgramViewModel { get; set; }
+        //public DbSet<LPX2YCDProject2020.Models.Account.StudentProgramViewModel> StudentProgramViewModel { get; set; }
 
     }
 }

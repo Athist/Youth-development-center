@@ -52,9 +52,9 @@ namespace LPX2YCDProject2020.Controllers
 
         [HttpGet]
         //Get Method for contact us form
-        public async Task<IActionResult> ContactUs(string message) 
+        public async Task<IActionResult> ContactUs(string messages) 
         {
-            ViewBag.message = message;
+            ViewBag.message = messages;
 
             ContactUsModel model = new ContactUsModel();
             //string centerName; 
@@ -76,7 +76,7 @@ namespace LPX2YCDProject2020.Controllers
                 _context.Enquiries.Add(model);
                 await _context.SaveChangesAsync();
                 string message = "Thank you for reaching out.. We will be in touch with you soon.";
-                return RedirectToAction(nameof(ContactUs), new { message = message });
+                return RedirectToAction(nameof(ContactUs), new { messages = message });
             }
             return View(model);
         }

@@ -17,15 +17,18 @@
             <ul>
                 <h5>System</h5>
                 <li><a asp-action="AddAboutInfo" asp-controller="Admin"><i class="fas fa-cogs"></i>System details</a></li>
-                <li><a asp-controller="Admin" asp-action="ViewProvinces"><i class="fas fa-map-pin"></i>Locus settings</a></li>
+                <li><a asp-controller="Admin" asp-action="ViewProvinces"><i class="fas fa-map-pin"></i>Location settings</a></li>
+                <li><a asp-controller="Account" asp-action="EmployeeSignUp"><i class="fa fa-plus-circle"></i>Add Employee</a></li>
 
                 <h5>Education</h5>
                 <li><a asp-action="ListBursaries" asp-controller="Portal">Bursaries</a></li>
                 <li><a asp-action="MaterialDisplay" asp-controller="Portal"><i class="fas fa-folder-open"></i>Learning material</a></li>
 
                 <h5>General</h5>
+                <li><a asp-controller="Portal" asp-action="AllAppointments"><i class="far fa-clipboard"></i>Appointments</a>
                 <li><a asp-controller="Admin" asp-action="ListAllPrograms"><i class="fas fa-list"></i>Programmes</a>
                 <li><a asp-controller="Admin" asp-action="EndUserFeedback"><i class="far fa-comments"></i>User feedback</a>
+
 
             </ul>
 
@@ -66,7 +69,7 @@
 
                 </div>
             </div>
-           
+
             <div class="info">
                 <div>
                     @RenderBody()
@@ -92,6 +95,7 @@
         <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
         <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
     </environment>
+
 
     @RenderSection("scripts", required: false);
 </body>

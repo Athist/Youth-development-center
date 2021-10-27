@@ -15673,12 +15673,12 @@ h3.title-main:after {
 }
 
 .w3l-main-slider .banner-top1 {
-  background: url(/Images/R.jpg) no-repeat center right;
+  background: url(../images/R.jpg) no-repeat center right;
   background-size: cover;
 }
 
 .w3l-main-slider .banner-top2 {
-  background: url(/Images/_mg_1418.jpg) no-repeat center;
+  background: url(../Images/_mg_1418.jpg) no-repeat center;
   background-size: cover;
 }
 
@@ -17011,7 +17011,7 @@ h3.title-style {
 
 /* inner-banner */
 .inner-banner {
-  background: url(/Images/learnersupport.jpg) no-repeat center;
+  background: url(../Images/learnersupport.jpg) no-repeat center;
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;

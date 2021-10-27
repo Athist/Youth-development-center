@@ -100,7 +100,11 @@
                 <td>
                     <a asp-action="EditBursary" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="BursaryDetailsAdminView" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="DeleteBursary" asp-route-id="@item.Id">Delete</a>
+                    <form asp-action="DeleteBursary" asp-controller="Portal">
+                        <input name="Id" value="@item.Id" hidden />
+                        <input value="Delete" class="link-danger" type="submit" />
+                    </form>
+                    @*<a asp-action="DeleteBursary" asp-route-id="@item.Id">Delete</a>*@
                 </td>
             </tr>
         }

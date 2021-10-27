@@ -62,7 +62,7 @@
 
                                             <form asp-controller="Appointment" asp-action="CancellAppointments" asp-route-Id="@a.Id">
                                                 <input value="@a.Id" asp-route-id="@a.Id" id="Id" hidden />
-                                                <input type="submit" value=" Cancel appointment" class="btn btn-sm btn-style btn-style-primary" />
+                                                <input type="submit" value=" Cancel appointment" class="btn btn-sm btn-style btn-style-primary" onclick=" return confirm('Are you sure you want to cancel your appointment?'"/>
                                             </form>
                                         </div>
                                     </div>
@@ -116,7 +116,7 @@
 
                                             <form asp-controller="Appointment" asp-action="CancellAppointments" asp-route-Id="@a.Id">
                                                 <input value="@a.Id" asp-route-id="@a.Id" id="Id" hidden />
-                                                <input type="submit" value=" Cancel appointment" class="btn btn-sm btn-style btn-style-primary" />
+                                                <input type="submit" value="Cancel appointment" class="btn btn-sm btn-style btn-style-primary" onclick=" return confirm('Are you sure you want to cancel your appointment?')" />
                                             </form>
                                         </div>
                                     </div>

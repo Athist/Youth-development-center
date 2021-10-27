@@ -12,7 +12,7 @@
         <div class="container">
             <h4 class="inner-text-title font-weight-bold text-white mb-sm-3 mb-2">Programmes</h4>
             <ul class="breadcrumbs-custom-path">
-                <li><a href="index.html">Home</a></li>
+                <li><a asp-action="Home" asp-controller="Home">Home</a></li>
                 <li class="active">
                     <span class="fa fa-chevron-right mx-2" aria-hidden="true"></span>Programmes
                 </li>
@@ -21,7 +21,6 @@
     </div>
 </div>
 <!-- //inner banner -->
-
 <!-- courses section -->
 <div class="w3l-grids-block-5 w3l-grids-block-6 py-5">
     <div class="container py-md-5 py-4">
@@ -37,16 +36,7 @@
                         <div class="grids5-info position-relative">
                             <img src="~/Images/courseThumbnail.png" alt="" class="img-fluid" />
                             <div class="meta-list">
-
-                                @if (c.EventCategory == "Educational")
-                                {
-                                    <a asp-controller="Admin" asp-action="Courses">@c.EventCategory</a>
-                                }
-                                else
-                                {
-                                    <a asp-controller="Admin" asp-action="Courses">@c.EventCategory</a>
-                                }
-
+                                <a asp-controller="Admin" asp-action="Courses">@c.EventCategory</a>
                             </div>
                             <div class="course-price-item">
                                 <h6>@c?.Duration</h6>
@@ -55,21 +45,18 @@
                         <div class="content-main-top">
                             <div class="content-top mb-4 mt-3">
                                 <ul class="list-unstyled d-flex align-items-center justify-content-between">
-                                    <li> <i class="fa fa-signal" aria-hidden="true"></i> @c.StartDate.ToShortDateString()</li>
+                                    <li> <i class="fa fa-calendar" aria-hidden="true"></i> @c.StartDate.ToShortDateString()</li>
                                     <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@c.StartTime.ToShortTimeString()</li>
                                 </ul>
                             </div>
                             <h4><a href="courses.html">@c.ProgrammeName</a></h4>
                             <p>@c.Description</p>
                             <div class="top-content-border d-flex align-items-center justify-content-between mt-5 pt-4">
-                                <a class="btn btn-style btn-style-primary" asp-action="Enroll" asp-controller="Admin" asp-route-Id="@c.Id">
-                                    Enroll<i class="fa fa-arrow-right ml-2" aria-hidden="true"></i>
-                                </a>
+                                Venue: @c?.Venue
                             </div>
                         </div>
                     </div>
                 </div>
-
             }
         </div>
     </div>

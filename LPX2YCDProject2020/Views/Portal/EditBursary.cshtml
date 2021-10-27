@@ -14,6 +14,7 @@
         <form asp-action="EditBursary">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input hidden asp-for="Active" />
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
@@ -41,7 +42,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="MinimumRequirements" class="control-label"></label>
-                <input asp-for="MinimumRequirements" class="form-control" />
+                <textarea asp-for="MinimumRequirements" class="form-control" placeholder="Enter reqirements">
+
+                </textarea>
                 <span asp-validation-for="MinimumRequirements" class="text-danger"></span>
             </div>
             <div class="form-group">

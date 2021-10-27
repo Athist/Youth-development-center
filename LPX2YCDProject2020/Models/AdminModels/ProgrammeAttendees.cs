@@ -7,8 +7,16 @@ using System.Threading.Tasks;
 
 namespace LPX2YCDProject2020.Models.AdminModels
 {
-    public class EventReservations
+    public class ProgrammeAttendees
     {
+        public IEnumerable<ApplicationUser> Users { get; set; }
+        public Programme Programmes { get; set; }
+        public IEnumerable<Programme> programmes { get; set; }
+
+        public IEnumerable<EventReservations> er { get; set; }
+
+        public EventReservations ER { get; set; }
+
         [Key]
         public int ReservationId { get; set; }
 
@@ -25,5 +33,6 @@ namespace LPX2YCDProject2020.Models.AdminModels
         public bool attended { get; set; }
 
         public bool Enrolled { get; set; }
+
     }
 }

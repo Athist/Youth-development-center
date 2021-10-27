@@ -26,6 +26,7 @@ using System.Web.Helpers;
 
 namespace LPX2YCDProject2020.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly IUserService _userService;
@@ -38,7 +39,7 @@ namespace LPX2YCDProject2020.Controllers
         private readonly IConfiguration _config;
         IEmailService _emailService;
 
-        public AdminController(IEmailService emailService,IConfiguration config, ICompositeViewEngine viewEngine, IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public AdminController(IEmailService emailService, IConfiguration config, ICompositeViewEngine viewEngine, IUserService userService, IAccountRepository accRepository, ApplicationDbContext context, IAddressRepository addressRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
             _emailService = emailService;
             _config = config;
@@ -53,6 +54,53 @@ namespace LPX2YCDProject2020.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult ProgrammeAttendees(int Id, bool IsSuccess)
+        {
+            if (Id == 0)
+                RedirectToAction("ErrorPage", "Admin");
+
+            ProgrammeAttendees pa = new ProgrammeAttendees();
+
+            pa.Programmes = _context.Programmes
+                .Include(a => a.Rsvps)
+                .ThenInclude(i => i.User)
+                .FirstOrDefault(z => z.Id == Id);
+
+            pa.er = from cv in _context.EventReservations
+                    where cv.ProgramId == Id
+                    select cv;
+
+            pa.Users = _userManager.Users;
+            
+            return View(pa);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditEnrolment(int ReservationId)
+        {
+            if (ReservationId == 0)
+                RedirectToAction(nameof(ErrorPage));
+
+            var results = _context.EventReservations
+                .FirstOrDefault(o => o.ReservationId == ReservationId);
+
+            EventReservations attendee = new EventReservations()
+            {
+                Feedback = results.Feedback,
+                ReservationId = results.ReservationId,
+                ProgramId = results.ProgramId,
+                UserId = results.UserId,
+                attended = true,
+                Enrolled = results.Enrolled
+            };
+
+            _context.EventReservations.Update(attendee);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ProgrammeAttendees), new { Id = attendee.ProgramId, IsSuccess = true });
+        }
+        
         //Certificate methods
         public IActionResult CertificateOfParticipation(int id)
         {
@@ -116,7 +164,7 @@ namespace LPX2YCDProject2020.Controllers
             {
                 _context.EventReservations.Remove(record);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ViewPrograms));
+                return RedirectToAction(nameof(ViewPrograms), new { isSuccess = true });
             }
             catch (Exception)
             {
@@ -174,26 +222,33 @@ namespace LPX2YCDProject2020.Controllers
         public async Task<IActionResult> Enroll(int Id, string UserId)
         {
             if (Id == 0 || UserId == null)
-                return RedirectToAction(nameof(ViewPrograms), new { isSuccess = false});
+                return RedirectToAction(nameof(ViewPrograms), new { isSuccess = false });
 
             var model = new EventReservations()
             {
                 ProgramId = Id,
-                UserId = UserId
+                UserId = UserId,
+
             };
 
             try
             {
-                var enrolled = _context.EventReservations.Where(v => v.ProgramId == Id).ToList();
 
-                if (enrolled.Count() > 0)
+                //var enrolled = _context.EventReservations.Where(v => v.ProgramId == Id).ToList();
+                var enrolled = (from cv in _context.EventReservations
+                               where cv.UserId == UserId &&
+                               cv.ProgramId == Id
+                               select cv).SingleOrDefault();
+ 
+                //if (enrolled.Count() > 0)
+                if(enrolled != null )
                 {
                     return RedirectToAction(nameof(ViewPrograms), new { message = "You are already enrolled for this programme" });
                 }
-
+                model.Enrolled = true;
                 _context.EventReservations.Add(model);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ViewPrograms), new { isSuccess = true});
+                return RedirectToAction(nameof(ViewPrograms), new { isSuccess = true });
             }
             catch (Exception c)
             {
@@ -362,7 +417,8 @@ namespace LPX2YCDProject2020.Controllers
         public async Task<IActionResult> AddCities(CascadingAddressClass model)
         {
             City result = _context.Cities.FirstOrDefault(a => a.CityName == model.City.CityName);
-            int id = result.provinceId;
+            int id = model.Province.ProvinceId;
+
             if (result != null)
             {
                 ModelState.AddModelError("", "City already exists");
@@ -634,6 +690,7 @@ namespace LPX2YCDProject2020.Controllers
         //Admin Program methods
         public IActionResult CreateProgram() => View();
 
+
         [HttpPost]
         public async Task<IActionResult> CreateProgram(Programme model)
         {
@@ -729,7 +786,7 @@ namespace LPX2YCDProject2020.Controllers
 
             var model = _context.Enquiries.FirstOrDefault(w => w.Id == id);
 
-            if(model ==  null)
+            if (model == null)
                 return RedirectToAction(nameof(ErrorPage));
             ViewBag.message = message;
             EmailEnquiryResponse response = new EmailEnquiryResponse
@@ -745,7 +802,7 @@ namespace LPX2YCDProject2020.Controllers
         [HttpPost]
         public IActionResult SendUserFeedback(EmailEnquiryResponse model)
         {
-           
+
             if (ModelState.IsValid)
             {
                 var results = SendResponseEmail(model);
@@ -754,11 +811,6 @@ namespace LPX2YCDProject2020.Controllers
             }
             return View(model);
         }
-
-
-
-
-
 
 
 
@@ -779,8 +831,5 @@ namespace LPX2YCDProject2020.Controllers
             };
             await _emailService.SendEqnuiryResponseEmail(options);
         }
-
-
-
     }
 }

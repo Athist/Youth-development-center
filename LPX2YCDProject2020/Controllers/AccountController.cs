@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace LPX2YCDProject2020.Controllers
 {
@@ -116,9 +117,8 @@ namespace LPX2YCDProject2020.Controllers
             return View(model);
         }
 
-
-
-
+        public IActionResult Administration() => View();
+       
 
         //[Route("signup")]
         public IActionResult SignUp() =>  View();
@@ -145,8 +145,13 @@ namespace LPX2YCDProject2020.Controllers
             return View(signUp);
         }
 
-        public IActionResult EmployeeSignUp() => View();
+        public IActionResult EmployeeSignUp(bool IsSuccess)
+        {
+            ViewBag.IsSuccess = IsSuccess;
+            return View();
+        }
 
+      
         [HttpPost]
         public async Task<IActionResult> EmployeeSignUp(SignUpModel signUp)
         {
@@ -159,7 +164,7 @@ namespace LPX2YCDProject2020.Controllers
                     foreach (var error in result.Errors)
                         ModelState.AddModelError("", error.Description);
 
-                    return View(signUp);
+                    return RedirectToAction(nameof(EmployeeSignUp), new { IsSuccess = true });
                 }
                 ModelState.Clear();
                 return RedirectToAction();
@@ -167,6 +172,7 @@ namespace LPX2YCDProject2020.Controllers
             return View(signUp);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ViewProfile()
         {
@@ -189,6 +195,72 @@ namespace LPX2YCDProject2020.Controllers
                     .ToListAsync();
 
                 ViewBag.SubjectList = new SelectList(_addressRepository.GetSubjectListAsync(), "Id", "SubjectName");
+
+
+                foreach (var c in ViewModel.EnrolledSubjects)
+                {
+                    if (c.FirstTermMark < 30)
+                        ViewModel.T1Aps += 1;
+                    else if (c.FirstTermMark < 40)
+                        ViewModel.T1Aps += 2;
+                    else if (c.FirstTermMark < 50)
+                        ViewModel.T1Aps += 3;
+                    else if (c.FirstTermMark < 60)
+                        ViewModel.T1Aps += 4;
+                    else if (c.FirstTermMark < 70)
+                        ViewModel.T1Aps += 5;
+                    else if (c.FirstTermMark < 80)
+                        ViewModel.T1Aps += 6;
+                    else
+                        ViewModel.T1Aps += 7;
+
+                    if (c.SecondTermMark < 30)
+                        ViewModel.T2Aps += 1;
+                    else if (c.SecondTermMark < 40)
+                        ViewModel.T2Aps += 2;
+                    else if (c.SecondTermMark < 50)
+                        ViewModel.T2Aps += 3;
+                    else if (c.SecondTermMark < 60)
+                        ViewModel.T2Aps += 4;
+                    else if (c.SecondTermMark < 70)
+                        ViewModel.T2Aps += 5;
+                    else if (c.SecondTermMark < 80)
+                        ViewModel.T2Aps += 6;
+                    else
+                        ViewModel.T2Aps += 7;
+
+                    if (c.ThirdTermMark < 30)
+                        ViewModel.T3Aps += 1;
+                    else if (c.ThirdTermMark < 40)
+                        ViewModel.T3Aps += 2;
+                    else if (c.ThirdTermMark < 50)
+                        ViewModel.T3Aps += 3;
+                    else if (c.ThirdTermMark < 60)
+                        ViewModel.T3Aps += 4;
+                    else if (c.ThirdTermMark < 70)
+                        ViewModel.T3Aps += 5;
+                    else if (c.ThirdTermMark < 80)
+                        ViewModel.T3Aps += 6;
+                    else
+                        ViewModel.T3Aps += 7;
+
+
+                    if (c.Target < 30)
+                        ViewModel.T4Aps += 1;
+                    else if (c.Target < 40)
+                        ViewModel.T4Aps += 2;
+                    else if (c.Target < 50)
+                        ViewModel.T4Aps += 3;
+                    else if (c.Target < 60)
+                        ViewModel.T4Aps += 4;
+                    else if (c.Target < 70)
+                        ViewModel.T4Aps += 5;
+                    else if (c.Target < 80)
+                        ViewModel.T4Aps += 6;
+                    else
+                        ViewModel.T4Aps += 7;
+                }
+
                 return View(ViewModel);
             }
             catch (Exception c)
@@ -197,19 +269,87 @@ namespace LPX2YCDProject2020.Controllers
             }
         }
 
+        [Authorize]
         public async Task<IActionResult> SchoolReport(string Id)
         {
+          
             var ViewModel = new StudentProfileViewModel();
             if (Id != null)
             {
-                 var EnrolledSubjects = await _context.StudentSubjects
+                 ViewModel.EnrolledSubjects = await _context.StudentSubjects
                     .Include(c => c.Subjects)
                     .Where(c => c.UserId == Id)
                     .AsNoTracking()
                     .ToListAsync();
                 ViewBag.SubjectList = new SelectList(_addressRepository.GetSubjectListAsync(), "Id", "SubjectName");
 
-                return View(EnrolledSubjects);
+
+                foreach(var c in ViewModel.EnrolledSubjects)
+                {
+                    if (c.FirstTermMark < 30)
+                        ViewModel.T1Aps += 1;
+                    else if (c.FirstTermMark < 40)
+                        ViewModel.T1Aps += 2;
+                    else if (c.FirstTermMark < 50)
+                        ViewModel.T1Aps += 3;
+                    else if (c.FirstTermMark < 60)
+                        ViewModel.T1Aps += 4;
+                    else if (c.FirstTermMark < 70)
+                        ViewModel.T1Aps += 5;
+                    else if (c.FirstTermMark < 80)
+                        ViewModel.T1Aps += 6;
+                    else
+                        ViewModel.T1Aps += 7;
+
+                    if (c.SecondTermMark < 30)
+                        ViewModel.T2Aps += 1;
+                    else if (c.SecondTermMark < 40)
+                        ViewModel.T2Aps += 2;
+                    else if (c.SecondTermMark < 50)
+                        ViewModel.T2Aps += 3;
+                    else if (c.SecondTermMark < 60)
+                        ViewModel.T2Aps += 4;
+                    else if (c.SecondTermMark < 70)
+                        ViewModel.T2Aps += 5;
+                    else if (c.SecondTermMark < 80)
+                        ViewModel.T2Aps += 6;
+                    else
+                        ViewModel.T2Aps += 7;
+
+                    if (c.ThirdTermMark < 30)
+                        ViewModel.T3Aps += 1;
+                    else if (c.ThirdTermMark < 40)
+                        ViewModel.T3Aps += 2;
+                    else if (c.ThirdTermMark < 50)
+                        ViewModel.T3Aps += 3;
+                    else if (c.ThirdTermMark < 60)
+                        ViewModel.T3Aps += 4;
+                    else if (c.ThirdTermMark < 70)
+                        ViewModel.T3Aps += 5;
+                    else if (c.ThirdTermMark < 80)
+                        ViewModel.T3Aps += 6;
+                    else
+                        ViewModel.T3Aps += 7;
+
+
+                    if (c.Target < 30)
+                        ViewModel.T4Aps += 1;
+                    else if (c.Target < 40)
+                        ViewModel.T4Aps += 2;
+                    else if (c.Target < 50)
+                        ViewModel.T4Aps += 3;
+                    else if (c.Target < 60)
+                        ViewModel.T4Aps += 4;
+                    else if (c.Target < 70)
+                        ViewModel.T4Aps += 5;
+                    else if (c.Target < 80)
+                        ViewModel.T4Aps += 6;
+                    else
+                        ViewModel.T4Aps += 7;
+                }
+
+
+                return View(ViewModel);
             }
             else
             {
@@ -221,6 +361,70 @@ namespace LPX2YCDProject2020.Controllers
                   .AsNoTracking()
                   .ToListAsync();
                 ViewBag.SubjectList = new SelectList(_addressRepository.GetSubjectListAsync(), "Id", "SubjectName");
+
+                foreach (var c in ViewModel.EnrolledSubjects)
+                {
+                    if (c.FirstTermMark < 30)
+                        ViewModel.T1Aps += 1;
+                    else if (c.FirstTermMark < 40)
+                        ViewModel.T1Aps += 2;
+                    else if (c.FirstTermMark < 50)
+                        ViewModel.T1Aps += 3;
+                    else if (c.FirstTermMark < 60)
+                        ViewModel.T1Aps += 4;
+                    else if (c.FirstTermMark < 70)
+                        ViewModel.T1Aps += 5;
+                    else if (c.FirstTermMark < 80)
+                        ViewModel.T1Aps += 6;
+                    else
+                        ViewModel.T1Aps += 7;
+
+                    if (c.SecondTermMark < 30)
+                        ViewModel.T2Aps += 1;
+                    else if (c.SecondTermMark < 40)
+                        ViewModel.T2Aps += 2;
+                    else if (c.SecondTermMark < 50)
+                        ViewModel.T2Aps += 3;
+                    else if (c.SecondTermMark < 60)
+                        ViewModel.T2Aps += 4;
+                    else if (c.SecondTermMark < 70)
+                        ViewModel.T2Aps += 5;
+                    else if (c.SecondTermMark < 80)
+                        ViewModel.T2Aps += 6;
+                    else
+                        ViewModel.T2Aps += 7;
+
+                    if (c.ThirdTermMark < 30)
+                        ViewModel.T3Aps += 1;
+                    else if (c.ThirdTermMark < 40)
+                        ViewModel.T3Aps += 2;
+                    else if (c.ThirdTermMark < 50)
+                        ViewModel.T3Aps += 3;
+                    else if (c.ThirdTermMark < 60)
+                        ViewModel.T3Aps += 4;
+                    else if (c.ThirdTermMark < 70)
+                        ViewModel.T3Aps += 5;
+                    else if (c.ThirdTermMark < 80)
+                        ViewModel.T3Aps += 6;
+                    else
+                        ViewModel.T3Aps += 7;
+
+
+                    if (c.Target < 30)
+                        ViewModel.T4Aps += 1;
+                    else if (c.Target < 40)
+                        ViewModel.T4Aps += 2;
+                    else if (c.Target < 50)
+                        ViewModel.T4Aps += 3;
+                    else if (c.Target < 60)
+                        ViewModel.T4Aps += 4;
+                    else if (c.Target < 70)
+                        ViewModel.T4Aps += 5;
+                    else if (c.Target < 80)
+                        ViewModel.T4Aps += 6;
+                    else
+                        ViewModel.T4Aps += 7;
+                }
 
                 return View(ViewModel);
             }
@@ -307,7 +511,9 @@ namespace LPX2YCDProject2020.Controllers
             ViewBag.ProvinceList = new SelectList(_addressRepository.GetProvinceListAsync(), "ProvinceId", "ProvinceName");
             return View(details);
         }
-
+        
+        [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> UpdateProfileDetails(StudentProfileModel model)
         {
@@ -316,7 +522,7 @@ namespace LPX2YCDProject2020.Controllers
             {
                 if(model.ProfilePhoto != null)
                 {
-                    string folder = "Images/ProfilePhotos/";
+                    string folder = "~/Images/ProfilePhotos/";
                     folder += Guid.NewGuid().ToString() + "_" + model.ProfilePhoto.FileName;
                     model.ImageUrl = "/" + folder;
                     string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
@@ -357,14 +563,27 @@ namespace LPX2YCDProject2020.Controllers
         {
             if (ModelState.IsValid)
             {
+                var loggedIn = await _userManager.FindByEmailAsync(signIn.Email);
+
                 var result = await _accountRepository.PasswordSignInAsync(signIn);
+
                 if (result.Succeeded)
                 {
-                    //if (!string.IsNullOrEmpty(returnUrl))
-                    //{
-                    //    return LocalRedirect(returnUrl);
-                    //}
-                    return RedirectToAction("ViewProfile", "Account");
+                    var roles = await _userManager.GetRolesAsync(loggedIn);
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        if(returnUrl.Contains("confirm-email"))
+                            return RedirectToAction("ViewProfile", "Account");
+
+                        return LocalRedirect(returnUrl);
+                    }
+                    else
+                    {
+                        if (roles.Contains("Learner"))
+                            return RedirectToAction("ViewProfile", "Account");
+                        else if (roles.Contains("Administrator"))
+                            return RedirectToAction(nameof(Administration));
+                    }
                 }
                 if (result.IsNotAllowed)
                     ModelState.AddModelError("", "Please verify your accout before attempting to login");
@@ -372,6 +591,24 @@ namespace LPX2YCDProject2020.Controllers
                     ModelState.AddModelError("", "Your account has been locked after 5 failed login attempts. Come back in 5..");
                 else
                     ModelState.AddModelError("", "Invalid login credentials");
+
+
+
+                //if (result.Succeeded)
+                //{
+                    
+                //    //if (!string.IsNullOrEmpty(returnUrl))
+                //    //{
+                //    //    return LocalRedirect(returnUrl);
+                //    //}
+                //    return RedirectToAction("ViewProfile", "Account");
+                //}
+                //if (result.IsNotAllowed)
+                //    ModelState.AddModelError("", "Please verify your accout before attempting to login");
+                //else if (result.IsLockedOut == true)
+                //    ModelState.AddModelError("", "Your account has been locked after 5 failed login attempts. Come back in 5..");
+                //else
+                //    ModelState.AddModelError("", "Invalid login credentials");
             } 
             return View(signIn);
         }
@@ -382,12 +619,14 @@ namespace LPX2YCDProject2020.Controllers
             return RedirectToAction("Home", "Home");
         }
 
+        [Authorize]
         public IActionResult ChangePassword(bool message)
         {
             ViewBag.IsSuccessful = message;
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
         {
@@ -467,9 +706,11 @@ namespace LPX2YCDProject2020.Controllers
             return View(model);
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult UserForgotPassword() => View();
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> UserForgotPassword(ForgotPasswordModel model)
         {
@@ -488,7 +729,7 @@ namespace LPX2YCDProject2020.Controllers
             return View(model);
         }
 
-        [AllowAnonymous, HttpGet("reset-password")]
+        [Authorize, HttpGet("reset-password")]
         public IActionResult ResetPassword(string uid, string token)
         {
             ResetPasswordModel resetPasswordModel = new ResetPasswordModel
@@ -499,7 +740,7 @@ namespace LPX2YCDProject2020.Controllers
             return View(resetPasswordModel);
         }
 
-        [AllowAnonymous, HttpPost("reset-password")] 
+        [Authorize, HttpPost("reset-password")] 
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
             if (ModelState.IsValid)

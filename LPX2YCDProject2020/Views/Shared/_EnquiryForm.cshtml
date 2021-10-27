@@ -5,7 +5,7 @@
 </div>
 <div class="row contact-block align-items-center">
     <div class="col-md-5 contact-left">
-        <img src="/Images/OIP (1).jpg" alt="" class="img-fluid img-responsive">
+        <img src="~/Images/OIP.jpg" alt="" class="img-fluid img-responsive"/>
     </div>
     <div class="col-md-7 contact-right mt-md-0 mt-4 pl-lg-4">
         <form asp-controller="Home" asp-action="SendEnquiry" method="post" class="signin-form">
@@ -17,16 +17,16 @@
                        class="contact-input" required="" />
                 <input type="email" asp-for="EmailAddress" placeholder="Your Email*"
                        class="contact-input" required="" />
-                <select asp-for="PatronType" placeholder="What describes you best*" class="form-control">
-                    <option>Future sponsor</option>
-                    <option>Learner</option>
-                    <option>Other</option>
+                <select asp-for="PatronType"class="form-control">
+                    <option value="">--Please Select--</option>
+                    <option value="Prospective sponsor">Future sponsor</option>
+                    <option value="Learner">Learner</option>
+                    <option value="Other">Other</option>
                 </select>
                 <br />
             </div>
             <div class="form-input">
-                <textarea asp-for="Message" placeholder="Type your message here*"
-                          required=""></textarea>
+                <textarea asp-for="Message" placeholder="Type your message here*"></textarea>
             </div>
             <input type="submit" value="Send Message" class="btn btn-style btn-style-secondary mt-sm-3" />
         </form>

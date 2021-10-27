@@ -41,6 +41,46 @@ namespace LPX2YCDProject2020.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RemoveBursarySubject(int BursaryId, int SubjectId)
+        {
+            if (BursaryId == 0 || BursaryId == 0)
+                return RedirectToAction("ErrorView", "Admin");
+
+            var query = (from c in _context.SubjectRequirement
+                      where c.BursaryId == BursaryId &&
+                      c.SubjectId == SubjectId
+                      select c).FirstOrDefault();
+
+            if(query == null)
+                return RedirectToAction("ErrorView", "Admin");
+
+            _context.SubjectRequirement.Remove(query);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(BursaryDetailsAdminView), new { Id = BursaryId, IsSuccess = true});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveBursaryModule(int BursaryId, int CourseId)
+        {
+            if (BursaryId == 0 || CourseId == 0)
+                return RedirectToAction("ErrorView", "Admin");
+
+            var result = (from  u in _context.BursaryCourses
+                          where u.BursaryId == BursaryId &&
+                          u.CourseId == CourseId
+                          select u).FirstOrDefault();
+
+            if (result == null)
+                return RedirectToAction("ErrorView", "Admin");
+
+            _context.BursaryCourses.Remove(result);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(BursaryDetailsAdminView), new { Id = BursaryId, IsSuccess = true });
+        }
+
         public IActionResult AllAppointments() 
         {
             var results = _context.Appointment.Include(q => q.appointmentTypes).AsNoTracking().ToList();
@@ -100,7 +140,9 @@ namespace LPX2YCDProject2020.Controllers
             if(result == null)
                 return RedirectToAction("ErrorPage", "Admin");
 
-            _context.Bursaries.Remove(result);
+            result.Active = false;
+
+            _context.Bursaries.Update(result);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ListBursaries), new { IsSuccess = true });
         }
@@ -120,6 +162,7 @@ namespace LPX2YCDProject2020.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    model.Active = true;
                     _context.Bursaries.Add(model);
                     await _context.SaveChangesAsync();
                     int Id = model.Id;
@@ -133,15 +176,16 @@ namespace LPX2YCDProject2020.Controllers
             return RedirectToAction(nameof(AddBursaries));
         }
 
-        public async Task<IActionResult> ListBursaries(bool IsSucess)
+        public async Task<IActionResult> ListBursaries(bool IsSuccess)
         {
-            ViewBag.IsSuccess = IsSucess;
+            ViewBag.IsSuccess = IsSuccess;
             var results = await _context.Bursaries
                          .Include(p => p.RequiredSubjects)
                          .ThenInclude(p => p.SubjectDetails)
                          .Include(q => q.SponsoredFields)
                          .ThenInclude(w => w.Course)
                          .OrderBy(w => w.openingDate)
+                         .Where(d=>d.Active == true)
                          .ToListAsync();
 
             return View(results);
@@ -295,7 +339,7 @@ namespace LPX2YCDProject2020.Controllers
                 {
                     _context.SubjectRequirement.Add(model);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(ListBursaries));
+                    return RedirectToAction(nameof(BursaryDetailsAdminView), new { Id = model.BursaryId, IsSuccess = true });
                 }
                 catch (DbUpdateException e)
                 {
@@ -353,7 +397,7 @@ namespace LPX2YCDProject2020.Controllers
             {
                 if (model.Pdf != null)
                 {
-                    string folder = "Resources/";
+                    string folder = "~/Resources/";
                     folder += Guid.NewGuid().ToString() + "_" + model.Pdf.FileName;
                     model.PdfUrl = "/" + folder;
                     string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
@@ -422,7 +466,7 @@ namespace LPX2YCDProject2020.Controllers
             {
                 if (model.Pdf != null)
                 {
-                    string folder = "Resources/";
+                    string folder = "~/Resources/";
                     folder += Guid.NewGuid().ToString() + "_" + model.Pdf.FileName;
                     model.PdfUrl = "/" + folder;
                     string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
@@ -480,7 +524,6 @@ namespace LPX2YCDProject2020.Controllers
             
             return employeesList;
         }
-
         public List<SubjectDetails> GetSubjectAsync()
         {
             List<SubjectDetails> subjects = _context.Subject.ToList();

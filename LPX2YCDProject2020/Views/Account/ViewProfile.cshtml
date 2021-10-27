@@ -111,72 +111,76 @@ else
                     {
                         <div class=" form-group">
                             <p>
-                                <label asp-for="@v.NameOfSchool " class="control-label"></label>
-                                &nbsp;
-
-                                @Html.DisplayFor(i => v.NameOfSchool)
+                                School:&nbsp; @Html.DisplayFor(i => v.NameOfSchool)
                             </p>
 
                         </div>
                         <div class="form-group">
                             <p>
-                                <label asp-for="@v.Grade" class="control-label"></label>
-                                &nbsp;
-                                @Html.DisplayFor(i => v.Grade)
+                                Grade:&nbsp; @Html.DisplayFor(i => v.Grade)
                             </p>
                         </div>
                     }
 
-                    <table class="table table-hover table-condensed">
-                        <thead>
+                <table class="table table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Subject name</th>
+                            <th>Year</th>
+                            <th>Term 1 mark</th>
+                            <th>Term 2 mark</th>
+                            <th>Term 3 mark</th>
+                            <th>Term 4 goal</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"><bold>APS Score</bold></td>
+                            <td>@Model.T1Aps</td>
+                            <td>@Model.T2Aps</td>
+                            <td>@Model.T3Aps</td>
+                            <td>@Model.T4Aps</td>
+                            <td colspan="2"></td>
+                        </tr>
+
+                    </tfoot>
+
+                    <tbody>
+
+                        @foreach (var c in Model?.EnrolledSubjects)
+                        {
                             <tr>
-                                <th>Subject name</th>
-                                <th>Year</th>
-                                <th>Term 1 mark</th>
-                                <th>Term 2 mark</th>
-                                <th>Term 3 mark</th>
-                                <th>Term 4 goal</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
+                                <td>
+                                    @Html.DisplayFor(v => c.Subjects.SubjectName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(v => c.Year)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(v => c.FirstTermMark)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(v => c.SecondTermMark)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(v => c.ThirdTermMark)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(v => c.Target)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(z => c.Comments)
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.EnrolledSubjects.Count() == 0 )
-                            {
-                                @foreach (var c in Model?.EnrolledSubjects)
-                                {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(v => c.Subjects.SubjectName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(v => c.Year)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(v => c.FirstTermMark)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(v => c.SecondTermMark)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(v => c.ThirdTermMark)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(v => c.Target)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(z => c.Comments)
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <p>No subjects added, <a asp-action="SchoolReport" asp-controller="Account"><bold>>Add New</bold></a></p>
-                            }
-                        </tbody>
-                    </table>
+                        }
+
+                        <p><i class="fa fa-plus"></i><a asp-action="SchoolReport" asp-controller="Account"><bold>Add New</bold></a></p>
+                    </tbody>
+                </table>
                 </div>
             </div>
         </div>

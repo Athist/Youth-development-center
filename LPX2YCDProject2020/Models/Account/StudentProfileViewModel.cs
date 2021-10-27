@@ -15,6 +15,10 @@ namespace LPX2YCDProject2020.Models.Account
         public SubjectDetails Details { get; set; }
         public StudentSubjects Subjects { get; set; }
         public StudentProfileModel learner { get; set; }
-            
+
+        public int T1Aps { get; set; }
+        public int T2Aps { get; set; }
+        public int T3Aps { get; set; }
+        public int T4Aps { get; set; }
     }
 }

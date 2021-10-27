@@ -45,7 +45,17 @@
             {
                 @foreach (var d in Model.RequiredSubjects)
                 {
-                    @d.SubjectDetails.SubjectName @d.Percentage<span>%</span><br />
+                    @d.SubjectDetails.SubjectName @d.Percentage<span>% &nbsp;</span> 
+                                                               <span>
+                                                                   <form asp-action="RemoveBursarySubject" asp-controller="Portal">
+                                                                       <input hidden name="BursaryId" value="@d.BursaryId" />
+                                                                       <input hidden name="SubjectId" value="@d.SubjectId" />
+                                                                       <input type="submit" value="delete" class="link-danger" onclose="return confirm('Are you sure you want to delete the subject?')" />
+                                                                   </form>
+                                                               </span>
+                    @*<a asp-action="RemoveBursarySubject" asp-route-BursaryId="@d.BursaryId" asp-route-SubjectId ="@d.SubjectId">delete</a>*@
+
+                    <br />
                 }
             }
             <a asp-controller="Portal" asp-action="AddRequiredSubject" asp-route-id="@Model.Id" class=" btn btn-sm btn-outline-primary">Add subjects</a>
@@ -62,7 +72,15 @@
             {
                 @foreach (var v in Model.SponsoredFields)
                 {
-                    @v.Course.CourseName<br />
+                    @v.Course.CourseName
+
+                    <form asp-action="RemoveBursaryModule" asp-controller="Portal">
+                        <input hidden name="BursaryId" value="@v.BursaryId" />
+                        <input hidden name="CourseId" value="@v.CourseId" />
+                        <input type="submit" value="delete" class="link-danger" onclose="return confirm('Are you sure you want to delete the module?')" />
+                    </form>
+
+                    @*<a asp-action="RemoveBursaryModule" asp-route-BursaryId="@v.BursaryId" asp-route-CourseId="@v.CourseId">delete</a> <br />*@
                 }
             }
             <a asp-controller="Portal" asp-action="AddBursarySubject" asp-route-id="@Model.Id" class=" btn btn-sm btn-outline-primary">Add subjects</a>

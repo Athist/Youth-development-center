@@ -131,7 +131,7 @@ namespace LPX2YCDProject2020.Models.Account
             if (result.Succeeded)
                 await GenerateNewEmailTokenAsync(user);
 
-            await _userManager.AddToRoleAsync(user, "Provincial Liaison Officer");
+            await _userManager.AddToRoleAsync(user, "Employee");
             return result; 
         }
 

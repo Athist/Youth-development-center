@@ -38,7 +38,7 @@ namespace LPX2YCDProject2020
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
 
-            services.AddCoreAdmin();
+            //services.AddCoreAdmin();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -46,11 +46,11 @@ namespace LPX2YCDProject2020
 
             services.Configure<IdentityOptions>(options =>
             {
-                //options.Password.RequiredLength = 6;
-                //options.Password.RequiredUniqueChars = 1;
-                //options.Password.RequireDigit = false;
-                //options.Password.RequireNonAlphanumeric = false;
-                //options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
 
                 options.SignIn.RequireConfirmedEmail = true;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -59,7 +59,7 @@ namespace LPX2YCDProject2020
 
             services.ConfigureApplicationCookie(config =>
             {
-                config.LoginPath = "/login";
+                config.LoginPath = "/Account/login";
             });
 
 #if DEBUG
@@ -80,13 +80,16 @@ namespace LPX2YCDProject2020
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+          
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseStatusCodePages();
-            app.UseDeveloperExceptionPage();
-
+          
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

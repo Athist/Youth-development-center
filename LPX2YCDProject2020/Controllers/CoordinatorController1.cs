@@ -9,14 +9,14 @@ using LPX2YCDProject2020.Services;
 
 namespace LPX2YCDProject2020.Controllers
 {
-    public class CoordinatorController1 : Controller
-    {
-        public IActionResult CreateAppointment()
-        {
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //public IActionResult createAppointment(Coordinatorr coordinator)
-    }
+    //public class CoordinatorController1 : Controller
+    //{
+    //    public IActionResult CreateAppointment()
+    //    {
+    //        return View();
+    //    }
+    //    [HttpPost]
+    //    [ValidateAntiForgeryToken]
+    //    //public IActionResult createAppointment(Coordinatorr coordinator)
+    //}
 }

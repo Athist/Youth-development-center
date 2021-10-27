@@ -11,7 +11,7 @@
         </div>
 
         <a class="btn btn-md btn-primary" asp-controller="Admin" asp-action="CertificateOfParticipation" asp-route-id="@Model.rsvp.ProgramId"><i class="fa fa-certificate" aria-hidden="true"></i> Print Certificate</a>
-
+        
         <div class="row justify-content-center"  >
             <div class="col-lg-6 col-md-8" >
                 <div class="blog-card-single">
@@ -27,7 +27,7 @@
                     <div class="content-main-top">
                         <div class="content-top mb-4 mt-3">
                             <ul class="list-unstyled d-flex align-items-center justify-content-between">
-                                <li> <i class="fa fa-signal" aria-hidden="true"></i> @Model.Programmes.StartDate.ToShortDateString()</li>
+                                <li> <i class="fa fa-calendar" aria-hidden="true"></i> @Model.Programmes.StartDate.ToShortDateString()</li>
                                 <li> <i class="fa fa-clock-o" aria-hidden="true"></i>@Model.Programmes.StartTime.ToShortTimeString()</li>
                             </ul>
                         </div>

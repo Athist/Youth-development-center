@@ -33,5 +33,7 @@ namespace LPX2YCDProject2020.Models.PortalModels
 
         [Display(Name = "Required subjects")]
         public ICollection<RequiredSubjects> RequiredSubjects { get; set; }
+
+        public bool Active { get; set; }
     }
 }

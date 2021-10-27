@@ -19,11 +19,12 @@
             }
             else
             {
+                
                 @foreach (var book in Model)
                 {
                     <div class="col-md-4">
                         <div class="card mb-4 shadow-sm">
-                            <img src="/StudyResources/materialThumbnail.jpg" class="img-thumbnail" />
+                            <img src="~/StudyResources/materialThumbnail.jpg" class="img-thumbnail" />
                             <div class="card-body">
                                 <h3 class="card-title">@(string.IsNullOrEmpty(book.Title) ? "Name is not available" : book.Title)</h3>
                                 <p class="card-text">@(string.IsNullOrEmpty(book.Description) ? "Description is not availabe": book.Description)</p>
@@ -43,4 +44,3 @@
         </div>
     </div>
 </div>
-
