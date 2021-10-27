@@ -11,6 +11,7 @@ namespace LPX2YCDProject2020.Models.AdminModels
     {
         public StudentProfileModel learner { get; set; }
         public CenterDetails centerDetails { get; set; }
+
         public Programme programme { get; set; } 
     }
 }

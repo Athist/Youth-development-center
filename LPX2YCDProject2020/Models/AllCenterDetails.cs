@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LPX2YCDProject2020.Models
 {
-    public class CenterDetails
+    public class AllCenterDetails
     {
         [Key]
         public string CenterId { get; set; }

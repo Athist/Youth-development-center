@@ -602,7 +602,7 @@ namespace LPX2YCDProject2020.Controllers
             ViewBag.ProvinceList = new SelectList(_addressRepository.GetProvinceListAsync(), "ProvinceId", "ProvinceName");
             var details = _context.CenterDetails.ToList();
 
-            CenterDetails model = new CenterDetails();
+            Models.HomeModels.CenterDetails model = new Models.HomeModels.CenterDetails();
             foreach (var a in details)
             {
                 model.ProfilePhoto = a.ProfilePhoto;
@@ -622,7 +622,7 @@ namespace LPX2YCDProject2020.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateAboutInfo(CenterDetails model)
+        public async Task<IActionResult> UpdateAboutInfo(Models.HomeModels.CenterDetails model)
         {
             var results = _context.CenterDetails.FirstOrDefault();
             if (results == null)
