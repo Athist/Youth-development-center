@@ -120,6 +120,12 @@ namespace LPX2YCDProject2020.Controllers
         public IActionResult Administration() => View();
        
 
+        public IActionResult MyDashBoard()
+        {
+
+            return View();
+        }
+
         //[Route("signup")]
         public IActionResult SignUp() =>  View();
        
@@ -522,9 +528,9 @@ namespace LPX2YCDProject2020.Controllers
             {
                 if(model.ProfilePhoto != null)
                 {
-                    string folder = "~/Images/ProfilePhotos/";
+                    string folder = @"Images/ProfilePhotos/";
                     folder += Guid.NewGuid().ToString() + "_" + model.ProfilePhoto.FileName;
-                    model.ImageUrl = "/" + folder;
+                    model.ImageUrl = "/47/" + folder;
                     string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
 
                    await  model.ProfilePhoto.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
@@ -710,7 +716,6 @@ namespace LPX2YCDProject2020.Controllers
         [HttpGet]
         public IActionResult UserForgotPassword() => View();
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> UserForgotPassword(ForgotPasswordModel model)
         {
@@ -720,7 +725,7 @@ namespace LPX2YCDProject2020.Controllers
 
                 if (user != null)
                 {
-                    await _accountRepository.GenerateForgotPasswordTokenAsync(user);
+                    await _accountRepository.GenerateUserForgotPasswordTokenAsync(user);
                 }
 
                 ModelState.Clear();
@@ -729,7 +734,7 @@ namespace LPX2YCDProject2020.Controllers
             return View(model);
         }
 
-        [Authorize, HttpGet("reset-password")]
+        [HttpGet("reset-password")]
         public IActionResult ResetPassword(string uid, string token)
         {
             ResetPasswordModel resetPasswordModel = new ResetPasswordModel
@@ -740,7 +745,7 @@ namespace LPX2YCDProject2020.Controllers
             return View(resetPasswordModel);
         }
 
-        [Authorize, HttpPost("reset-password")] 
+        [HttpPost("reset-password")] 
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
             if (ModelState.IsValid)
@@ -749,6 +754,40 @@ namespace LPX2YCDProject2020.Controllers
                 var result =  await _accountRepository.ResetPasswordAsync(model);
 
                 if(result.Succeeded)
+                {
+                    ModelState.Clear();
+                    ViewBag.Successful = "Password updated successfully";
+                    model.IsSucess = true;
+                    return RedirectToAction("Login");
+                }
+
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+            }
+            return View(model);
+        }
+
+
+        [HttpGet("reset-user-password")]
+        public IActionResult ResetUserPassword(string uid, string token)
+        {
+            ResetPasswordModel resetPasswordModel = new ResetPasswordModel
+            {
+                Token = token,
+                UserId = uid,
+            };
+            return View(resetPasswordModel);
+        }
+
+        [Authorize, HttpPost("reset-user-password")]
+        public async Task<IActionResult> ResetUserPassword(ResetPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Token = model.Token.Replace(' ', '+');
+                var result = await _accountRepository.ResetPasswordAsync(model);
+
+                if (result.Succeeded)
                 {
                     ModelState.Clear();
                     ViewBag.Successful = "Password updated successfully";
@@ -813,5 +852,7 @@ namespace LPX2YCDProject2020.Controllers
             var enrolment = _context.StudentSubjects.Find(id);
             return new JsonResult(enrolment);
         }
+
+       
     }
 }

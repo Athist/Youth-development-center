@@ -397,9 +397,9 @@ namespace LPX2YCDProject2020.Controllers
             {
                 if (model.Pdf != null)
                 {
-                    string folder = "~/Resources/";
+                    string folder = @"Resources/";
                     folder += Guid.NewGuid().ToString() + "_" + model.Pdf.FileName;
-                    model.PdfUrl = "/" + folder;
+                    model.PdfUrl = "/47/" + folder;
                     string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
                     await model.Pdf.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
                 }
@@ -415,10 +415,22 @@ namespace LPX2YCDProject2020.Controllers
         }
 
         //Get
-        public IActionResult ListAllMaterial()
-            => View(_context.StudyResources
-                .Include(v => v.Subject));
+        //public IActionResult ListAllMaterial()
+        //    => View(_context.StudyResources
+        //        .Include(v => v.Subject));
 
+        public IActionResult ListAllMaterial()
+        {
+            MaterialListViewModel viewModel = new MaterialListViewModel();
+
+            viewModel.Material = _context.StudyResources
+               .Include(v => v.Subject);
+
+            viewModel.Subjects = _context.Subject;
+
+            return View(viewModel);
+        }
+         
         //Get
         public IActionResult MaterialDisplay(bool? isSuccess)
         {

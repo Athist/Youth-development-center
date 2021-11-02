@@ -19,132 +19,176 @@
                     <strong>
                         Updated.
                     </strong>
-                    
-                    <button type="button" class="close" data-dismiss="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <p class="small text-muted text-danger">fields marked with <bold>(*)</bold> are required</p>
             <form asp-controller="Account" enctype="multipart/form-data" class="row g-3">
 
                 <input asp-for="ImageUrl" hidden />
 
-                <div class="container">
-                    <div class="row">
-                        <div class="profile-header-container">
-                            <div class="profile-header-img">
-                                <img class="img-circle" alt="Profile pic" src="@Model?.ImageUrl" />
-                                <!-- badge -->
-                                <div class="custom-file">
-                                    <span class="label label-default rank-label"> <input asp-for="@Model.ProfilePhoto" class="form-control-file"></span>
-                                </div>
-                            </div>
+                <div class="row">
+
+                    <div class="media d-flex align-items-center " style="margin:auto; width:60%;">
+                        <img src="@Model?.ImageUrl" alt="Profile photo" class="img-thumbnail img-circle shadow-sm" height="500" width="500" />
+                    </div>
+                    <!-- badge -->
+                    <div class="custom-file">
+                        <span class="label label-default rank-label"> <input asp-for="@Model.ProfilePhoto" class="form-control-file"></span>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+                    <br />
+                </div>
+                <div class="small text-muted text-danger">fields marked with (<bold class="text-danger">*</bold>) are required</div>
+                <div class="row border border-light">
+                    <h4 class="text-bold">Personal details</h4>
+                    <div class="col-md-6">
+                        <label class="form-label">Name</label>
+                        <input value="@User.FindFirst("UserFirstName").Value" disabled="disabled" class="form-control">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Surname</label>
+                        <div class="input-group mb-3">
+                            <input disabled="disabled" class="form-control" value="@User.FindFirst("UserLastName").Value">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="@Model.IDNumber" class="form-label"></label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1"><bold class="text-danger">*</bold></span>
+                            <input type="number" asp-for="@Model.IDNumber" maxlength="13" minlength="13" class="form-control" />
+                        </div>
+                        <span asp-validation-for="@Model.IDNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="@Model.DateOfBirth" class="form-label"></label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1"><bold class="text-danger">*</bold></span>
+                            <input type="date" asp-for="@Model.DateOfBirth" class="form-control" />
+                        </div>
+
+                        <span asp-validation-for="@Model.DateOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="@Model.Gender" class="control-label"></label>
+                        <select asp-for="@Model.Gender" class="form-control">
+                            <option value="">--Please select gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <span asp-validation-for="@Model.Gender" class="text-danger"></span>
+                    </div>
+                    <br />
+                </div>
+
+                <div class="col-12">
+                    <br />
+                </div>
+
+                <div class="row border border-light">
+                    <h4>Contact details</h4>
+                    <div class="col-md-6">
+
+                        <label asp-for="@Model.ContactNumber" class="form-label"></label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1"><bold class="text-danger">*</bold></span>
+                            <input type="number" asp-for="@Model.ContactNumber" maxlength="10" minlength="10" class="form-control" />
+                        </div>
+                        <span asp-validation-for="@Model.ContactNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+
+                        <label class="form-label">Email</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1"><bold class="text-danger">*</bold></span>
+                            <input value="@User.FindFirst("EmailAddr").Value" disabled="disabled" class="form-control" />
                         </div>
                     </div>
                 </div>
 
-                <br />
-                <underline><h4>Personal details</h4></underline>
-
-                <div class="col-md-6">
-                    <label class="form-label">Name</label>
-                    <input value="@User.FindFirst("UserFirstName").Value" disabled="disabled" class="form-control">
+                <div class="col-12">
+                    <br />
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">Surname</label>
-                    <input disabled="disabled" class="form-control" value="@User.FindFirst("UserLastName").Value">
-                </div>
+                <div class="row border border-light">
+                    <h4>Residential address</h4>
+                    <div class="col-6">
+                        <label asp-for="@Model.AddressLine1" class="form-label"></label>
+                        <input type="text" class="form-control" asp-for="@Model.AddressLine1">
+                    </div>
+                    <div class="col-6">
+                        <label asp-for="@Model.AddressLine2" class="form-label"></label>
+                        <input type="text" class="form-control" asp-for="@Model.AddressLine2">
+                    </div>
 
-                <div class="col-md-7">
-                    <span class="text-danger">*</span>
-                    <label asp-for="@Model.IDNumber" class="form-label"></label>
-                    <input type="number" asp-for="@Model.IDNumber" class="form-control" />
-                    <span asp-validation-for="@Model.IDNumber" class="text-danger"></span>
-                </div>
+                    <div class="col-md-6">
+                        @if (ViewBag.ProvinceList != null)
+                        {
+                            <label asp-for="@Model.ProvinceId" class="control-label"></label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><bold class="text-danger">*</bold></span>
+                                <select value="@Model?.ProvinceId" asp-for="@Model.ProvinceId" class="form-control" asp-items="@ViewBag.ProvinceList">
+                                    <option value="@Model.ProvinceId">--Select province--</option>
+                                </select>
+                            </div>
+                        }
+                        <span asp-validation-for="@Model.ProvinceId" class="text-danger"></span>
+                    </div>
 
-                <div class="col-md-5">
-                    <p class="text-danger">*</p>
-                    <label asp-for="@Model.DateOfBirth" class="form-label"></label>
-                    <input type="date" asp-for="@Model.DateOfBirth" class="form-control" />
-
-                    <span asp-validation-for="@Model.DateOfBirth" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6">
-
-                    <label asp-for="@Model.Gender" class="control-label"></label>
-                    <select asp-for="@Model.Gender" class="form-control">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                    <span asp-validation-for="@Model.Gender" class="text-danger"></span>
-                </div>
-
-                <underline> <h4>Contact details</h4> </underline>
-                <div class="col-md-6">
-                    <p class="text-danger">*</p>
-                    <label asp-for="@Model.ContactNumber" class="form-label"></label>
-                    <input type="number" asp-for="@Model.ContactNumber" class="form-control" />
-                    <span asp-validation-for="@Model.ContactNumber" class="text-danger"></span>
-                </div>
-                <div class="col-md-6">
-                    <p class="text-danger">*</p>
-                    <label class="form-label">Email</label>
-                    <input value="@User.FindFirst("EmailAddr").Value" disabled="disabled" class="form-control" />
-                </div>
-
-                <br />
-                <underline><h4>Residential details</h4></underline>
-
-                <div class="col-6">
-                    <label asp-for="@Model.AddressLine1" class="form-label"></label>
-                    <input type="text" class="form-control" asp-for="@Model.AddressLine1">
-                </div>
-                <div class="col-6">
-                    <label asp-for="@Model.AddressLine2" class="form-label"></label>
-                    <input type="text" class="form-control" asp-for="@Model.AddressLine2">
-                </div>
-
-                <div class="col-md-6">
-                    <p class="text-danger">*</p>
-                    @if (ViewBag.ProvinceList != null)
-                    {
-                        <label asp-for="@Model.ProvinceId" class="control-label"></label>
-                        <select value="@Model?.ProvinceId" asp-for="@Model.ProvinceId" class="form-control" asp-items="@ViewBag.ProvinceList">
-                            <option>--Select province--</option>
-                        </select>
-                    }
-                </div>
-
-                <div class="col-md-6">
-                    <p class="text-danger">*</p>
-                    <label asp-for="@Model.CityId" class="control-label"></label>
-                    <select asp-for="@Model.CityId" value="@Model?.CityId" id="CityId" class="form-control">
-                        <option> --Please select city--</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <p class="text-danger">*</p>
-                    <label asp-for="@Model.SuburbId" class="control-label"></label>
-                    <select asp-for="@Model.SuburbId" id="SuburbId" value="@Model?.SuburbId" class="form-control">
-                        <option> --Please select suburb--</option>
-                    </select>
-                </div>
-                <h4 class="h4">School details</h4>
-                <div class="col-8">
-                    <label asp-for="@Model.NameOfSchool" class="form-label"></label>
-                    <input type="text" class="form-control" asp-for="@Model.NameOfSchool">
-                </div>
-                <div class="col-4">
-                    <label asp-for="@Model.Grade" class="form-label"></label>
-                    <input type="text" class="form-control" asp-for="@Model.Grade">
+                    <div class="col-md-6">
+                        <label asp-for="@Model.CityId" class="control-label"></label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1"><bold class="text-danger">*</bold></span>
+                            <select asp-for="@Model.CityId" value="@Model?.CityId" id="CityId" class="form-control">
+                                <option value="@Model?.CityId"> --Please select city--</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="@Model.CityId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-7">
+                        <label asp-for="@Model.SuburbId" class="control-label"></label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1"><bold class="text-danger">*</bold></span>
+                            <select asp-for="@Model.SuburbId" id="SuburbId" value="@Model?.SuburbId" class="form-control">
+                                <option value="@Model?.SuburbId"> --Please select suburb--</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="@Model.SuburbId" class="text-danger"></span>
+                    </div>
                 </div>
 
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    <br />
+                </div>
+
+                <div class=" row border border-light">
+                    <h4 class="h4">School details</h4>
+                    <div class="col-8">
+                        <label asp-for="@Model.NameOfSchool" class="form-label"></label>
+                        <input type="text" class="form-control" asp-for="@Model.NameOfSchool">
+                    </div>
+                    <div class="col-4">
+                        <label asp-for="@Model.Grade" class="form-label"></label>
+                        <input type="text" class="form-control" asp-for="@Model.Grade">
+                    </div>
+
+                    <div class="col-12">
+                        <br />
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
                 </div>
 
             </form>

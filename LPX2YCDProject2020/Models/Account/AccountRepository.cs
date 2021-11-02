@@ -147,8 +147,7 @@ namespace LPX2YCDProject2020.Models.Account
 
         public async Task<SignInResult> PasswordSignInAsync(SignInModel signIn)
         {
-            var result =
-                 await _signInManager.PasswordSignInAsync(signIn.Email, signIn.Password, signIn.rememberMe, true);
+            var result = await _signInManager.PasswordSignInAsync(signIn.Email, signIn.Password, signIn.rememberMe, true);
             return result;
         }
 
@@ -200,6 +199,24 @@ namespace LPX2YCDProject2020.Models.Account
             await _emailService.SendForgotPasswordEmail(options);
         }
 
+        private async Task SendUserForgotPasswordEmail(ApplicationUser user, string token)
+        {
+            string appDomain = _config.GetSection("Application:AppDomain").Value;
+            string confirmationLink = _config.GetSection("Application:ForgotUserPassword").Value;
+
+            UserEmailOptions options = new UserEmailOptions
+            {
+                ToEmails = new List<string> { user.Email },
+                PlaceHolders = new List<KeyValuePair<string, string>>()
+                {
+                    new KeyValuePair<string, string>("{{UserName}}", user.FirstName),
+                    new KeyValuePair<string, string>("{{Link}}", string.Format(appDomain + confirmationLink,user.Id, token))
+                }
+            };
+
+            await _emailService.SendForgotPasswordEmail(options);
+        }
+
         public async Task GenerateForgotPasswordTokenAsync(ApplicationUser user)
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -208,6 +225,16 @@ namespace LPX2YCDProject2020.Models.Account
                 await SendForgotPasswordEmail(user, token);
             }
           
+        }
+
+        public async Task GenerateUserForgotPasswordTokenAsync(ApplicationUser user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            if (!string.IsNullOrEmpty(token))
+            {
+                await SendUserForgotPasswordEmail(user, token);
+            }
+
         }
 
         //Mathod gets user details from the database by Email
